@@ -1,0 +1,91 @@
+# AI agent directories (private — never commit)
+.claude/
+.codex/
+.cursor/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE & editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment & credentials (never commit)
+.env
+.env.local
+.env.*.local
+.env.prod
+.env.staging
+.env.dev
+.env.secrets
+.env.computed
+.env.runtime
+.env.runtime.bak
+.secrets/
+*.key
+*.pem
+
+# Never commit stream source credentials or IPTV panel URLs
+stream-sources.txt
+iptv-credentials.*
+m3u-sources/
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+build/
+.svelte-kit/
+out/
+
+# Go
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+/bin/
+/vendor/
+
+# Logs
+*.log
+logs/
+
+# Cache & temp
+.cache/
+*.tmp
+*.temp
+tmp/
+
+# Test output
+coverage/
+test-results/
+
+# nSelf generated
+docker-compose.yml
+docker-compose.override.yml
+nginx/
+certs/
+
+# HLS segment storage (never commit stream data)
+segments/
+*.ts
+*.m3u8
+
+# Cloudflare Worker build output
+.wrangler/
+
+# Planning & working documents (local only)
+TODO.md
+DONE.md
+FEEDBACK.md
+NEXT.md
+TRACKING.md
+PLAN.md
