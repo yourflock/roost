@@ -1,25 +1,55 @@
 # Roost
 
-Managed IPTV backend service for Owl.
+Universal media backend for Owl. Open source (MIT).
 
-Roost is the community addon service for Owl — licensed live TV channels delivered through your Owl app. Subscribers get an API token, enter it in Owl's settings, and licensed channels appear automatically.
+Roost runs on your NAS, VPS, or any Linux server and serves all your media through Owl clients. It handles scanning, metadata, transcoding, live TV ingest, EPG, and streaming. Owl connects to it and presents a unified library across all platforms.
 
-## How It Works
+## What Roost Serves
 
-1. Subscribe at [roost.yourflock.com](https://roost.yourflock.com)
-2. Get your API token
-3. Open Owl, go to Settings > Community Addons, enter your token
-4. Licensed live TV channels appear in your library
+- Movies and TV (local files, TMDB metadata)
+- Live TV and IPTV (M3U, Xtream Codes, Stalker Portal, HDHomeRun, AntBox USB tuners)
+- Music (local FLAC/MP3/AAC, MusicBrainz, Last.fm, AcoustID)
+- Podcasts (RSS, iTunes, Podcast Index)
+- Games and emulation (ROMs, LibRetro cores, IGDB metadata, cloud saves)
+- Live sports (EPG matching, auto-DVR, commercial detection)
+
+## Two Modes
+
+### Private mode (default)
+
+Personal or family media server. Serves your own files. Connect via LAN IP or DynDNS. No billing, no account required. Optional family sharing via Flock SSO.
+
+### Public mode (`ROOST_MODE=public`)
+
+Turns Roost into a licensed content provider. Adds subscriber management, Stripe billing, CDN relay for source URL obfuscation, and content licensing integration. This is how `roost.yourflock.com` operates.
+
+## Install
+
+### NAS (no terminal required)
+
+- Synology: install the SPK package from Package Center
+- QNAP: install the QPKG from App Center
+- Unraid: find the Roost template in Community Applications
+
+### Docker / VPS
+
+```sh
+docker run -v /your/media:/media roost/roost
+```
+
+### Managed
+
+Subscribe at [roost.yourflock.com](https://roost.yourflock.com). Get an API token. Enter it in Owl under Settings > Community Addons.
 
 ## Structure
 
 ```
 roost/
-├── backend/    # Go microservices + nSelf (stream ingest, billing, Owl addon API)
-├── web/        # SvelteKit subscriber portal + admin panel
+├── backend/    # Go microservices + nSelf (ingest, catalog, billing, Owl addon API)
+├── web/        # SvelteKit (subscriber portal + admin panel)
 └── infra/      # Hetzner + Cloudflare infrastructure config
 ```
 
 ## License
 
-Private — All rights reserved. Copyright 2026 Flock / Aric Camarata.
+MIT — Copyright 2026 Flock / Aric Camarata.

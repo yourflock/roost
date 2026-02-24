@@ -1,0 +1,266 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+
+  # ─────────────────────────────────────────────
+  # Web — subscribe portal
+  # ─────────────────────────────────────────────
+
+  lint-web-subscribe:
+    name: Lint / web/subscribe
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web/subscribe
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: web/subscribe/pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install
+      - name: Lint
+        run: pnpm lint
+
+  lint-web-admin:
+    name: Lint / web/admin
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web/admin
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: web/admin/pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install
+      - name: Lint
+        run: pnpm lint
+
+  typecheck-web-subscribe:
+    name: Typecheck / web/subscribe
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web/subscribe
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: web/subscribe/pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install
+      - name: Typecheck
+        run: pnpm typecheck
+
+  typecheck-web-admin:
+    name: Typecheck / web/admin
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web/admin
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: web/admin/pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install
+      - name: Typecheck
+        run: pnpm typecheck
+
+  test-web-subscribe:
+    name: Test / web/subscribe
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web/subscribe
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: web/subscribe/pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install
+      - name: Test with coverage
+        run: pnpm test:coverage
+      - name: Upload coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-web-subscribe
+          path: web/subscribe/coverage/
+          retention-days: 7
+
+  test-web-admin:
+    name: Test / web/admin
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web/admin
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: web/admin/pnpm-lock.yaml
+      - name: Install dependencies
+        run: pnpm install
+      - name: Test with coverage
+        run: pnpm test:coverage
+      - name: Upload coverage
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-web-admin
+          path: web/admin/coverage/
+          retention-days: 7
+
+  # ─────────────────────────────────────────────
+  # Go backend
+  # ─────────────────────────────────────────────
+
+  test-go-backend:
+    name: Test / Go backend
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+          cache-dependency-path: backend/go.sum
+      - name: Run tests
+        run: go test ./...
+
+  # ─────────────────────────────────────────────
+  # Database migrations
+  # ─────────────────────────────────────────────
+
+  migration-check:
+    name: Migration check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify every .up.sql has a matching .down.sql
+        shell: bash
+        run: |
+          set -euo pipefail
+          MIGRATIONS_DIR="backend/db/migrations"
+
+          if [ ! -d "$MIGRATIONS_DIR" ]; then
+            echo "No migrations directory found at $MIGRATIONS_DIR — skipping."
+            exit 0
+          fi
+
+          MISSING=0
+          while IFS= read -r up_file; do
+            down_file="${up_file%.up.sql}.down.sql"
+            if [ ! -f "$down_file" ]; then
+              echo "MISSING down migration for: $up_file"
+              MISSING=$((MISSING + 1))
+            fi
+          done < <(find "$MIGRATIONS_DIR" -name "*.up.sql" | sort)
+
+          if [ "$MISSING" -gt 0 ]; then
+            echo ""
+            echo "ERROR: $MISSING migration(s) are missing a matching .down.sql file."
+            exit 1
+          fi
+
+          COUNT=$(find "$MIGRATIONS_DIR" -name "*.up.sql" | wc -l | tr -d ' ')
+          echo "OK: all $COUNT migration(s) have matching .down.sql files."
+
+  # ─────────────────────────────────────────────
+  # Owl Addon API build check
+  # ─────────────────────────────────────────────
+
+  addon-api-check:
+    name: Build check / owl_api service
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend/services/owl_api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+          cache-dependency-path: backend/go.sum
+      - name: Build owl_api
+        run: go build ./...
+
+  # ─────────────────────────────────────────────
+  # Summary gate — all jobs must pass
+  # ─────────────────────────────────────────────
+
+  all-checks-pass:
+    name: All checks pass
+    runs-on: ubuntu-latest
+    if: always()
+    needs:
+      - lint-web-subscribe
+      - lint-web-admin
+      - typecheck-web-subscribe
+      - typecheck-web-admin
+      - test-web-subscribe
+      - test-web-admin
+      - test-go-backend
+      - migration-check
+      - addon-api-check
+    steps:
+      - name: Check all jobs succeeded
+        shell: bash
+        run: |
+          results='${{ toJSON(needs) }}'
+          echo "$results" | python3 -c "
+          import sys, json
+          needs = json.load(sys.stdin)
+          failed = [name for name, job in needs.items() if job['result'] not in ('success', 'skipped')]
+          if failed:
+              print('FAILED jobs:', ', '.join(failed))
+              sys.exit(1)
+          print('All checks passed.')
+          "

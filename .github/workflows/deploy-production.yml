@@ -1,0 +1,205 @@
+name: Deploy — Production
+
+on:
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Git tag to deploy (e.g. v1.2.3)'
+        required: true
+        type: string
+      confirm:
+        description: 'Type DEPLOY to confirm production deployment'
+        required: true
+        type: string
+
+jobs:
+
+  # ─────────────────────────────────────────────
+  # 1. Validate inputs and tag
+  # ─────────────────────────────────────────────
+
+  validate:
+    name: Validate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Require confirmation
+        shell: bash
+        run: |
+          if [ "${{ github.event.inputs.confirm }}" != "DEPLOY" ]; then
+            echo "ERROR: confirm input must be exactly 'DEPLOY'. Got: '${{ github.event.inputs.confirm }}'"
+            exit 1
+          fi
+          echo "Confirmation accepted."
+
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          fetch-tags: true
+
+      - name: Verify tag exists
+        shell: bash
+        run: |
+          VERSION="${{ github.event.inputs.version }}"
+          if ! git rev-parse "refs/tags/${VERSION}" >/dev/null 2>&1; then
+            echo "ERROR: Tag '${VERSION}' does not exist in this repository."
+            git tag --sort=-version:refname | head -10 | sed 's/^/  /'
+            exit 1
+          fi
+          echo "Tag '${VERSION}' found: $(git rev-list -n1 refs/tags/${VERSION})"
+
+  # ─────────────────────────────────────────────
+  # 2. Deploy backend via SSH
+  # ─────────────────────────────────────────────
+
+  deploy-backend:
+    name: Deploy backend
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - name: Deploy to production server
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ vars.ROOST_PRODUCTION_HOST }}
+          username: ${{ secrets.PRODUCTION_SSH_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            set -euo pipefail
+            cd /opt/roost
+            git fetch --tags
+            git checkout ${{ github.event.inputs.version }}
+            cd backend
+            nself build
+            nself restart
+            nself health
+
+  # ─────────────────────────────────────────────
+  # 3. Build and deploy web apps to Vercel
+  # ─────────────────────────────────────────────
+
+  deploy-web:
+    name: Deploy web
+    runs-on: ubuntu-latest
+    needs: validate
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.version }}
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Install and build web/subscribe
+        working-directory: web/subscribe
+        env:
+          PUBLIC_API_URL: ${{ secrets.ROOST_API_URL }}
+        run: |
+          pnpm install
+          pnpm build
+
+      - name: Install and build web/admin
+        working-directory: web/admin
+        env:
+          PUBLIC_API_URL: ${{ secrets.ROOST_API_URL }}
+        run: |
+          pnpm install
+          pnpm build
+
+      - name: Deploy web/subscribe to Vercel
+        working-directory: web/subscribe
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_TEAM_ID: ${{ secrets.VERCEL_TEAM_ID }}
+        run: |
+          pnpm exec vercel deploy --prebuilt --prod \
+            --token "$VERCEL_TOKEN" \
+            --scope "$VERCEL_TEAM_ID"
+
+      - name: Deploy web/admin to Vercel
+        working-directory: web/admin
+        env:
+          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
+          VERCEL_TEAM_ID: ${{ secrets.VERCEL_TEAM_ID }}
+        run: |
+          pnpm exec vercel deploy --prebuilt --prod \
+            --token "$VERCEL_TOKEN" \
+            --scope "$VERCEL_TEAM_ID"
+
+  # ─────────────────────────────────────────────
+  # 4. Post-deploy health check
+  # ─────────────────────────────────────────────
+
+  verify:
+    name: Verify
+    runs-on: ubuntu-latest
+    needs:
+      - deploy-backend
+      - deploy-web
+    steps:
+      - name: Health check — roost.yourflock.org
+        shell: bash
+        run: |
+          set -euo pipefail
+          MAX_ATTEMPTS=12
+          SLEEP_SECONDS=10
+          URL="https://roost.yourflock.org/health"
+
+          for attempt in $(seq 1 $MAX_ATTEMPTS); do
+            echo "Attempt $attempt/$MAX_ATTEMPTS — GET $URL"
+            HTTP_STATUS=$(curl --silent --output /dev/null --write-out "%{http_code}" \
+              --max-time 15 "$URL" || echo "000")
+
+            if [ "$HTTP_STATUS" = "200" ]; then
+              echo "Health check passed (HTTP $HTTP_STATUS)."
+              exit 0
+            fi
+
+            echo "  Got HTTP $HTTP_STATUS — waiting ${SLEEP_SECONDS}s before retry."
+            sleep $SLEEP_SECONDS
+          done
+
+          echo "ERROR: Health check failed after $MAX_ATTEMPTS attempts."
+          exit 1
+
+  # ─────────────────────────────────────────────
+  # 5. Rollback on verify failure
+  # ─────────────────────────────────────────────
+
+  rollback:
+    name: Rollback
+    runs-on: ubuntu-latest
+    needs: verify
+    if: failure()
+    steps:
+      - name: Determine previous tag and roll back
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ vars.ROOST_PRODUCTION_HOST }}
+          username: ${{ secrets.PRODUCTION_SSH_USER }}
+          key: ${{ secrets.DEPLOY_SSH_KEY }}
+          script: |
+            set -euo pipefail
+            cd /opt/roost
+            git fetch --tags
+
+            CURRENT_TAG="${{ github.event.inputs.version }}"
+            PREVIOUS_TAG=$(git tag --sort=-version:refname \
+              | grep -v "^${CURRENT_TAG}$" \
+              | head -1)
+
+            if [ -z "$PREVIOUS_TAG" ]; then
+              echo "ERROR: No previous tag found to roll back to."
+              exit 1
+            fi
+
+            echo "Rolling back from ${CURRENT_TAG} to ${PREVIOUS_TAG}."
+            git checkout "$PREVIOUS_TAG"
+            cd backend
+            nself build
+            nself restart
+            nself health
+            echo "Rollback to ${PREVIOUS_TAG} complete."

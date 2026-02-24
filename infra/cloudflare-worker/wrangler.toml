@@ -1,0 +1,11 @@
+name = "roost-stream-relay"
+main = "worker.js"
+compatibility_date = "2024-01-01"
+account_id = "29537f934ea5d6cb4111472ff8728f91"
+
+[vars]
+ROOST_BACKEND_URL = "https://roost.yourflock.org"
+
+[[routes]]
+pattern = "stream.yourflock.org/*"
+zone_name = "yourflock.org"
