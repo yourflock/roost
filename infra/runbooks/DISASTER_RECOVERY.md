@@ -34,7 +34,7 @@ roost-prod (Hetzner CX23, fsn1, 167.235.195.186)
 │   └── cloudflared    (Cloudflare tunnel)
 │
 Cloudflare (CDN + Tunnel)
-├── roost.yourflock.com → roost-prod tunnel
+├── roost.yourflock.org → roost-prod tunnel
 ├── R2: roost-streams (live HLS segments)
 ├── R2: roost-vod (VOD files)
 └── R2: roost-backups (DB backups)
@@ -164,7 +164,7 @@ See Runbook 3 (Database Failure) in INCIDENT_RESPONSE.md for step-by-step recove
 ```bash
 # Ensure Hetzner IP is reachable directly (firewall allows 443)
 # Add backup DNS records:
-# roost-backup.yourflock.com → 167.235.195.186 (direct Hetzner IP)
+# roost-backup.yourflock.org → 167.235.195.186 (direct Hetzner IP)
 # This is communicated to subscribers via status page during Cloudflare outages.
 ```
 

@@ -13,7 +13,7 @@ groups:
         annotations:
           summary: "Roost service {{ $labels.job }} is down"
           description: "Service {{ $labels.job }} has been unreachable for 2+ minutes."
-          runbook: "https://docs.yourflock.com/roost/runbooks/service-down"
+          runbook: "https://docs.yourflock.org/roost/runbooks/service-down"
 
       - alert: HighStreamErrorRate
         expr: |

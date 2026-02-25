@@ -110,11 +110,11 @@ func TestCORSAllowedOrigins(t *testing.T) {
 		origin  string
 		allowed bool
 	}{
-		{"https://owl.yourflock.com", true},
+		{"https://owl.yourflock.org", true},
 		{"http://localhost:3000", true},
 		{"http://localhost:5173", true},
 		{"https://evil.com", false},
-		{"https://notyourflock.com", false},
+		{"https://notyourflock.org", false},
 	}
 
 	for _, tc := range cases {
@@ -173,7 +173,7 @@ func tokenCheckMiddleware(next http.Handler) http.Handler {
 
 func isAllowedOrigin(origin string) bool {
 	allowed := []string{
-		"https://owl.yourflock.com",
+		"https://owl.yourflock.org",
 		"http://localhost",
 		"http://localhost:3000",
 		"http://localhost:5173",

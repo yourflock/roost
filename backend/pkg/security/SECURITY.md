@@ -35,7 +35,7 @@
 
 ### A05 — Security Misconfiguration ✅
 - `SecurityHeaders` middleware: X-Frame-Options, X-Content-Type-Options, CSP, Referrer-Policy
-- CORS: restricted to known origins (`yourflock.com`, `owl.yourflock.com`)
+- CORS: restricted to known origins (`yourflock.org`, `owl.yourflock.org`)
 - Debug endpoints disabled in production (`LOG_LEVEL` ≠ debug)
 - Nginx config: `server_tokens off`, `ssl_protocols TLSv1.2 TLSv1.3`
 - Docker: non-root user in all service containers
@@ -109,4 +109,4 @@ cd web/subscribe && pnpm audit
 
 ## Security Contacts
 
-Report vulnerabilities to: security@yourflock.com (TBD — set up before public launch)
+Report vulnerabilities to: security@yourflock.org (TBD — set up before public launch)

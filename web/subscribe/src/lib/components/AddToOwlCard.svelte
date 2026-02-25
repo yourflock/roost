@@ -1,6 +1,6 @@
 <script lang="ts">
 	export let token: string | null = null;
-	export let domain: string = 'roost.yourflock.com';
+	export let domain: string = 'roost.yourflock.org';
 
 	let copiedM3U = false;
 	let showQR = false;

@@ -148,7 +148,7 @@ func validateSessionToken(ctx context.Context, db *sql.DB, r *http.Request) (str
 
 func signedStreamURL(vodID string) (string, time.Time) {
 	secret := getEnv("STREAM_HMAC_SECRET", "dev-secret-change-in-production")
-	baseURL := getEnv("RELAY_BASE_URL", "https://stream.yourflock.com")
+	baseURL := getEnv("RELAY_BASE_URL", "https://stream.yourflock.org")
 	expiry := time.Now().UTC().Add(15 * time.Minute)
 	exp := strconv.FormatInt(expiry.Unix(), 10)
 	msg := vodID + ":" + exp

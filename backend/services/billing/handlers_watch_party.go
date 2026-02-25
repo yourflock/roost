@@ -495,7 +495,7 @@ func watchPartyStreamURL(channelSlug string) (string, time.Time) {
 		expires := time.Now().UTC().Add(15 * time.Minute)
 		return "", expires
 	}
-	baseURL := getEnv("RELAY_BASE_URL", "https://cdn.roost.yourflock.com")
+	baseURL := getEnv("RELAY_BASE_URL", "https://cdn.roost.yourflock.org")
 	expiresAt := time.Now().UTC().Add(15 * time.Minute)
 	url := fmt.Sprintf("%s/hls/%s/playlist.m3u8?expires=%d", baseURL, channelSlug, expiresAt.Unix())
 	return url, expiresAt

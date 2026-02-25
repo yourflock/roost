@@ -173,7 +173,7 @@ func planLimits(plan string) (int, []string) {
 // signedStreamURL generates a Cloudflare-compatible signed HLS URL.
 // For local dev (no CF_SIGNING_KEY), returns a relay URL stub.
 func signedStreamURL(channelSlug string) (string, time.Time) {
-	baseURL := getEnv("RELAY_BASE_URL", "https://cdn.roost.yourflock.com")
+	baseURL := getEnv("RELAY_BASE_URL", "https://cdn.roost.yourflock.org")
 	expiresAt := time.Now().UTC().Add(15 * time.Minute)
 
 	signingKey := os.Getenv("CF_STREAM_SIGNING_KEY")
@@ -633,7 +633,7 @@ func (s *server) handleManifest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	baseURL := getEnv("ROOST_BASE_URL", "https://roost.yourflock.com")
+	baseURL := getEnv("ROOST_BASE_URL", "https://roost.yourflock.org")
 
 	manifest := map[string]interface{}{
 		"name":        "Roost",
@@ -708,7 +708,7 @@ func (s *server) handleAuth(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusUnauthorized, map[string]interface{}{
 			"valid":   false,
 			"error":   "invalid_token",
-			"message": "Token not found or expired. Visit roost.yourflock.com to manage your subscription.",
+			"message": "Token not found or expired. Visit roost.yourflock.org to manage your subscription.",
 		})
 		return
 	}
@@ -722,8 +722,8 @@ func (s *server) handleAuth(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusPaymentRequired, map[string]interface{}{
 			"valid":       false,
 			"error":       "subscription_inactive",
-			"message":     "Your Roost subscription is inactive. Visit roost.yourflock.com/billing to renew.",
-			"billing_url": getEnv("ROOST_BASE_URL", "https://roost.yourflock.com") + "/billing",
+			"message":     "Your Roost subscription is inactive. Visit roost.yourflock.org/billing to renew.",
+			"billing_url": getEnv("ROOST_BASE_URL", "https://roost.yourflock.org") + "/billing",
 		})
 		return
 	}
@@ -854,7 +854,7 @@ func (s *server) handleLive(w http.ResponseWriter, r *http.Request) {
 		CurrentProgram *currentProgram `json:"current_program,omitempty"`
 	}
 
-	baseURL := getEnv("ROOST_BASE_URL", "https://roost.yourflock.com")
+	baseURL := getEnv("ROOST_BASE_URL", "https://roost.yourflock.org")
 	var channels []channel
 	total := 0
 
@@ -1464,7 +1464,7 @@ func (s *server) handleCatchup(w http.ResponseWriter, r *http.Request) {
 		Category    string `json:"category,omitempty"`
 		StreamURL   string `json:"stream_url"`
 	}
-	catchupBase := getEnv("ROOST_BASE_URL", "https://roost.yourflock.com")
+	catchupBase := getEnv("ROOST_BASE_URL", "https://roost.yourflock.org")
 	var entries []catchupEntry
 	for rows.Next() {
 		var e catchupEntry

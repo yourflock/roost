@@ -1,7 +1,7 @@
 -- 011_founding_family_trigger.sql
 -- P3-T12: Founding Family Tier & Lock-in Pricing
 --
--- Creates a DB trigger: when camarata@yourflock.com registers,
+-- Creates a DB trigger: when camarata@yourflock.org registers,
 -- automatically mark them billing_exempt=true and assign the 'founding' plan.
 -- This ensures they NEVER get charged regardless of code path.
 --
@@ -17,7 +17,7 @@ DECLARE
     founding_plan_id UUID;
 BEGIN
     -- Only applies to the founding family email
-    IF LOWER(NEW.email) = 'camarata@yourflock.com' THEN
+    IF LOWER(NEW.email) = 'camarata@yourflock.org' THEN
         NEW.billing_exempt := true;
         RAISE NOTICE 'Founding tier applied to %', NEW.email;
 

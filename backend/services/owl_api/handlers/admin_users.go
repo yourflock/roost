@@ -212,7 +212,7 @@ func sendFlockNotification(roostID, toUserID, fromUserID, notifType string) {
 	defer cancel()
 
 	req, err := http.NewRequestWithContext(ctx, "POST",
-		"https://api.yourflock.com/internal/notify", bytes.NewReader(body))
+		"https://api.yourflock.org/internal/notify", bytes.NewReader(body))
 	if err != nil {
 		slog.Warn("flock notify: failed to build request", "err", err)
 		return

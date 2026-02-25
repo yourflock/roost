@@ -2,7 +2,7 @@
 
 **Last updated**: 2026-02-24
 **Version**: 1.0
-**On-call contact**: admin@yourflock.com
+**On-call contact**: admin@yourflock.org
 
 This runbook covers common Roost production incidents. Follow the steps in order.
 Always update the incident Slack/Discord channel with your actions.
@@ -56,11 +56,11 @@ cloudflared tunnel info roost-prod
 ```bash
 # Check current CDN health via admin API
 curl -s -H "Authorization: Bearer $ADMIN_TOKEN" \
-  https://roost.yourflock.com/admin/cdn/health | jq .
+  https://roost.yourflock.org/admin/cdn/health | jq .
 
 # Manual CDN failover if Cloudflare is the issue
 curl -s -X POST -H "Authorization: Bearer $ADMIN_TOKEN" \
-  https://roost.yourflock.com/admin/cdn/failover | jq .
+  https://roost.yourflock.org/admin/cdn/failover | jq .
 ```
 
 ### Step 4: Check Origin Server (Hetzner VPS)

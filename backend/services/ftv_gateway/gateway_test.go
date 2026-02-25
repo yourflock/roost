@@ -47,7 +47,7 @@ func TestCheckAndQueue_NoDB_ReturnsQueued(t *testing.T) {
 
 func TestGenerateStreamSignedURL_Structure(t *testing.T) {
 	url := generateStreamSignedURL(
-		"https://stream.yourflock.com",
+		"https://stream.yourflock.org",
 		"test-secret-key",
 		"movie/imdb:tt0111161/1080p/manifest.m3u8",
 		15*time.Minute,
@@ -62,8 +62,8 @@ func TestGenerateStreamSignedURL_Structure(t *testing.T) {
 
 func TestGenerateStreamSignedURL_DifferentKeys(t *testing.T) {
 	path := "movie/imdb:tt0111161/1080p/manifest.m3u8"
-	url1 := generateStreamSignedURL("https://stream.yourflock.com", "key-A", path, 15*time.Minute)
-	url2 := generateStreamSignedURL("https://stream.yourflock.com", "key-B", path, 15*time.Minute)
+	url1 := generateStreamSignedURL("https://stream.yourflock.org", "key-A", path, 15*time.Minute)
+	url2 := generateStreamSignedURL("https://stream.yourflock.org", "key-B", path, 15*time.Minute)
 	if url1 == url2 {
 		t.Error("different signing keys must produce different URLs")
 	}

@@ -29,7 +29,7 @@ func RequirePublicMode(isPublicMode func() bool, next http.Handler) http.Handler
 			json.NewEncoder(w).Encode(map[string]string{
 				"error": "this endpoint requires public mode",
 				"mode":  "private",
-				"docs":  "https://docs.yourflock.com/roost/public-mode",
+				"docs":  "https://docs.yourflock.org/roost/public-mode",
 			})
 			return
 		}

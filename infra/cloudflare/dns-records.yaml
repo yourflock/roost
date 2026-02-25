@@ -1,12 +1,12 @@
-# DNS Records — Roost (yourflock.com)
+# DNS Records — Roost (yourflock.org)
 #
 # ALL stream and API records use Cloudflare proxying (orange-cloud, proxied: true).
 # This means Cloudflare IP ranges appear in DNS, not the Hetzner origin IP.
 # The Hetzner IP (167.235.195.186) MUST NEVER appear in any DNS record.
 #
 # Verification:
-#   dig roost.yourflock.com → Cloudflare IP (104.x.x.x or 172.x.x.x)
-#   dig stream.yourflock.com → Cloudflare IP
+#   dig roost.yourflock.org → Cloudflare IP (104.x.x.x or 172.x.x.x)
+#   dig stream.yourflock.org → Cloudflare IP
 #   nslookup 167.235.195.186 → should return nothing useful (reverse DNS not set)
 #
 # These records are managed via Cloudflare API (Terraform or manual dashboard).
@@ -58,7 +58,7 @@ records:
 
 # ---- Records explicitly NOT created ----------------------------------------
 #
-# These records must NEVER exist in yourflock.com DNS:
+# These records must NEVER exist in yourflock.org DNS:
 #
 #   A roost-origin 167.235.195.186    ← FORBIDDEN: exposes Hetzner IP
 #   A relay-origin 167.235.195.186    ← FORBIDDEN
@@ -70,11 +70,11 @@ records:
 # ---- Verification commands --------------------------------------------------
 # Run after any DNS change to confirm origin obfuscation is intact:
 #
-#   dig +short stream.yourflock.com
+#   dig +short stream.yourflock.org
 #   # Expected: Cloudflare IPs (104.x.x.x or similar) — NEVER 167.235.195.186
 #
-#   curl -sI https://stream.yourflock.com/health | grep -i server
+#   curl -sI https://stream.yourflock.org/health | grep -i server
 #   # Expected: "cloudflare" — NEVER "nginx" or "hetzner"
 #
-#   curl -sI https://roost.yourflock.com | grep -i "server\|via\|x-powered"
+#   curl -sI https://roost.yourflock.org | grep -i "server\|via\|x-powered"
 #   # Expected: no output (all origin headers stripped by Worker/CF)

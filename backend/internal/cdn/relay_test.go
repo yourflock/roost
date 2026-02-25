@@ -16,7 +16,7 @@ const testSecret = "super-secret-hmac-key-at-least-32-bytes-long"
 
 func TestSignURL_RoundTrip(t *testing.T) {
 	// Sign a URL and immediately validate the signature — must succeed.
-	signed, err := cdn.SignURL("https://stream.yourflock.com", testSecret, "/stream/bbc-one/seg001.ts", time.Now().Add(15*time.Minute).Unix())
+	signed, err := cdn.SignURL("https://stream.yourflock.org", testSecret, "/stream/bbc-one/seg001.ts", time.Now().Add(15*time.Minute).Unix())
 	if err != nil {
 		t.Fatalf("SignURL failed: %v", err)
 	}
@@ -51,7 +51,7 @@ func TestSignURL_RoundTrip(t *testing.T) {
 func TestValidateSignature_ExpiredToken(t *testing.T) {
 	// A URL that expired 1 second ago must be rejected.
 	pastExpiry := time.Now().Add(-time.Second).Unix()
-	signed, err := cdn.SignURL("https://stream.yourflock.com", testSecret, "/stream/ch1/seg.ts", pastExpiry)
+	signed, err := cdn.SignURL("https://stream.yourflock.org", testSecret, "/stream/ch1/seg.ts", pastExpiry)
 	if err != nil {
 		t.Fatalf("SignURL failed: %v", err)
 	}
@@ -113,7 +113,7 @@ func TestValidateSignature_EmptyInputs(t *testing.T) {
 
 func TestSignURL_TrailingSlashInBase(t *testing.T) {
 	// Trailing slash on base URL must not produce double-slash in output.
-	signed, err := cdn.SignURL("https://cdn.yourflock.com/", testSecret, "/stream/ch/seg.ts", time.Now().Add(time.Minute).Unix())
+	signed, err := cdn.SignURL("https://cdn.yourflock.org/", testSecret, "/stream/ch/seg.ts", time.Now().Add(time.Minute).Unix())
 	if err != nil {
 		t.Fatalf("SignURL failed: %v", err)
 	}
@@ -124,7 +124,7 @@ func TestSignURL_TrailingSlashInBase(t *testing.T) {
 
 func TestSignStreamURL_DefaultTTL(t *testing.T) {
 	// SignStreamURL is a convenience wrapper — verify it produces a valid signed URL.
-	signed, err := cdn.SignStreamURL("https://stream.yourflock.com", testSecret, "bbc-one", "seg001.ts")
+	signed, err := cdn.SignStreamURL("https://stream.yourflock.org", testSecret, "bbc-one", "seg001.ts")
 	if err != nil {
 		t.Fatalf("SignStreamURL failed: %v", err)
 	}
@@ -148,14 +148,14 @@ func TestSignStreamURL_DefaultTTL(t *testing.T) {
 }
 
 func TestSignURL_EmptySecret(t *testing.T) {
-	_, err := cdn.SignURL("https://stream.yourflock.com", "", "/stream/ch/seg.ts", time.Now().Add(time.Minute).Unix())
+	_, err := cdn.SignURL("https://stream.yourflock.org", "", "/stream/ch/seg.ts", time.Now().Add(time.Minute).Unix())
 	if err == nil {
 		t.Error("expected error for empty secret")
 	}
 }
 
 func TestSignURL_EmptyPath(t *testing.T) {
-	_, err := cdn.SignURL("https://stream.yourflock.com", testSecret, "", time.Now().Add(time.Minute).Unix())
+	_, err := cdn.SignURL("https://stream.yourflock.org", testSecret, "", time.Now().Add(time.Minute).Unix())
 	if err == nil {
 		t.Error("expected error for empty path")
 	}
@@ -165,7 +165,7 @@ func TestSignURL_EmptyPath(t *testing.T) {
 
 func signAndExtract(t *testing.T, secret, path string, expiresAt int64) (string, string) {
 	t.Helper()
-	signed, err := cdn.SignURL("https://stream.yourflock.com", secret, path, expiresAt)
+	signed, err := cdn.SignURL("https://stream.yourflock.org", secret, path, expiresAt)
 	if err != nil {
 		t.Fatalf("SignURL failed: %v", err)
 	}

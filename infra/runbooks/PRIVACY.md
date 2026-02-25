@@ -196,7 +196,7 @@ All `has_*` fields should be `false`. Only safe fields should appear.
 
 ```bash
 # Make a stream request and inspect all response headers
-curl -sI "https://stream.yourflock.com/hls/test.m3u8?token=TEST_TOKEN" | \
+curl -sI "https://stream.yourflock.org/hls/test.m3u8?token=TEST_TOKEN" | \
   grep -i "server\|via\|x-powered\|hetzner\|origin\|backend"
 # Expected: no output (all such headers are stripped by the Worker)
 ```
@@ -204,10 +204,10 @@ curl -sI "https://stream.yourflock.com/hls/test.m3u8?token=TEST_TOKEN" | \
 ### Verify HLS manifest URLs are rewritten
 
 ```bash
-# Request a manifest and confirm all URLs point to stream.yourflock.com
-curl -s "https://stream.yourflock.com/hls/ch001/stream.m3u8?token=$TOKEN" | \
+# Request a manifest and confirm all URLs point to stream.yourflock.org
+curl -s "https://stream.yourflock.org/hls/ch001/stream.m3u8?token=$TOKEN" | \
   grep -v "^#" | head -20
-# All segment URLs should start with https://stream.yourflock.com/
+# All segment URLs should start with https://stream.yourflock.org/
 # NO URLs should contain "hetzner", "relay", ".de", "49.12.", "167.235."
 ```
 
@@ -215,7 +215,7 @@ curl -s "https://stream.yourflock.com/hls/ch001/stream.m3u8?token=$TOKEN" | \
 
 ```bash
 curl -sI -H "Origin: https://malicious.example.com" \
-  "https://stream.yourflock.com/hls/test.m3u8?token=$TOKEN" | \
+  "https://stream.yourflock.org/hls/test.m3u8?token=$TOKEN" | \
   grep "Access-Control"
 # Expected: no Access-Control-Allow-Origin header (origin rejected)
 ```
@@ -226,12 +226,12 @@ curl -sI -H "Origin: https://malicious.example.com" \
 # Send 35 rapid manifest requests (limit: 30/min)
 for i in $(seq 1 35); do
   curl -s -o /dev/null -w "%{http_code}\n" \
-    "https://stream.yourflock.com/hls/test.m3u8?token=$TOKEN"
+    "https://stream.yourflock.org/hls/test.m3u8?token=$TOKEN"
 done
 # First 30: 200 or 401
 # Last 5: 429
 # Verify 429 body contains no subscriber_id, ip, or token:
-curl -s "https://stream.yourflock.com/hls/test.m3u8?token=$TOKEN" | jq .
+curl -s "https://stream.yourflock.org/hls/test.m3u8?token=$TOKEN" | jq .
 # Expected: {"error":"rate_limit_exceeded","message":"Too many requests..."}
 ```
 

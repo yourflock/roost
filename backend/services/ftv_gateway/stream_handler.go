@@ -65,7 +65,7 @@ func (g *StreamGateway) HandleStreamGet(w http.ResponseWriter, r *http.Request) 
 
 	if g.centralDB == nil {
 		// Dev mode: no central DB. Return a structurally valid signed URL with real UUIDs.
-		cdnBase := getGatewayEnv("CDN_RELAY_URL", "https://stream.yourflock.com")
+		cdnBase := getGatewayEnv("CDN_RELAY_URL", "https://stream.yourflock.org")
 		signingKey := os.Getenv("CF_STREAM_SIGNING_KEY")
 		if signingKey == "" {
 			writeGatewayError(w, http.StatusServiceUnavailable, "config_error", "CF_STREAM_SIGNING_KEY not set")
@@ -118,7 +118,7 @@ func (g *StreamGateway) HandleStreamGet(w http.ResponseWriter, r *http.Request) 
 	}
 
 	// Generate signed URL.
-	cdnBase := getGatewayEnv("CDN_RELAY_URL", "https://stream.yourflock.com")
+	cdnBase := getGatewayEnv("CDN_RELAY_URL", "https://stream.yourflock.org")
 	signingKey := os.Getenv("CF_STREAM_SIGNING_KEY")
 	if signingKey == "" {
 		writeGatewayError(w, http.StatusServiceUnavailable, "config_error", "CF_STREAM_SIGNING_KEY not set")

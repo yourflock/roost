@@ -103,7 +103,7 @@ func (s *Server) handleStreamRequest(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	cdnBase := getEnv("CDN_RELAY_URL", "https://stream.yourflock.com")
+	cdnBase := getEnv("CDN_RELAY_URL", "https://stream.yourflock.org")
 	hmacSecret := os.Getenv("CDN_HMAC_SECRET")
 	if hmacSecret == "" {
 		s.logger.Error("CDN_HMAC_SECRET is not set — stream signing unavailable")

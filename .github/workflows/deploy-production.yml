@@ -196,7 +196,7 @@ jobs:
       - name: Install and build web/subscribe
         working-directory: web/subscribe
         env:
-          PUBLIC_API_URL: https://roost.yourflock.com
+          PUBLIC_API_URL: https://roost.yourflock.org
           PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY }}
         run: |
           pnpm install
@@ -205,7 +205,7 @@ jobs:
       - name: Install and build web/admin
         working-directory: web/admin
         env:
-          PUBLIC_API_URL: https://roost.yourflock.com
+          PUBLIC_API_URL: https://roost.yourflock.org
         run: |
           pnpm install
           pnpm build
@@ -241,13 +241,13 @@ jobs:
       - deploy-backend
       - deploy-web
     steps:
-      - name: Health check — roost.yourflock.com
+      - name: Health check — roost.yourflock.org
         shell: bash
         run: |
           set -euo pipefail
           MAX_ATTEMPTS=12
           SLEEP_SECONDS=10
-          URL="https://roost.yourflock.com/health"
+          URL="https://roost.yourflock.org/health"
 
           for attempt in $(seq 1 $MAX_ATTEMPTS); do
             echo "Attempt $attempt/$MAX_ATTEMPTS — GET $URL"
@@ -270,7 +270,7 @@ jobs:
         shell: bash
         run: |
           HTTP_STATUS=$(curl --silent --output /dev/null --write-out "%{http_code}" \
-            --max-time 15 "https://roost.yourflock.com/owl/manifest.json" || echo "000")
+            --max-time 15 "https://roost.yourflock.org/owl/manifest.json" || echo "000")
           if [ "$HTTP_STATUS" = "200" ]; then
             echo "Owl addon API manifest accessible (HTTP $HTTP_STATUS)."
           else

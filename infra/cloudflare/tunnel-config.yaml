@@ -30,10 +30,10 @@ logfile: ""
 
 ingress:
   # ---- Stream delivery -------------------------------------------------------
-  # stream.yourflock.com — Cloudflare Worker sits in front of this.
+  # stream.yourflock.org — Cloudflare Worker sits in front of this.
   # The Worker validates tokens, rewrites manifest URLs, and enforces rate limits.
   # This Tunnel ingress handles the Worker → origin leg (internal only).
-  - hostname: stream.yourflock.com
+  - hostname: stream.yourflock.org
     service: http://relay:8090
     originRequest:
       connectTimeout: 5s
@@ -46,17 +46,17 @@ ingress:
       noHappyEyeballs: false
 
   # ---- API / subscriber portal -----------------------------------------------
-  # roost.yourflock.com — subscriber portal, billing, addon API.
-  - hostname: roost.yourflock.com
+  # roost.yourflock.org — subscriber portal, billing, addon API.
+  - hostname: roost.yourflock.org
     service: http://nginx:80
     originRequest:
       connectTimeout: 10s
       noTLSVerify: true
 
   # ---- Admin panel -----------------------------------------------------------
-  # admin.roost.yourflock.com — internal admin UI.
+  # admin.roost.yourflock.org — internal admin UI.
   # Protected separately by Cloudflare Access (Zero Trust policy).
-  - hostname: admin.roost.yourflock.com
+  - hostname: admin.roost.yourflock.org
     service: http://nginx:80
     originRequest:
       connectTimeout: 10s

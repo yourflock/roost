@@ -1,7 +1,7 @@
 {
   "_comment": "Cloudflare Cache Rules for Roost HLS segments — P14-T01",
   "_docs": "Apply these rules via Cloudflare Dashboard > Caching > Cache Rules, or via the Cloudflare API.",
-  "_zone": "yourflock.com",
+  "_zone": "yourflock.org",
   "cache_rules": [
     {
       "name": "Cache HLS segments (.ts files)",

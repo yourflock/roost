@@ -17,15 +17,15 @@ preview_id = "PLACEHOLDER_KV_PREVIEW_RATE_LIMITS"
 
 # Route: all stream traffic through this worker
 [[routes]]
-pattern = "stream.yourflock.com/*"
-zone_name = "yourflock.com"
+pattern = "stream.yourflock.org/*"
+zone_name = "yourflock.org"
 
 # Environment variables
 [vars]
 # Internal origin URL (never exposed to subscribers)
 ROOST_ORIGIN = "http://relay:8090"
 # Roost auth service for token validation
-ROOST_AUTH_URL = "https://roost.yourflock.com"
+ROOST_AUTH_URL = "https://roost.yourflock.org"
 # Environment identifier for health checks
 ENVIRONMENT = "production"
 

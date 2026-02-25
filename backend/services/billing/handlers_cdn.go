@@ -58,8 +58,8 @@ type cdnTrafficSplit struct {
 // ── CDN endpoint configuration ────────────────────────────────────────────────
 
 const (
-	cdnCloudflareEndpoint = "https://cdn.yourflock.com"
-	cdnHetznerEndpoint    = "https://cdn-eu.yourflock.com"
+	cdnCloudflareEndpoint = "https://cdn.yourflock.org"
+	cdnHetznerEndpoint    = "https://cdn-eu.yourflock.org"
 	cdnHealthPath         = "/health" // lightweight health probe path on both CDNs
 	cdnProbeTimeout       = 5 * time.Second
 )

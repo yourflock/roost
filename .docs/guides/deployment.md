@@ -1,7 +1,7 @@
 # Roost — Production Deployment Guide
 
 **Server**: roost-prod (CX23, Hetzner fsn1, 167.235.195.186)
-**Domain**: roost.yourflock.com
+**Domain**: roost.yourflock.org
 **Stack**: Docker Compose + Cloudflare Tunnel (no inbound port exposure)
 
 ---
@@ -17,9 +17,9 @@ Before the first deploy, ensure these are done:
    - Note the Tunnel ID and credentials file path
    - Update `infra/cloudflare/tunnel-config.yml` with your Tunnel ID
 
-2. **DNS records** (Cloudflare dashboard — yourflock.com zone):
-   - `roost.yourflock.com` → CNAME to `<tunnel-id>.cfargotunnel.com` (Proxied)
-   - `relay.roost.yourflock.com` → CNAME to `<tunnel-id>.cfargotunnel.com` (Proxied)
+2. **DNS records** (Cloudflare dashboard — yourflock.org zone):
+   - `roost.yourflock.org` → CNAME to `<tunnel-id>.cfargotunnel.com` (Proxied)
+   - `relay.roost.yourflock.org` → CNAME to `<tunnel-id>.cfargotunnel.com` (Proxied)
 
 3. **R2 buckets** created in Cloudflare dashboard:
    - `roost-streams` (live HLS segments)
@@ -27,7 +27,7 @@ Before the first deploy, ensure these are done:
    - `roost-backups` (database backups)
 
 4. **Stripe** — create products and price IDs, add webhook endpoint:
-   - Webhook URL: `https://roost.yourflock.com/billing/webhook`
+   - Webhook URL: `https://roost.yourflock.org/billing/webhook`
    - Events: `customer.subscription.*`, `invoice.*`, `checkout.session.completed`
 
 5. **GitHub Secrets** set in `yourflock/roost`:
@@ -81,8 +81,8 @@ curl http://localhost:8085/health     # billing
 curl http://localhost:8091/owl/manifest.json  # owl_api
 
 # 9. Once Cloudflare Tunnel is active, verify from outside:
-curl https://roost.yourflock.com/health
-curl https://roost.yourflock.com/owl/manifest.json
+curl https://roost.yourflock.org/health
+curl https://roost.yourflock.org/owl/manifest.json
 ```
 
 ---
@@ -103,7 +103,7 @@ The workflow:
 2. Builds and pushes Docker images to GHCR (parallel, all 6 services)
 3. SSH to server: pulls images, runs new migrations, rolling restart
 4. Deploys web apps to Vercel
-5. Health checks `roost.yourflock.com/health` and `/owl/manifest.json`
+5. Health checks `roost.yourflock.org/health` and `/owl/manifest.json`
 6. Auto-rolls back if health checks fail
 
 ---
@@ -150,7 +150,7 @@ IMAGE_TAG=$VERSION docker compose -f docker-compose.prod.yml up -d \
   billing ingest relay catalog epg owl_api nginx cloudflared
 
 # Verify
-curl https://roost.yourflock.com/health
+curl https://roost.yourflock.org/health
 ```
 
 ---
@@ -178,8 +178,8 @@ curl http://localhost:8091/owl/manifest.json | jq .
 docker compose -f docker-compose.prod.yml logs cloudflared | tail -20
 
 # External health (requires Cloudflare Tunnel to be active)
-curl https://roost.yourflock.com/health
-curl https://roost.yourflock.com/owl/manifest.json | jq .name
+curl https://roost.yourflock.org/health
+curl https://roost.yourflock.org/owl/manifest.json | jq .name
 ```
 
 ---

@@ -22,7 +22,7 @@
   "silent_uninstall": false,
   "silent_upgrade": true,
   "distributor": "yourflock",
-  "distributor_url": "https://yourflock.com",
+  "distributor_url": "https://yourflock.org",
   "maintainer": "yourflock",
   "maintainer_url": "https://github.com/yourflock/roost",
   "price": 0,

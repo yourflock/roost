@@ -8,14 +8,14 @@ credentials-file: /etc/cloudflared/credentials.json
 # Ingress rules: match hostname/path → route to internal service
 ingress:
   # Main Roost application (subscriber portal, APIs, admin)
-  - hostname: roost.yourflock.com
+  - hostname: roost.yourflock.org
     service: http://nginx:80
     originRequest:
       connectTimeout: 10s
       noTLSVerify: true
 
   # Dedicated HLS relay subdomain (stream delivery)
-  - hostname: relay.roost.yourflock.com
+  - hostname: relay.roost.yourflock.org
     service: http://relay:8090
     originRequest:
       connectTimeout: 5s

@@ -321,7 +321,7 @@ func (s *Server) handleGDPRErasure(w http.ResponseWriter, r *http.Request) {
 	`, subscriberID)
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, "deletion_failed",
-			"Failed to delete account. Please contact support@yourflock.com")
+			"Failed to delete account. Please contact support@yourflock.org")
 		return
 	}
 

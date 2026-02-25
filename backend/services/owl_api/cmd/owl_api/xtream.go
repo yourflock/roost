@@ -190,7 +190,7 @@ func (s *server) handlePlayerAPI(w http.ResponseWriter, r *http.Request) {
 
 // xtreamLoginResponse returns the standard Xtream login response shape.
 func (s *server) xtreamLoginResponse(w http.ResponseWriter, r *http.Request, username, password, subscriberID, plan string) {
-	baseURL := getEnv("ROOST_BASE_URL", "https://roost.yourflock.com")
+	baseURL := getEnv("ROOST_BASE_URL", "https://roost.yourflock.org")
 	maxStreams, _ := planLimits(plan)
 	_ = subscriberID // used for future active connections count
 

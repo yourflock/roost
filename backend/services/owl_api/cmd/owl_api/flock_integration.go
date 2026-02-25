@@ -51,7 +51,7 @@ var globalFlockClient *flockClient
 func initFlockClient() {
 	base := os.Getenv("FLOCK_OAUTH_BASE_URL")
 	if base == "" {
-		base = "https://yourflock.com"
+		base = "https://yourflock.org"
 	}
 	globalFlockClient = &flockClient{
 		baseURL:    base,

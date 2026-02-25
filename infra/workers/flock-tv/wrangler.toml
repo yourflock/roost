@@ -27,18 +27,18 @@ bucket_name = "flock-family-private"
 binding = "FLOCK_LIVE"
 bucket_name = "flock-live"
 
-# Routes: stream.yourflock.com serves all three content types.
+# Routes: stream.yourflock.org serves all three content types.
 [[routes]]
-pattern = "stream.yourflock.com/content/*"
-zone_name = "yourflock.com"
+pattern = "stream.yourflock.org/content/*"
+zone_name = "yourflock.org"
 
 [[routes]]
-pattern = "stream.yourflock.com/private/*"
-zone_name = "yourflock.com"
+pattern = "stream.yourflock.org/private/*"
+zone_name = "yourflock.org"
 
 [[routes]]
-pattern = "stream.yourflock.com/live/*"
-zone_name = "yourflock.com"
+pattern = "stream.yourflock.org/live/*"
+zone_name = "yourflock.org"
 
 # FLOCK_JWT_SECRET is set via: wrangler secret put FLOCK_JWT_SECRET
 # Do NOT put secret values in this file.

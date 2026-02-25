@@ -80,7 +80,7 @@
 
 	function avatarUrl(profile: Profile): string {
 		if (profile.avatar_url) return profile.avatar_url;
-		if (profile.avatar_preset) return `https://media.yourflock.com/avatars/presets/${profile.avatar_preset}.png`;
+		if (profile.avatar_preset) return `https://media.yourflock.org/avatars/presets/${profile.avatar_preset}.png`;
 		return '/images/avatar-default.png';
 	}
 
@@ -276,7 +276,7 @@
 									class="sr-only"
 								/>
 								<img
-									src="https://media.yourflock.com/avatars/presets/{preset}.png"
+									src="https://media.yourflock.org/avatars/presets/{preset}.png"
 									alt={preset}
 									class="w-9 h-9 rounded-full object-cover border-2 transition-all {createAvatarPreset === preset ? 'border-roost-500 scale-110' : 'border-transparent hover:border-slate-500'}"
 									on:error={(e) => { (e.target as HTMLImageElement).src='/images/avatar-default.png'; }}
@@ -404,7 +404,7 @@
 									class="sr-only"
 								/>
 								<img
-									src="https://media.yourflock.com/avatars/presets/{preset}.png"
+									src="https://media.yourflock.org/avatars/presets/{preset}.png"
 									alt={preset}
 									class="w-9 h-9 rounded-full object-cover border-2 transition-all {editAvatarPreset === preset ? 'border-roost-500 scale-110' : 'border-transparent hover:border-slate-500'}"
 									on:error={(e) => { (e.target as HTMLImageElement).src='/images/avatar-default.png'; }}

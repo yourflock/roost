@@ -51,8 +51,8 @@ check "auth"      "http://localhost:4000/healthz"
 
 echo ""
 echo "External endpoints (via Cloudflare Tunnel):"
-check "roost.yourflock.com/health"          "https://roost.yourflock.com/health"
-check "roost.yourflock.com/owl/manifest"    "https://roost.yourflock.com/owl/manifest.json"
+check "roost.yourflock.org/health"          "https://roost.yourflock.org/health"
+check "roost.yourflock.org/owl/manifest"    "https://roost.yourflock.org/owl/manifest.json"
 
 echo ""
 echo "Results: $PASS passed, $FAIL failed"

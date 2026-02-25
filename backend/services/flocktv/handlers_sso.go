@@ -135,7 +135,7 @@ func (s *Server) handleSSOprovision(w http.ResponseWriter, r *http.Request) {
 	writeJSON(w, http.StatusCreated, map[string]interface{}{
 		"roost_family_id":      req.FamilyID,
 		"plan":                 plan,
-		"roost_token_endpoint": "https://roost.yourflock.com/auth/flock",
+		"roost_token_endpoint": "https://roost.yourflock.org/auth/flock",
 		"docker_provisioned":   containerStatus == "provisioned",
 		"docker_port":          dockerPort,
 		"status":               containerStatus,

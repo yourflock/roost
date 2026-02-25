@@ -28,8 +28,8 @@ const (
 // Construct once at startup; safe for concurrent use.
 type Builder struct {
 	mode       Mode
-	originBase string // e.g., "http://localhost:8090" (private) or "https://stream.yourflock.com" (public CDN bypass)
-	cdnBase    string // e.g., "https://stream.yourflock.com" (public CDN relay)
+	originBase string // e.g., "http://localhost:8090" (private) or "https://stream.yourflock.org" (public CDN bypass)
+	cdnBase    string // e.g., "https://stream.yourflock.org" (public CDN relay)
 	hmacSecret string
 }
 
@@ -58,7 +58,7 @@ func NewBuilder(mode Mode, originBase, cdnBase, hmacSecret string) *Builder {
 //
 // Public mode: returns a CDN relay URL with a 15-minute HMAC signature.
 //
-//	Example: https://stream.yourflock.com/stream/bbc-one/seg001.ts?expires=...&sig=...
+//	Example: https://stream.yourflock.org/stream/bbc-one/seg001.ts?expires=...&sig=...
 func (b *Builder) SegmentURL(channelSlug, segment string) (string, error) {
 	path := fmt.Sprintf("/stream/%s/%s", channelSlug, segment)
 

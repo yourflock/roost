@@ -75,7 +75,7 @@ func Load() (*Config, error) {
 	c := &Config{
 		Mode:        parseMode(getenv("ROOST_MODE", "private")),
 		Port:        getenv("PORT", "8080"),
-		BaseURL:     getenv("ROOST_BASE_URL", "https://roost.yourflock.com"),
+		BaseURL:     getenv("ROOST_BASE_URL", "https://roost.yourflock.org"),
 		PostgresURL: getenv("POSTGRES_URL", "postgres://roost:roost@localhost:5432/roost"),
 		RedisURL:    getenv("REDIS_URL", ""),
 
@@ -86,17 +86,17 @@ func Load() (*Config, error) {
 		JWTSecret: getenv("AUTH_JWT_SECRET", ""),
 
 		ElasticEmailAPIKey: os.Getenv("ELASTIC_EMAIL_API_KEY"),
-		EmailSender:        getenv("EMAIL_SENDER", "noreply@yourflock.com"),
+		EmailSender:        getenv("EMAIL_SENDER", "noreply@yourflock.org"),
 
-		FlockOAuthBaseURL:  getenv("FLOCK_OAUTH_BASE_URL", "https://yourflock.com"),
+		FlockOAuthBaseURL:  getenv("FLOCK_OAUTH_BASE_URL", "https://yourflock.org"),
 		FlockClientID:      getenv("FLOCK_CLIENT_ID", "roost"),
 		FlockClientSecret:  os.Getenv("FLOCK_CLIENT_SECRET"),
-		FlockRedirectURI:   getenv("FLOCK_REDIRECT_URI", "https://roost.yourflock.com/auth/flock/callback"),
+		FlockRedirectURI:   getenv("FLOCK_REDIRECT_URI", "https://roost.yourflock.org/auth/flock/callback"),
 		FlockServiceToken:  os.Getenv("FLOCK_SERVICE_TOKEN"),
 
 		CDNHMACSecret: getenv("CDN_HMAC_SECRET", ""),
 		CDNRelayURL:   os.Getenv("CDN_RELAY_URL"),
-		StreamBaseURL: getenv("STREAM_BASE_URL", "https://stream.yourflock.com"),
+		StreamBaseURL: getenv("STREAM_BASE_URL", "https://stream.yourflock.org"),
 
 		CloudflareAPIKey: os.Getenv("CLOUDFLARE_API_KEY"),
 		CloudflareZoneID: os.Getenv("CLOUDFLARE_ZONE_ID"),

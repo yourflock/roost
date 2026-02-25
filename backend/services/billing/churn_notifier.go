@@ -53,7 +53,7 @@ func (s *Server) runChurnNotifierCycle() {
 	}
 	defer rows.Close()
 
-	baseURL := getEnv("ROOST_BASE_URL", "https://roost.yourflock.com")
+	baseURL := getEnv("ROOST_BASE_URL", "https://roost.yourflock.org")
 
 	for rows.Next() {
 		var subID, emailAddr, name string

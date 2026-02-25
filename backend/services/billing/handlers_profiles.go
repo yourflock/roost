@@ -677,7 +677,7 @@ func (s *Server) uploadAvatar(w http.ResponseWriter, r *http.Request, profileID 
 	// avatarURL is the public CDN URL regardless of whether the upload succeeds —
 	// if R2 is not configured we log a warning and store the URL as a placeholder
 	// so the service keeps working in dev/CI without R2 credentials.
-	avatarURL := fmt.Sprintf("https://media.yourflock.com/%s", objectKey)
+	avatarURL := fmt.Sprintf("https://media.yourflock.org/%s", objectKey)
 
 	if s.r2 != nil {
 		r2Bucket := getEnv("R2_MEDIA_BUCKET", "flock-media")
@@ -934,7 +934,7 @@ func isValidAvatarPreset(preset string) bool {
 
 // avatarPresetURL returns the CDN URL for an avatar preset.
 func avatarPresetURL(preset string) string {
-	return fmt.Sprintf("https://media.yourflock.com/avatars/presets/%s.png", preset)
+	return fmt.Sprintf("https://media.yourflock.org/avatars/presets/%s.png", preset)
 }
 
 // isNumeric returns true if all characters in s are ASCII digits.

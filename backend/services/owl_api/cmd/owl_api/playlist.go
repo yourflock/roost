@@ -51,7 +51,7 @@ func (s *server) handlePlaylistM3U8(w http.ResponseWriter, r *http.Request) {
 	// so the player can authenticate each stream request automatically.
 	sessionToken := extractSessionToken(r)
 
-	baseURL := getEnv("ROOST_BASE_URL", "https://roost.yourflock.com")
+	baseURL := getEnv("ROOST_BASE_URL", "https://roost.yourflock.org")
 
 	// XMLTV EPG source URL (stub — included so players configure it now)
 	epgURL := fmt.Sprintf("%s/owl/xmltv.xml?token=%s", baseURL, url.QueryEscape(sessionToken))
@@ -98,7 +98,7 @@ func (s *server) handlePlaylistM3U8(w http.ResponseWriter, r *http.Request) {
 	// M3U8 header — x-tvg-url wires EPG so players can show program guide
 	sb.WriteString(fmt.Sprintf("#EXTM3U x-tvg-url=\"%s\"\n", epgURL))
 	sb.WriteString(fmt.Sprintf("# Roost IPTV — generated %s\n", time.Now().UTC().Format(time.RFC3339)))
-	sb.WriteString("# Subscribe: https://roost.yourflock.com\n")
+	sb.WriteString("# Subscribe: https://roost.yourflock.org\n")
 	sb.WriteString("\n")
 
 	for _, ch := range channels {

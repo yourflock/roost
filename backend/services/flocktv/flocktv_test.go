@@ -24,7 +24,7 @@ func newTestServer() *Server {
 // ── Stream gateway ────────────────────────────────────────────────────────────
 
 func TestStreamRequest_OK(t *testing.T) {
-	os.Setenv("CDN_RELAY_URL", "https://stream.yourflock.com")
+	os.Setenv("CDN_RELAY_URL", "https://stream.yourflock.org")
 	os.Setenv("CDN_HMAC_SECRET", "test-secret-32-bytes-long-padded!!")
 
 	body := `{"family_id":"fam-123","canonical_id":"imdb:tt0111161","quality":"1080p"}`
@@ -121,7 +121,7 @@ func TestStreamEnd_MissingEventID(t *testing.T) {
 // ── Signed URL generation ─────────────────────────────────────────────────────
 
 func TestGenerateSignedURL_NonEmpty(t *testing.T) {
-	url := generateSignedURL("https://stream.yourflock.com", "test-secret",
+	url := generateSignedURL("https://stream.yourflock.org", "test-secret",
 		"/content/imdb:tt0111161/manifest.m3u8", 15*time.Minute)
 	if url == "" {
 		t.Error("expected non-empty signed URL")
@@ -135,9 +135,9 @@ func TestGenerateSignedURL_NonEmpty(t *testing.T) {
 }
 
 func TestGenerateSignedURL_DifferentSecrets(t *testing.T) {
-	url1 := generateSignedURL("https://stream.yourflock.com", "secret-A",
+	url1 := generateSignedURL("https://stream.yourflock.org", "secret-A",
 		"/content/imdb:tt0111161/manifest.m3u8", 15*time.Minute)
-	url2 := generateSignedURL("https://stream.yourflock.com", "secret-B",
+	url2 := generateSignedURL("https://stream.yourflock.org", "secret-B",
 		"/content/imdb:tt0111161/manifest.m3u8", 15*time.Minute)
 	if url1 == url2 {
 		t.Error("different HMAC secrets must produce different signatures")
@@ -145,9 +145,9 @@ func TestGenerateSignedURL_DifferentSecrets(t *testing.T) {
 }
 
 func TestGenerateSignedURL_DifferentPaths(t *testing.T) {
-	url1 := generateSignedURL("https://stream.yourflock.com", "secret",
+	url1 := generateSignedURL("https://stream.yourflock.org", "secret",
 		"/content/imdb:tt0111161/manifest.m3u8", 15*time.Minute)
-	url2 := generateSignedURL("https://stream.yourflock.com", "secret",
+	url2 := generateSignedURL("https://stream.yourflock.org", "secret",
 		"/content/imdb:tt0000001/manifest.m3u8", 15*time.Minute)
 	if url1 == url2 {
 		t.Error("different paths must produce different signatures")

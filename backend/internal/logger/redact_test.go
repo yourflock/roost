@@ -84,8 +84,8 @@ func TestRedactEmail_Standard(t *testing.T) {
 }
 
 func TestRedactEmail_DomainPreserved(t *testing.T) {
-	got := RedactEmail("user@yourflock.com")
-	if !strings.Contains(got, "yourflock.com") {
+	got := RedactEmail("user@yourflock.org")
+	if !strings.Contains(got, "yourflock.org") {
 		t.Errorf("RedactEmail should preserve domain, got %q", got)
 	}
 }

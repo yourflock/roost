@@ -16,10 +16,10 @@
 //   DELETE /auth/flock/link     — unlink Flock account from subscriber (JWT required)
 //
 // Env vars:
-//   FLOCK_OAUTH_BASE_URL  default: https://yourflock.com
+//   FLOCK_OAUTH_BASE_URL  default: https://yourflock.org
 //   FLOCK_CLIENT_ID       default: roost
 //   FLOCK_CLIENT_SECRET   (required for callback; gracefully skipped if empty)
-//   FLOCK_REDIRECT_URI    default: https://roost.yourflock.com/auth/flock/callback
+//   FLOCK_REDIRECT_URI    default: https://roost.yourflock.org/auth/flock/callback
 package billing
 
 import (
@@ -48,7 +48,7 @@ func flockOAuthBaseURL() string {
 	if v := os.Getenv("FLOCK_OAUTH_BASE_URL"); v != "" {
 		return strings.TrimRight(v, "/")
 	}
-	return "https://yourflock.com"
+	return "https://yourflock.org"
 }
 
 func flockClientID() string {
@@ -66,7 +66,7 @@ func flockRedirectURI() string {
 	if v := os.Getenv("FLOCK_REDIRECT_URI"); v != "" {
 		return v
 	}
-	return "https://roost.yourflock.com/auth/flock/callback"
+	return "https://roost.yourflock.org/auth/flock/callback"
 }
 
 // ── State token store (in-memory, 10-min TTL) ─────────────────────────────────

@@ -71,8 +71,8 @@
 		<div class="max-w-5xl mx-auto px-4 text-center text-sm text-slate-500">
 			<p>&copy; {new Date().getFullYear()} Roost by Flock. All rights reserved.</p>
 			<div class="flex items-center justify-center gap-4 mt-2">
-				<a href="https://owl.yourflock.com" class="hover:text-slate-300 transition-colors" target="_blank">Owl</a>
-				<a href="https://yourflock.com" class="hover:text-slate-300 transition-colors" target="_blank">Flock</a>
+				<a href="https://owl.yourflock.org" class="hover:text-slate-300 transition-colors" target="_blank">Owl</a>
+				<a href="https://yourflock.org" class="hover:text-slate-300 transition-colors" target="_blank">Flock</a>
 			</div>
 		</div>
 	</footer>

@@ -50,7 +50,7 @@ func (s *Server) getReferralCode(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	baseURL := getEnv("ROOST_BASE_URL", "https://roost.yourflock.com")
+	baseURL := getEnv("ROOST_BASE_URL", "https://roost.yourflock.org")
 	link := fmt.Sprintf("%s/ref/%s", baseURL, code)
 
 	// Aggregate stats.

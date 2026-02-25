@@ -170,7 +170,7 @@ func (s *Server) handleEmailUnsubscribe(w http.ResponseWriter, r *http.Request) 
 	`, subscriberID, category)
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	baseURL := getEnv("ROOST_BASE_URL", "https://roost.yourflock.com")
+	baseURL := getEnv("ROOST_BASE_URL", "https://roost.yourflock.org")
 	fmt.Fprintf(w, `<!doctype html>
 <html lang="en">
 <head><meta charset="utf-8"><title>Unsubscribed</title>

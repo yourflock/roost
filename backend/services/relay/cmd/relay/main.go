@@ -205,7 +205,7 @@ func deviceIDFrom(r *http.Request) string {
 // isAllowedOrigin checks if the origin is permitted for CORS.
 func isAllowedOrigin(origin string) bool {
 	allowed := []string{
-		"https://owl.yourflock.com",
+		"https://owl.yourflock.org",
 		"http://localhost",
 		"http://localhost:3000",
 		"http://localhost:5173",

@@ -94,7 +94,7 @@ services:
       HASURA_GRAPHQL_ENABLE_CONSOLE: "false"
       HASURA_GRAPHQL_DEV_MODE: "false"
       HASURA_GRAPHQL_ENABLE_TELEMETRY: "false"
-      HASURA_GRAPHQL_CORS_DOMAIN: "https://roost.yourflock.com,https://*.roost.yourflock.com"
+      HASURA_GRAPHQL_CORS_DOMAIN: "https://roost.yourflock.org,https://*.roost.yourflock.org"
       HASURA_GRAPHQL_LOG_LEVEL: warn
       HASURA_GRAPHQL_JWT_SECRET: '{"type":"HS256","key":"${HASURA_JWT_KEY}"}'
       HASURA_GRAPHQL_UNAUTHORIZED_ROLE: public
@@ -144,8 +144,8 @@ services:
       POSTGRES_USER: ${POSTGRES_USER:-roost}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
       POSTGRES_DATABASE: ${POSTGRES_DB:-roost}
-      AUTH_SERVER_URL: https://roost.yourflock.com/v1/auth
-      AUTH_CLIENT_URL: https://roost.yourflock.com
+      AUTH_SERVER_URL: https://roost.yourflock.org/v1/auth
+      AUTH_CLIENT_URL: https://roost.yourflock.org
       AUTH_JWT_SECRET: ${HASURA_JWT_KEY}
       AUTH_JWT_TYPE: HS256
       AUTH_JWT_KEY: ${HASURA_JWT_KEY}
@@ -159,7 +159,7 @@ services:
       AUTH_SMTP_USER: ${AUTH_SMTP_USER}
       AUTH_SMTP_PASS: ${AUTH_SMTP_PASS}
       AUTH_SMTP_SECURE: "true"
-      AUTH_SMTP_SENDER: noreply@yourflock.com
+      AUTH_SMTP_SENDER: noreply@yourflock.org
       AUTH_EMAIL_SIGNIN_EMAIL_VERIFIED_REQUIRED: "true"
     ports:
       - "127.0.0.1:4000:4000"
@@ -371,7 +371,7 @@ services:
       DATABASE_URL: postgresql://${POSTGRES_USER:-roost}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-roost}
       RELAY_INTERNAL_URL: http://relay:8090
       CF_WORKER_SECRET: ${CF_WORKER_SECRET}
-      RELAY_BASE_URL: https://relay.roost.yourflock.com
+      RELAY_BASE_URL: https://relay.roost.yourflock.org
       JWT_SECRET: ${HASURA_JWT_KEY}
     ports:
       - "127.0.0.1:8091:8091"

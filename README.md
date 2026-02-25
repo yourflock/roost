@@ -21,7 +21,7 @@ Personal or family media server. Serves your own files. Connect via LAN IP or Dy
 
 ### Public mode (`ROOST_MODE=public`)
 
-Turns Roost into a licensed content provider. Adds subscriber management, Stripe billing, CDN relay for source URL obfuscation, and content licensing integration. This is how `roost.yourflock.com` operates.
+Turns Roost into a licensed content provider. Adds subscriber management, Stripe billing, CDN relay for source URL obfuscation, and content licensing integration. This is how `roost.yourflock.org` operates.
 
 ## Install
 
@@ -39,7 +39,7 @@ docker run -v /your/media:/media roost/roost
 
 ### Managed
 
-Subscribe at [roost.yourflock.com](https://roost.yourflock.com). Get an API token. Enter it in Owl under Settings > Community Addons.
+Subscribe at [roost.yourflock.org](https://roost.yourflock.org). Get an API token. Enter it in Owl under Settings > Community Addons.
 
 ## Structure
 

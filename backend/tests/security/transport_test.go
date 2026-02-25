@@ -161,9 +161,9 @@ func TestCORSAllowedOriginAccepted(t *testing.T) {
 	})
 
 	for _, origin := range []string{
-		"https://owl.yourflock.com",
-		"https://roost.yourflock.com",
-		"https://admin.roost.yourflock.com",
+		"https://owl.yourflock.org",
+		"https://roost.yourflock.org",
+		"https://admin.roost.yourflock.org",
 	} {
 		req := httptest.NewRequest(http.MethodGet, "/api/data", nil)
 		req.Header.Set("Origin", origin)
@@ -180,20 +180,20 @@ func TestCORSAllowedOriginAccepted(t *testing.T) {
 // isAllowedTestOrigin mirrors the production CORS allowlist for test purposes.
 func isAllowedTestOrigin(origin string) bool {
 	allowed := []string{
-		"https://owl.yourflock.com",
-		"https://roost.yourflock.com",
-		"https://admin.roost.yourflock.com",
-		"https://reseller.roost.yourflock.com",
+		"https://owl.yourflock.org",
+		"https://roost.yourflock.org",
+		"https://admin.roost.yourflock.org",
+		"https://reseller.roost.yourflock.org",
 	}
 	for _, a := range allowed {
 		if origin == a {
 			return true
 		}
 	}
-	// *.yourflock.com over HTTPS.
+	// *.yourflock.org over HTTPS.
 	if len(origin) > 8 && origin[:8] == "https://" {
 		host := origin[8:]
-		if len(host) > 14 && host[len(host)-14:] == ".yourflock.com" {
+		if len(host) > 14 && host[len(host)-14:] == ".yourflock.org" {
 			return true
 		}
 	}

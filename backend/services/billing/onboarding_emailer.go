@@ -63,7 +63,7 @@ func (s *Server) sendOnboardingDay1() {
 	}
 	defer rows.Close()
 
-	baseURL := getEnv("ROOST_BASE_URL", "https://roost.yourflock.com")
+	baseURL := getEnv("ROOST_BASE_URL", "https://roost.yourflock.org")
 
 	for rows.Next() {
 		var subID, emailAddr, name string
@@ -117,7 +117,7 @@ func (s *Server) sendOnboardingDay3() {
 	}
 	defer rows.Close()
 
-	baseURL := getEnv("ROOST_BASE_URL", "https://roost.yourflock.com")
+	baseURL := getEnv("ROOST_BASE_URL", "https://roost.yourflock.org")
 
 	for rows.Next() {
 		var subID, emailAddr, name string
@@ -167,7 +167,7 @@ func (s *Server) sendOnboardingDay7() {
 	}
 	defer rows.Close()
 
-	baseURL := getEnv("ROOST_BASE_URL", "https://roost.yourflock.com")
+	baseURL := getEnv("ROOST_BASE_URL", "https://roost.yourflock.org")
 
 	for rows.Next() {
 		var subID, emailAddr, name string

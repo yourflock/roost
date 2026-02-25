@@ -37,10 +37,10 @@ type HealthStatus struct {
 
 const (
 	// CDNCloudflareURL is the primary global CDN (Cloudflare).
-	CDNCloudflareURL = "https://cdn.yourflock.com"
+	CDNCloudflareURL = "https://cdn.yourflock.org"
 
 	// CDNHetznerURL is the secondary EU-preferred CDN (Hetzner Object Storage + CDN).
-	CDNHetznerURL = "https://cdn-eu.yourflock.com"
+	CDNHetznerURL = "https://cdn-eu.yourflock.org"
 
 	// healthProbeTimeout is the maximum time to wait for a CDN health probe.
 	healthProbeTimeout = 5 * time.Second
@@ -105,7 +105,7 @@ func (r *CDNRouter) RouteRequest(subscriberRegion string) string {
 // BuildSegmentURL constructs the full CDN URL for an HLS segment.
 //
 // Format: {cdn_base_url}/segments/{slug}/{segment}
-// Example: https://cdn.yourflock.com/segments/bbc-one/seg001.ts
+// Example: https://cdn.yourflock.org/segments/bbc-one/seg001.ts
 func (r *CDNRouter) BuildSegmentURL(subscriberRegion, slug, segment string) string {
 	base := r.RouteRequest(subscriberRegion)
 	return fmt.Sprintf("%s/segments/%s/%s", base, slug, segment)

@@ -92,7 +92,7 @@ func (s *Server) handleCheckout(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Build Checkout session params
-	baseURL := getEnv("ROOST_BASE_URL", "https://roost.yourflock.com")
+	baseURL := getEnv("ROOST_BASE_URL", "https://roost.yourflock.org")
 	params := &stripe.CheckoutSessionParams{
 		Customer: stripe.String(customerID),
 		LineItems: []*stripe.CheckoutSessionLineItemParams{
