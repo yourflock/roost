@@ -1,0 +1,40 @@
+#!/bin/sh
+# postinst — Roost DEB post-install script.
+# Runs after the package files are in place.
+set -e
+
+# Set correct ownership and permissions on the config file.
+if [ -f /etc/roost/roost.env ]; then
+    chown root:roost /etc/roost/roost.env
+    chmod 640 /etc/roost/roost.env
+fi
+
+# Create log directory.
+mkdir -p /var/log/roost
+chown roost:roost /var/log/roost
+chmod 755 /var/log/roost
+
+# Reload systemd and enable the service.
+if command -v systemctl >/dev/null 2>&1; then
+    systemctl daemon-reload
+
+    # Enable but don't start automatically — user must configure first.
+    systemctl enable roost.service
+
+    case "$1" in
+        configure)
+            echo ""
+            echo "Roost installed successfully."
+            echo ""
+            echo "Before starting Roost, edit /etc/roost/roost.env and set:"
+            echo "  ROOST_SECRET_KEY   — a random 32+ character secret (openssl rand -hex 32)"
+            echo "  POSTGRES_PASSWORD  — your PostgreSQL password"
+            echo ""
+            echo "Then start the service:"
+            echo "  sudo systemctl start roost"
+            echo ""
+            ;;
+    esac
+fi
+
+exit 0

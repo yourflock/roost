@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<tv generator-info-name="Roost EPG Test Data">
+
+  <channel id="roost-news-1">
+    <display-name>Roost News One</display-name>
+    <icon src="https://example.com/logos/news1.png"/>
+  </channel>
+
+  <channel id="roost-sports-1">
+    <display-name>Roost Sports One</display-name>
+    <icon src="https://example.com/logos/sports1.png"/>
+  </channel>
+
+  <channel id="roost-movies-1">
+    <display-name>Roost Movies One</display-name>
+    <icon src="https://example.com/logos/movies1.png"/>
+  </channel>
+
+  <!-- News Channel Programs (10 programs, 1h each, starting 2026-02-24 00:00 UTC) -->
+  <programme start="20260224000000 +0000" stop="20260224010000 +0000" channel="roost-news-1">
+    <title>Morning Briefing</title>
+    <desc>Top stories from overnight around the world.</desc>
+    <category>News</category>
+    <rating><value>TV-G</value></rating>
+  </programme>
+  <programme start="20260224010000 +0000" stop="20260224020000 +0000" channel="roost-news-1">
+    <title>World Report</title>
+    <desc>International news in depth.</desc>
+    <category>News</category>
+    <rating><value>TV-G</value></rating>
+  </programme>
+  <programme start="20260224020000 +0000" stop="20260224030000 +0000" channel="roost-news-1">
+    <title>Business Today</title>
+    <desc>Markets open and economy overview.</desc>
+    <category>Business</category>
+    <rating><value>TV-G</value></rating>
+  </programme>
+  <programme start="20260224030000 +0000" stop="20260224040000 +0000" channel="roost-news-1">
+    <title>Tech Spotlight</title>
+    <desc>Latest in technology and innovation.</desc>
+    <category>Technology</category>
+    <rating><value>TV-G</value></rating>
+  </programme>
+  <programme start="20260224040000 +0000" stop="20260224050000 +0000" channel="roost-news-1">
+    <title>Health Matters</title>
+    <desc>Health and wellness news you can use.</desc>
+    <category>Health</category>
+    <rating><value>TV-G</value></rating>
+  </programme>
+  <programme start="20260224050000 +0000" stop="20260224060000 +0000" channel="roost-news-1">
+    <title>Science Weekly</title>
+    <desc>New discoveries from the scientific community.</desc>
+    <category>Science</category>
+    <rating><value>TV-G</value></rating>
+  </programme>
+  <programme start="20260224060000 +0000" stop="20260224070000 +0000" channel="roost-news-1">
+    <title>Environment Hour</title>
+    <desc>Climate news and environmental policy.</desc>
+    <category>Environment</category>
+    <rating><value>TV-G</value></rating>
+  </programme>
+  <programme start="20260224070000 +0000" stop="20260224080000 +0000" channel="roost-news-1">
+    <title>Sports Desk</title>
+    <desc>Overnight sports scores and highlights.</desc>
+    <category>Sports</category>
+    <rating><value>TV-G</value></rating>
+  </programme>
+  <programme start="20260224080000 +0000" stop="20260224090000 +0000" channel="roost-news-1">
+    <title>Weekend Agenda</title>
+    <desc>Planning your weekend with local events.</desc>
+    <category>Lifestyle</category>
+    <rating><value>TV-G</value></rating>
+  </programme>
+  <programme start="20260224090000 +0000" stop="20260224100000 +0000" channel="roost-news-1">
+    <title>Midday Update</title>
+    <desc>Noon news roundup from correspondents.</desc>
+    <category>News</category>
+    <rating><value>TV-G</value></rating>
+  </programme>
+
+  <!-- Sports Channel Programs (10 programs, 1h each) -->
+  <programme start="20260224000000 +0000" stop="20260224010000 +0000" channel="roost-sports-1">
+    <title>Premier League Highlights</title>
+    <desc>Best goals and moments from the weekend matches.</desc>
+    <category>Sports</category>
+    <rating><value>TV-G</value></rating>
+  </programme>
+  <programme start="20260224010000 +0000" stop="20260224020000 +0000" channel="roost-sports-1">
+    <title>NBA Roundup</title>
+    <desc>Basketball scores, highlights, and analysis.</desc>
+    <category>Basketball</category>
+    <rating><value>TV-G</value></rating>
+  </programme>
+  <programme start="20260224020000 +0000" stop="20260224030000 +0000" channel="roost-sports-1">
+    <title>Formula 1 Preview</title>
+    <desc>Next race preview and team news.</desc>
+    <category>Motorsport</category>
+    <rating><value>TV-G</value></rating>
+  </programme>
+  <programme start="20260224030000 +0000" stop="20260224040000 +0000" channel="roost-sports-1">
+    <title>Tennis World</title>
+    <desc>ATP and WTA tour results and rankings.</desc>
+    <category>Tennis</category>
+    <rating><value>TV-G</value></rating>
+  </programme>
+  <programme start="20260224040000 +0000" stop="20260224050000 +0000" channel="roost-sports-1">
+    <title>Boxing Tonight</title>
+    <desc>Fight night preview and fighter profiles.</desc>
+    <category>Boxing</category>
+    <rating><value>TV-14</value></rating>
+  </programme>
+  <programme start="20260224050000 +0000" stop="20260224060000 +0000" channel="roost-sports-1">
+    <title>Golf Digest</title>
+    <desc>PGA and LPGA tour coverage.</desc>
+    <category>Golf</category>
+    <rating><value>TV-G</value></rating>
+  </programme>
+  <programme start="20260224060000 +0000" stop="20260224070000 +0000" channel="roost-sports-1">
+    <title>Cycling Tour</title>
+    <desc>Stage results and rider profiles.</desc>
+    <category>Cycling</category>
+    <rating><value>TV-G</value></rating>
+  </programme>
+  <programme start="20260224070000 +0000" stop="20260224080000 +0000" channel="roost-sports-1">
+    <title>Rugby Weekly</title>
+    <desc>Six Nations and Super Rugby highlights.</desc>
+    <category>Rugby</category>
+    <rating><value>TV-G</value></rating>
+  </programme>
+  <programme start="20260224080000 +0000" stop="20260224090000 +0000" channel="roost-sports-1">
+    <title>Athletics Live</title>
+    <desc>Track and field events from around the world.</desc>
+    <category>Athletics</category>
+    <rating><value>TV-G</value></rating>
+  </programme>
+  <programme start="20260224090000 +0000" stop="20260224100000 +0000" channel="roost-sports-1">
+    <title>Winter Sports</title>
+    <desc>Skiing, snowboarding and ice sports coverage.</desc>
+    <category>Winter Sports</category>
+    <rating><value>TV-G</value></rating>
+  </programme>
+
+  <!-- Movies Channel Programs (10 programs, varied length) -->
+  <programme start="20260224000000 +0000" stop="20260224020000 +0000" channel="roost-movies-1">
+    <title>The Grand Illusion</title>
+    <desc>Classic cinema from the golden era of filmmaking.</desc>
+    <category>Drama</category>
+    <rating><value>TV-G</value></rating>
+  </programme>
+  <programme start="20260224020000 +0000" stop="20260224040000 +0000" channel="roost-movies-1">
+    <title>Adventure Peak</title>
+    <desc>An epic journey to the highest mountains.</desc>
+    <category>Adventure</category>
+    <rating><value>TV-PG</value></rating>
+  </programme>
+  <programme start="20260224040000 +0000" stop="20260224060000 +0000" channel="roost-movies-1">
+    <title>Space Frontier</title>
+    <desc>Humanity reaches out to the stars.</desc>
+    <category>Sci-Fi</category>
+    <rating><value>TV-PG</value></rating>
+  </programme>
+  <programme start="20260224060000 +0000" stop="20260224075000 +0000" channel="roost-movies-1">
+    <title>Comedy Hour</title>
+    <desc>A lighthearted comedy about small-town life.</desc>
+    <category>Comedy</category>
+    <rating><value>TV-G</value></rating>
+  </programme>
+  <programme start="20260224075000 +0000" stop="20260224091500 +0000" channel="roost-movies-1">
+    <title>Mystery at Midnight</title>
+    <desc>A gripping detective thriller set in 1940s Paris.</desc>
+    <category>Mystery</category>
+    <rating><value>TV-14</value></rating>
+  </programme>
+  <programme start="20260224091500 +0000" stop="20260224110000 +0000" channel="roost-movies-1">
+    <title>Family Sunday</title>
+    <desc>A heartwarming family film for all ages.</desc>
+    <category>Family</category>
+    <rating><value>TV-G</value></rating>
+  </programme>
+  <programme start="20260224110000 +0000" stop="20260224130000 +0000" channel="roost-movies-1">
+    <title>Historical Epic</title>
+    <desc>The rise and fall of an ancient empire.</desc>
+    <category>History</category>
+    <rating><value>TV-14</value></rating>
+  </programme>
+  <programme start="20260224130000 +0000" stop="20260224145500 +0000" channel="roost-movies-1">
+    <title>Romantic Weekend</title>
+    <desc>Love blossoms in the Italian countryside.</desc>
+    <category>Romance</category>
+    <rating><value>TV-PG</value></rating>
+  </programme>
+  <programme start="20260224145500 +0000" stop="20260224163000 +0000" channel="roost-movies-1">
+    <title>Thriller Night</title>
+    <desc>A suspense-filled race against time.</desc>
+    <category>Thriller</category>
+    <rating><value>TV-14</value></rating>
+  </programme>
+  <programme start="20260224163000 +0000" stop="20260224183000 +0000" channel="roost-movies-1">
+    <title>Evening Feature</title>
+    <desc>Tonight's main feature film presentation.</desc>
+    <category>Drama</category>
+    <rating><value>TV-14</value></rating>
+  </programme>
+
+</tv>

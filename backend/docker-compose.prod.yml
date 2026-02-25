@@ -1,0 +1,454 @@
+# docker-compose.prod.yml — Roost Production Stack
+# Target: roost-prod (CX23, 4GB RAM, fsn1 / 167.235.195.186)
+# All services behind Nginx. Cloudflare Tunnel provides HTTPS — no cert mgmt needed.
+# Memory limits designed for 4 GB total: leave ~800 MB for OS + Docker overhead.
+
+networks:
+  roost_network:
+    name: roost_network
+    driver: bridge
+
+volumes:
+  postgres_data:
+    driver: local
+  nginx_cache:
+    driver: local
+  segments_data:
+    driver: local
+
+services:
+
+  # ─────────────────────────────────────────────────────────
+  # Core Infrastructure
+  # ─────────────────────────────────────────────────────────
+
+  postgres:
+    image: postgres:16-alpine
+    container_name: roost_postgres
+    restart: unless-stopped
+    networks:
+      - roost_network
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-roost}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB:-roost}
+      POSTGRES_HOST_AUTH_METHOD: scram-sha-256
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./db/migrations:/docker-entrypoint-initdb.d:ro
+    ports:
+      - "127.0.0.1:${POSTGRES_PORT:-5433}:5432"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-roost}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 15s
+
+  redis:
+    image: redis:7-alpine
+    container_name: roost_redis
+    restart: unless-stopped
+    networks:
+      - roost_network
+    command: redis-server --appendonly no --maxmemory 128mb --maxmemory-policy allkeys-lru
+    ports:
+      - "127.0.0.1:6379:6379"
+    deploy:
+      resources:
+        limits:
+          memory: 160M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "2"
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  hasura:
+    image: hasura/graphql-engine:v2.36.0
+    container_name: roost_hasura
+    restart: unless-stopped
+    user: "1001:1001"
+    networks:
+      - roost_network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: postgresql://${POSTGRES_USER:-roost}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-roost}
+      HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET}
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "false"
+      HASURA_GRAPHQL_DEV_MODE: "false"
+      HASURA_GRAPHQL_ENABLE_TELEMETRY: "false"
+      HASURA_GRAPHQL_CORS_DOMAIN: "https://roost.yourflock.com,https://*.roost.yourflock.com"
+      HASURA_GRAPHQL_LOG_LEVEL: warn
+      HASURA_GRAPHQL_JWT_SECRET: '{"type":"HS256","key":"${HASURA_JWT_KEY}"}'
+      HASURA_GRAPHQL_UNAUTHORIZED_ROLE: public
+    ports:
+      - "127.0.0.1:${HASURA_PORT:-8081}:8080"
+    deploy:
+      resources:
+        limits:
+          memory: 384M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+
+  auth:
+    image: nhost/hasura-auth:latest
+    container_name: roost_auth
+    restart: unless-stopped
+    networks:
+      - roost_network
+    depends_on:
+      postgres:
+        condition: service_healthy
+      hasura:
+        condition: service_healthy
+    environment:
+      AUTH_HOST: "0.0.0.0"
+      AUTH_PORT: "4000"
+      AUTH_LOG_LEVEL: warn
+      DATABASE_URL: postgresql://${POSTGRES_USER:-roost}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-roost}
+      AUTH_DATABASE_URL: postgresql://${POSTGRES_USER:-roost}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-roost}
+      HASURA_GRAPHQL_DATABASE_URL: postgresql://${POSTGRES_USER:-roost}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-roost}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      PGHOST: postgres
+      PGPORT: 5432
+      PGUSER: ${POSTGRES_USER:-roost}
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      PGDATABASE: ${POSTGRES_DB:-roost}
+      POSTGRES_USER: ${POSTGRES_USER:-roost}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DATABASE: ${POSTGRES_DB:-roost}
+      AUTH_SERVER_URL: https://roost.yourflock.com/v1/auth
+      AUTH_CLIENT_URL: https://roost.yourflock.com
+      AUTH_JWT_SECRET: ${HASURA_JWT_KEY}
+      AUTH_JWT_TYPE: HS256
+      AUTH_JWT_KEY: ${HASURA_JWT_KEY}
+      HASURA_GRAPHQL_JWT_SECRET: '{"type":"HS256","key":"${HASURA_JWT_KEY}"}'
+      HASURA_GRAPHQL_GRAPHQL_URL: http://hasura:8080/v1/graphql
+      HASURA_GRAPHQL_ADMIN_SECRET: ${HASURA_GRAPHQL_ADMIN_SECRET}
+      AUTH_ACCESS_TOKEN_EXPIRES_IN: "900"
+      AUTH_REFRESH_TOKEN_EXPIRES_IN: "2592000"
+      AUTH_SMTP_HOST: ${AUTH_SMTP_HOST}
+      AUTH_SMTP_PORT: ${AUTH_SMTP_PORT:-587}
+      AUTH_SMTP_USER: ${AUTH_SMTP_USER}
+      AUTH_SMTP_PASS: ${AUTH_SMTP_PASS}
+      AUTH_SMTP_SECURE: "true"
+      AUTH_SMTP_SENDER: noreply@yourflock.com
+      AUTH_EMAIL_SIGNIN_EMAIL_VERIFIED_REQUIRED: "true"
+    ports:
+      - "127.0.0.1:4000:4000"
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:4000/healthz"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+
+  # ─────────────────────────────────────────────────────────
+  # Roost Go Microservices
+  # ─────────────────────────────────────────────────────────
+
+  billing:
+    image: ghcr.io/yourflock/roost-billing:${IMAGE_TAG:-latest}
+    container_name: roost_billing
+    restart: unless-stopped
+    networks:
+      - roost_network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      BILLING_PORT: "8085"
+      DATABASE_URL: postgresql://${POSTGRES_USER:-roost}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-roost}
+      STRIPE_SECRET_KEY: ${STRIPE_SECRET_KEY}
+      STRIPE_WEBHOOK_SECRET: ${STRIPE_WEBHOOK_SECRET}
+      STRIPE_BASIC_MONTHLY_PRICE: ${STRIPE_BASIC_MONTHLY_PRICE}
+      STRIPE_BASIC_ANNUAL_PRICE: ${STRIPE_BASIC_ANNUAL_PRICE}
+      STRIPE_PREMIUM_MONTHLY_PRICE: ${STRIPE_PREMIUM_MONTHLY_PRICE}
+      STRIPE_PREMIUM_ANNUAL_PRICE: ${STRIPE_PREMIUM_ANNUAL_PRICE}
+      STRIPE_FAMILY_MONTHLY_PRICE: ${STRIPE_FAMILY_MONTHLY_PRICE}
+      STRIPE_FAMILY_ANNUAL_PRICE: ${STRIPE_FAMILY_ANNUAL_PRICE}
+      JWT_SECRET: ${HASURA_JWT_KEY}
+      FOUNDING_FAMILY_SLOTS: "${FOUNDING_FAMILY_SLOTS:-500}"
+    ports:
+      - "127.0.0.1:8085:8085"
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8085/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  ingest:
+    image: ghcr.io/yourflock/roost-ingest:${IMAGE_TAG:-latest}
+    container_name: roost_ingest
+    restart: unless-stopped
+    networks:
+      - roost_network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      INGEST_PORT: "8094"
+      DATABASE_URL: postgresql://${POSTGRES_USER:-roost}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-roost}
+      SEGMENT_DIR: /data/segments
+      R2_BUCKET: ${R2_BUCKET:-roost-streams}
+      R2_ACCESS_KEY: ${R2_ACCESS_KEY}
+      R2_SECRET_KEY: ${R2_SECRET_KEY}
+      R2_ENDPOINT: ${R2_ENDPOINT}
+      JWT_SECRET: ${HASURA_JWT_KEY}
+    volumes:
+      - segments_data:/data/segments
+    ports:
+      - "127.0.0.1:8094:8094"
+    deploy:
+      resources:
+        limits:
+          memory: 512M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8094/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  relay:
+    image: ghcr.io/yourflock/roost-relay:${IMAGE_TAG:-latest}
+    container_name: roost_relay
+    restart: unless-stopped
+    networks:
+      - roost_network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      RELAY_PORT: "8090"
+      DATABASE_URL: postgresql://${POSTGRES_USER:-roost}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-roost}
+      SEGMENT_DIR: /data/segments
+      CF_WORKER_SECRET: ${CF_WORKER_SECRET}
+      JWT_SECRET: ${HASURA_JWT_KEY}
+    volumes:
+      - segments_data:/data/segments
+    ports:
+      - "127.0.0.1:8090:8090"
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8090/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  catalog:
+    image: ghcr.io/yourflock/roost-catalog:${IMAGE_TAG:-latest}
+    container_name: roost_catalog
+    restart: unless-stopped
+    networks:
+      - roost_network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      CATALOG_PORT: "8095"
+      DATABASE_URL: postgresql://${POSTGRES_USER:-roost}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-roost}
+      R2_BUCKET: ${R2_BUCKET:-roost-streams}
+      R2_ACCESS_KEY: ${R2_ACCESS_KEY}
+      R2_SECRET_KEY: ${R2_SECRET_KEY}
+      R2_ENDPOINT: ${R2_ENDPOINT}
+      JWT_SECRET: ${HASURA_JWT_KEY}
+    ports:
+      - "127.0.0.1:8095:8095"
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8095/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  epg:
+    image: ghcr.io/yourflock/roost-epg:${IMAGE_TAG:-latest}
+    container_name: roost_epg
+    restart: unless-stopped
+    networks:
+      - roost_network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      EPG_PORT: "8096"
+      DATABASE_URL: postgresql://${POSTGRES_USER:-roost}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-roost}
+      JWT_SECRET: ${HASURA_JWT_KEY}
+    ports:
+      - "127.0.0.1:8096:8096"
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8096/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  owl_api:
+    image: ghcr.io/yourflock/roost-owl-api:${IMAGE_TAG:-latest}
+    container_name: roost_owl_api
+    restart: unless-stopped
+    networks:
+      - roost_network
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      OWL_API_PORT: "8091"
+      DATABASE_URL: postgresql://${POSTGRES_USER:-roost}:${POSTGRES_PASSWORD}@postgres:5432/${POSTGRES_DB:-roost}
+      RELAY_INTERNAL_URL: http://relay:8090
+      CF_WORKER_SECRET: ${CF_WORKER_SECRET}
+      RELAY_BASE_URL: https://relay.roost.yourflock.com
+      JWT_SECRET: ${HASURA_JWT_KEY}
+    ports:
+      - "127.0.0.1:8091:8091"
+    deploy:
+      resources:
+        limits:
+          memory: 256M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    healthcheck:
+      test: ["CMD", "wget", "--quiet", "--tries=1", "--spider", "http://localhost:8091/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+  # ─────────────────────────────────────────────────────────
+  # Nginx Reverse Proxy
+  # ─────────────────────────────────────────────────────────
+
+  nginx:
+    image: nginx:alpine
+    container_name: roost_nginx
+    restart: unless-stopped
+    networks:
+      - roost_network
+    depends_on:
+      hasura:
+        condition: service_healthy
+      auth:
+        condition: service_healthy
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/conf.d:/etc/nginx/conf.d:ro
+      - ./nginx/sites:/etc/nginx/sites:ro
+      - ./nginx/includes:/etc/nginx/includes:ro
+      - nginx_cache:/var/cache/nginx
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "10m"
+        max-file: "3"
+    healthcheck:
+      test: ["CMD-SHELL", "wget --no-verbose --tries=1 -O /dev/null http://127.0.0.1/health 2>/dev/null || exit 1"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+
+  # ─────────────────────────────────────────────────────────
+  # Cloudflare Tunnel (outbound only — no inbound ports needed)
+  # ─────────────────────────────────────────────────────────
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: roost_cloudflared
+    restart: unless-stopped
+    networks:
+      - roost_network
+    depends_on:
+      nginx:
+        condition: service_healthy
+    command: tunnel --no-autoupdate run --token ${CLOUDFLARE_TUNNEL_TOKEN}
+    deploy:
+      resources:
+        limits:
+          memory: 128M
+    logging:
+      driver: "json-file"
+      options:
+        max-size: "5m"
+        max-file: "2"

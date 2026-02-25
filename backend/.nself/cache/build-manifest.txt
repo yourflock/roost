@@ -1,0 +1,3 @@
+# nself build cache manifest
+# Format: filepath|checksum|timestamp
+docker-compose.yml|7b9b93feb78c2fa34202ed07dcb4e64f|1771932243

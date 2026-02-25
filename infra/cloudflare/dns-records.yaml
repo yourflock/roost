@@ -1,0 +1,80 @@
+# DNS Records — Roost (yourflock.com)
+#
+# ALL stream and API records use Cloudflare proxying (orange-cloud, proxied: true).
+# This means Cloudflare IP ranges appear in DNS, not the Hetzner origin IP.
+# The Hetzner IP (167.235.195.186) MUST NEVER appear in any DNS record.
+#
+# Verification:
+#   dig roost.yourflock.com → Cloudflare IP (104.x.x.x or 172.x.x.x)
+#   dig stream.yourflock.com → Cloudflare IP
+#   nslookup 167.235.195.186 → should return nothing useful (reverse DNS not set)
+#
+# These records are managed via Cloudflare API (Terraform or manual dashboard).
+# NEVER use Cloudflare's "DNS-only" mode (grey-cloud) for these records.
+#
+# Format: standard Cloudflare API DNS record schema.
+# Apply with: cd infra/cloudflare && ./apply-dns.sh (uses CLOUDFLARE_API_KEY from vault)
+
+records:
+  # ---- Stream delivery -------------------------------------------------------
+  # Routes through Cloudflare Worker (roost-stream-proxy) → Tunnel → Hetzner.
+  - type: CNAME
+    name: stream
+    content: roost-prod.cfargotunnel.com
+    proxied: true
+    comment: "Stream delivery — Worker sits in front. Origin: Cloudflare Tunnel."
+
+  # ---- Main API / subscriber portal ------------------------------------------
+  - type: CNAME
+    name: roost
+    content: roost-prod.cfargotunnel.com
+    proxied: true
+    comment: "Roost API + subscriber portal. Origin: Cloudflare Tunnel."
+
+  # ---- Admin panel -----------------------------------------------------------
+  - type: CNAME
+    name: admin.roost
+    content: roost-prod.cfargotunnel.com
+    proxied: true
+    comment: "Roost admin panel. Protected by Cloudflare Access (Zero Trust)."
+
+  # ---- Owl addon manifest ----------------------------------------------------
+  # This is the URL Owl clients discover when users enter their Roost API token.
+  - type: CNAME
+    name: api.roost
+    content: roost-prod.cfargotunnel.com
+    proxied: true
+    comment: "Owl addon API manifest endpoint."
+
+  # ---- Roost project homepage ------------------------------------------------
+  - type: CNAME
+    name: owl.yourflock
+    content: yourflock-org.vercel.app
+    proxied: true
+    comment: "Owl open-source project homepage (Vercel). Not stream-related."
+
+  # ---- Email (MX) — do not proxy, not applicable ----------------------------
+  # MX records are managed separately. Not listed here.
+
+# ---- Records explicitly NOT created ----------------------------------------
+#
+# These records must NEVER exist in yourflock.com DNS:
+#
+#   A roost-origin 167.235.195.186    ← FORBIDDEN: exposes Hetzner IP
+#   A relay-origin 167.235.195.186    ← FORBIDDEN
+#   TXT "hetzner-ip=..."              ← FORBIDDEN
+#
+# If any A record pointing to 167.235.195.186 is found, treat as a security
+# incident and delete immediately.
+
+# ---- Verification commands --------------------------------------------------
+# Run after any DNS change to confirm origin obfuscation is intact:
+#
+#   dig +short stream.yourflock.com
+#   # Expected: Cloudflare IPs (104.x.x.x or similar) — NEVER 167.235.195.186
+#
+#   curl -sI https://stream.yourflock.com/health | grep -i server
+#   # Expected: "cloudflare" — NEVER "nginx" or "hetzner"
+#
+#   curl -sI https://roost.yourflock.com | grep -i "server\|via\|x-powered"
+#   # Expected: no output (all origin headers stripped by Worker/CF)

@@ -1,0 +1,74 @@
+# docker-compose.lan.yml — LAN-Only Mode
+#
+# Use: docker compose -f docker-compose.lan.yml up -d
+#
+# This compose variant removes all Cloudflare Tunnel services.
+# Roost responds only to RFC-1918 addresses, enforced at the Nginx layer
+# (see infra/nginx/nginx.lan.conf). No external services are reachable
+# unless explicitly added to ROOST_SUBMARINE_ALLOWLIST.
+#
+# Required env vars (set in .env or environment):
+#   POSTGRES_PASSWORD   — Postgres password
+#   ROOST_JWT_SECRET    — JWT signing secret
+#   R2_ENDPOINT         — Cloudflare R2 endpoint (optional in LAN mode)
+
+services:
+  postgres:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: roost
+      POSTGRES_USER: roost
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U roost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7-alpine
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      interval: 10s
+      timeout: 3s
+      retries: 5
+
+  roost:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    environment:
+      - DATABASE_URL=postgres://roost:${POSTGRES_PASSWORD}@postgres:5432/roost?sslmode=disable
+      - REDIS_URL=redis://redis:6379
+      - ROOST_JWT_SECRET=${ROOST_JWT_SECRET}
+      - ROOST_EXTERNAL_ACCESS=false
+      - ROOST_MODE=${ROOST_MODE:-self_hosted}
+      - ROOST_BASE_URL=http://localhost:8080
+      # Bind to localhost only — nginx handles external access within the LAN
+      - ROOST_BIND=127.0.0.1:8080
+    expose:
+      - "8080"
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    restart: unless-stopped
+
+  nginx:
+    image: nginx:1.27-alpine
+    volumes:
+      - ./infra/nginx/nginx.lan.conf:/etc/nginx/nginx.conf:ro
+    ports:
+      - "80:80"
+    depends_on:
+      - roost
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local

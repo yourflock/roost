@@ -1,0 +1,92 @@
+#!/bin/sh
+# start-stop-status — Roost DSM service lifecycle script.
+# DSM calls this script with "start", "stop", or "status" as the first argument.
+# Must be POSIX sh.
+
+BINARY="/var/packages/roost/target/roost"
+CONFIG_FILE="/etc/roost/roost.env"
+PID_FILE="/var/run/roost/roost.pid"
+LOG_FILE="/var/log/roost/roost.log"
+
+# Load configuration.
+load_config() {
+    if [ -f "${CONFIG_FILE}" ]; then
+        # Source only lines that look like VAR=value (no commands).
+        while IFS= read -r line; do
+            case "$line" in
+                '#'*|'') continue ;;
+                *=*)
+                    key="${line%%=*}"
+                    val="${line#*=}"
+                    export "$key"="$val"
+                    ;;
+            esac
+        done < "${CONFIG_FILE}"
+    fi
+}
+
+start_roost() {
+    if [ -f "${PID_FILE}" ]; then
+        PID=$(cat "${PID_FILE}")
+        if kill -0 "$PID" 2>/dev/null; then
+            echo "Roost is already running (PID $PID)."
+            return 0
+        fi
+        rm -f "${PID_FILE}"
+    fi
+
+    mkdir -p "$(dirname "${LOG_FILE}")"
+    load_config
+
+    "${BINARY}" >> "${LOG_FILE}" 2>&1 &
+    echo $! > "${PID_FILE}"
+    echo "Roost started (PID $(cat "${PID_FILE}"))."
+}
+
+stop_roost() {
+    if [ ! -f "${PID_FILE}" ]; then
+        echo "Roost is not running."
+        return 0
+    fi
+
+    PID=$(cat "${PID_FILE}")
+    if kill -TERM "$PID" 2>/dev/null; then
+        # Wait up to 10 seconds for graceful shutdown.
+        i=0
+        while kill -0 "$PID" 2>/dev/null && [ "$i" -lt 10 ]; do
+            sleep 1
+            i=$((i + 1))
+        done
+        # Force kill if still running.
+        kill -KILL "$PID" 2>/dev/null || true
+    fi
+    rm -f "${PID_FILE}"
+    echo "Roost stopped."
+}
+
+status_roost() {
+    if [ -f "${PID_FILE}" ]; then
+        PID=$(cat "${PID_FILE}")
+        if kill -0 "$PID" 2>/dev/null; then
+            echo "Roost is running (PID $PID)."
+            return 0
+        fi
+    fi
+    echo "Roost is not running."
+    return 1
+}
+
+case "$1" in
+    start)   start_roost ;;
+    stop)    stop_roost ;;
+    status)  status_roost ;;
+    restart)
+        stop_roost
+        sleep 1
+        start_roost
+        ;;
+    *)
+        echo "Usage: $0 {start|stop|restart|status}"
+        exit 1
+        ;;
+esac

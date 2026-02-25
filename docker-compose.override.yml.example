@@ -1,0 +1,61 @@
+# docker-compose.override.yml.example — Local development overrides.
+#
+# Copy to docker-compose.override.yml to activate.
+# Docker Compose automatically merges this with docker-compose.roost.yml.
+#
+#   cp docker-compose.override.yml.example docker-compose.override.yml
+#   docker compose -f docker-compose.roost.yml up -d
+
+# When to use each override: see comments per service below.
+
+name: roost
+
+services:
+  # ─── Expose Postgres for local DB tools (TablePlus, psql, etc.) ─────────────
+  # Use when: you want to connect a local DB GUI or run migrations manually.
+  # SECURITY: Never use this on a public-facing server.
+  postgres:
+    ports:
+      - "127.0.0.1:5432:5432"
+
+  # ─── Expose Redis for debugging ─────────────────────────────────────────────
+  # Use when: you want to inspect cache keys with redis-cli.
+  redis:
+    ports:
+      - "127.0.0.1:6379:6379"
+
+  # ─── Expose MinIO console ───────────────────────────────────────────────────
+  # Use when: you want to browse stored files in the MinIO web UI.
+  # Access at: http://localhost:9001
+  minio:
+    ports:
+      - "127.0.0.1:9001:9001"
+
+  # ─── Bypass Nginx — access Roost directly on port 8080 ──────────────────────
+  # Use when: testing the API without Nginx in the way.
+  roost:
+    ports:
+      - "127.0.0.1:8080:8080"
+
+  # ─── Disable Nginx entirely for dev ─────────────────────────────────────────
+  # Use when: you don't need HTTPS locally.
+  nginx:
+    profiles:
+      - disabled
+
+  # ─── pgAdmin — Postgres GUI ──────────────────────────────────────────────────
+  # Use when: you want a web-based Postgres GUI.
+  # Access at: http://localhost:5050
+  # Login: admin@roost.local / admin
+  #
+  # pgadmin:
+  #   image: dpage/pgadmin4:latest
+  #   container_name: roost_pgadmin
+  #   restart: unless-stopped
+  #   networks:
+  #     - roost_net
+  #   environment:
+  #     PGADMIN_DEFAULT_EMAIL: admin@roost.local
+  #     PGADMIN_DEFAULT_PASSWORD: admin
+  #   ports:
+  #     - "127.0.0.1:5050:80"

@@ -1,0 +1,38 @@
+{
+  "package": "roost",
+  "version": "1.0.0-0001",
+  "dname": "Roost",
+  "desc": "Self-hosted media backend for Owl. Live TV, VOD, music, podcasts, and games in one open-source package.",
+  "thumbnail": [
+    "https://raw.githubusercontent.com/yourflock/roost/main/.wiki/images/icon-256.png"
+  ],
+  "snapshot": [
+    "https://raw.githubusercontent.com/yourflock/roost/main/.wiki/images/screenshot-1.png"
+  ],
+  "link": "https://github.com/yourflock/roost/releases/download/v1.0.0/roost-1.0.0-amd64.spk",
+  "size": "25000000",
+  "md5": "",
+  "info_url": "https://github.com/yourflock/roost",
+  "download_count": "0",
+  "recent_download_count": "0",
+  "category": 22,
+  "subcategory": 0,
+  "type": 0,
+  "silent_install": false,
+  "silent_uninstall": false,
+  "silent_upgrade": true,
+  "distributor": "yourflock",
+  "distributor_url": "https://yourflock.com",
+  "maintainer": "yourflock",
+  "maintainer_url": "https://github.com/yourflock/roost",
+  "price": 0,
+  "download_url": "https://github.com/yourflock/roost/releases/download/v1.0.0/roost-1.0.0-amd64.spk",
+  "install_wizard": true,
+  "qinst": false,
+  "qstart": true,
+  "qupgrade": true,
+  "depsers": "",
+  "deppkgs": "",
+  "changelog": "Initial release",
+  "conflictpkgs": ""
+}

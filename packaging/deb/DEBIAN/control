@@ -1,0 +1,22 @@
+Package: roost
+Version: 1.0.0
+Section: net
+Priority: optional
+Architecture: amd64
+Depends: systemd, curl
+Recommends: postgresql-16 | postgresql, redis-server
+Suggests: nginx
+Installed-Size: 25000
+Maintainer: yourflock <hello@yourflock.com>
+Homepage: https://github.com/yourflock/roost
+Description: Self-hosted media backend for Owl
+ Roost is an open-source media backend that powers the Owl media player.
+ It handles Live TV (DVR, EPG), VOD, music, podcasts, and games in a
+ single self-contained service.
+ .
+ Connect Roost to the Owl app and your content appears in one unified
+ library across all your devices.
+ .
+ Roost runs in private mode by default (no billing required).
+ .
+ Project: https://github.com/yourflock/roost

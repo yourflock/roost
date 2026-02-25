@@ -1,0 +1,23 @@
+#!/bin/sh
+# postrm — Roost DEB post-remove script.
+# Runs after the package files are removed.
+set -e
+
+case "$1" in
+    purge)
+        # On purge: remove config files and the roost system user.
+        rm -rf /etc/roost
+        rm -rf /var/log/roost
+        if id roost >/dev/null 2>&1; then
+            userdel roost || true
+        fi
+        ;;
+    remove|upgrade|failed-upgrade|abort-install|abort-upgrade|disappear)
+        # Reload systemd to drop the removed service unit.
+        if command -v systemctl >/dev/null 2>&1; then
+            systemctl daemon-reload || true
+        fi
+        ;;
+esac
+
+exit 0

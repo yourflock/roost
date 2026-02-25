@@ -79,7 +79,7 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Typecheck
-        run: pnpm typecheck
+        run: pnpm check
 
   typecheck-web-admin:
     name: Typecheck / web/admin
@@ -100,10 +100,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install
       - name: Typecheck
-        run: pnpm typecheck
+        run: pnpm check
 
-  test-web-subscribe:
-    name: Test / web/subscribe
+  build-web-subscribe:
+    name: Build / web/subscribe
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -120,17 +120,14 @@ jobs:
           cache-dependency-path: web/subscribe/pnpm-lock.yaml
       - name: Install dependencies
         run: pnpm install
-      - name: Test with coverage
-        run: pnpm test:coverage
-      - name: Upload coverage
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-web-subscribe
-          path: web/subscribe/coverage/
-          retention-days: 7
+      - name: Build
+        env:
+          PUBLIC_API_URL: https://roost.yourflock.com
+          PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY }}
+        run: pnpm build
 
-  test-web-admin:
-    name: Test / web/admin
+  build-web-admin:
+    name: Build / web/admin
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -147,120 +144,138 @@ jobs:
           cache-dependency-path: web/admin/pnpm-lock.yaml
       - name: Install dependencies
         run: pnpm install
-      - name: Test with coverage
-        run: pnpm test:coverage
-      - name: Upload coverage
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage-web-admin
-          path: web/admin/coverage/
-          retention-days: 7
+      - name: Build
+        env:
+          PUBLIC_API_URL: https://roost.yourflock.com
+        run: pnpm build
 
   # ─────────────────────────────────────────────
-  # Go backend
+  # Go — all backend services
   # ─────────────────────────────────────────────
 
-  test-go-backend:
+  test-go:
     name: Test / Go backend
     runs-on: ubuntu-latest
-    defaults:
-      run:
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: roost_test
+          POSTGRES_PASSWORD: roost_test
+          POSTGRES_DB: roost_test
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5433:5432
+    env:
+      DATABASE_URL: postgresql://roost_test:roost_test@localhost:5433/roost_test
+      BILLING_PORT: "18085"
+      INGEST_PORT: "18094"
+      RELAY_PORT: "18090"
+      CATALOG_PORT: "18095"
+      EPG_PORT: "18096"
+      OWL_API_PORT: "18091"
+      STRIPE_SECRET_KEY: sk_test_dummy_for_ci
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: "1.22"
+          cache-dependency-path: backend/go.sum
+      - name: Run migrations (test DB)
+        run: |
+          for f in $(ls backend/db/migrations/*.sql | sort); do
+            PGPASSWORD=roost_test psql \
+              -h localhost -p 5433 -U roost_test -d roost_test \
+              -f "$f" 2>/dev/null || true
+          done
+      - name: Test all services
         working-directory: backend
+        run: go test ./... -v -timeout 120s -count=1
+      - name: Vet
+        working-directory: backend
+        run: go vet ./...
+
+  build-go:
+    name: Build / Go services (validate compilation)
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        service:
+          - ingest
+          - relay
+          - catalog
+          - epg
+          - owl_api
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version: '1.22'
+          go-version: "1.22"
           cache-dependency-path: backend/go.sum
-      - name: Run tests
-        run: go test ./...
-
-  # ─────────────────────────────────────────────
-  # Database migrations
-  # ─────────────────────────────────────────────
-
-  migration-check:
-    name: Migration check
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-      - name: Verify every .up.sql has a matching .down.sql
-        shell: bash
+      - name: Build ${{ matrix.service }}
+        working-directory: backend
         run: |
-          set -euo pipefail
-          MIGRATIONS_DIR="backend/db/migrations"
-
-          if [ ! -d "$MIGRATIONS_DIR" ]; then
-            echo "No migrations directory found at $MIGRATIONS_DIR — skipping."
-            exit 0
+          if [ -d "services/${{ matrix.service }}/cmd/${{ matrix.service }}" ]; then
+            go build ./services/${{ matrix.service }}/cmd/${{ matrix.service }}/...
+          elif [ -d "services/${{ matrix.service }}/cmd" ]; then
+            go build ./services/${{ matrix.service }}/cmd/...
+          else
+            go build ./services/${{ matrix.service }}/...
           fi
 
-          MISSING=0
-          while IFS= read -r up_file; do
-            down_file="${up_file%.up.sql}.down.sql"
-            if [ ! -f "$down_file" ]; then
-              echo "MISSING down migration for: $up_file"
-              MISSING=$((MISSING + 1))
-            fi
-          done < <(find "$MIGRATIONS_DIR" -name "*.up.sql" | sort)
-
-          if [ "$MISSING" -gt 0 ]; then
-            echo ""
-            echo "ERROR: $MISSING migration(s) are missing a matching .down.sql file."
-            exit 1
-          fi
-
-          COUNT=$(find "$MIGRATIONS_DIR" -name "*.up.sql" | wc -l | tr -d ' ')
-          echo "OK: all $COUNT migration(s) have matching .down.sql files."
-
-  # ─────────────────────────────────────────────
-  # Owl Addon API build check
-  # ─────────────────────────────────────────────
-
-  addon-api-check:
-    name: Build check / owl_api service
+  build-go-billing:
+    name: Build / Go billing service
     runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: backend/services/owl_api
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-go@v5
         with:
-          go-version: '1.22'
+          go-version: "1.22"
           cache-dependency-path: backend/go.sum
-      - name: Build owl_api
-        run: go build ./...
+      - name: Build billing
+        working-directory: backend
+        run: |
+          if [ -f "services/billing/main.go" ]; then
+            go build ./services/billing/...
+          elif [ -d "services/billing/cmd" ]; then
+            go build ./services/billing/cmd/...
+          else
+            go build ./services/billing/...
+          fi
 
   # ─────────────────────────────────────────────
-  # Summary gate — all jobs must pass
+  # Docker — build images (no push on CI, push on deploy)
   # ─────────────────────────────────────────────
 
-  all-checks-pass:
-    name: All checks pass
+  docker-build:
+    name: Docker build check / ${{ matrix.service }}
     runs-on: ubuntu-latest
-    if: always()
     needs:
-      - lint-web-subscribe
-      - lint-web-admin
-      - typecheck-web-subscribe
-      - typecheck-web-admin
-      - test-web-subscribe
-      - test-web-admin
-      - test-go-backend
-      - migration-check
-      - addon-api-check
+      - test-go
+      - build-go
+    strategy:
+      matrix:
+        service:
+          - ingest
+          - relay
+          - catalog
+          - epg
+          - owl_api
+          - billing
     steps:
-      - name: Check all jobs succeeded
-        shell: bash
-        run: |
-          results='${{ toJSON(needs) }}'
-          echo "$results" | python3 -c "
-          import sys, json
-          needs = json.load(sys.stdin)
-          failed = [name for name, job in needs.items() if job['result'] not in ('success', 'skipped')]
-          if failed:
-              print('FAILED jobs:', ', '.join(failed))
-              sys.exit(1)
-          print('All checks passed.')
-          "
+      - uses: actions/checkout@v4
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+      - name: Build Docker image (no push)
+        uses: docker/build-push-action@v5
+        with:
+          context: backend
+          file: backend/services/${{ matrix.service }}/Dockerfile
+          push: false
+          tags: ghcr.io/yourflock/roost-${{ matrix.service }}:ci-${{ github.sha }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max

@@ -1,0 +1,24 @@
+# roost.conf — Roost configuration template for QNAP.
+# Installed to: /etc/config/roost.conf
+# Customize values and restart Roost from App Center.
+
+# ─── Core ────────────────────────────────────────────────────────────────────
+ROOST_MODE=private
+ROOST_PORT=7979
+# REQUIRED: Generate with: openssl rand -hex 32
+ROOST_SECRET_KEY=
+
+# ─── Database ────────────────────────────────────────────────────────────────
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+POSTGRES_DB=roost
+POSTGRES_USER=roost
+POSTGRES_PASSWORD=
+
+# ─── Redis (optional — disables rate limiting if not set) ────────────────────
+REDIS_URL=redis://localhost:6379/0
+
+# ─── Media paths ─────────────────────────────────────────────────────────────
+# Point to your NAS shared folders.
+MEDIA_PATH=/share/Multimedia
+RECORDINGS_PATH=/share/Recordings/Roost

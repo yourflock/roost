@@ -1,0 +1,16 @@
+#!/bin/sh
+# preinst — Roost DEB pre-install script.
+# Runs before the package is unpacked.
+set -e
+
+# Create the roost system user if it does not exist.
+# This user runs the Roost service with minimal privileges.
+if ! id roost >/dev/null 2>&1; then
+    useradd --system \
+        --no-create-home \
+        --shell /usr/sbin/nologin \
+        --comment "Roost media service" \
+        roost
+fi
+
+exit 0

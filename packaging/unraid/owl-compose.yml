@@ -1,0 +1,97 @@
+# owl-compose.yml — Unraid-optimized Docker Compose for Roost + Owl integration.
+#
+# Designed for Unraid's /mnt/user/ path conventions and Unraid's bridge network.
+# Companion to the Unraid Community Applications template (roost.xml).
+#
+# Usage on Unraid:
+#   Place this file in /mnt/user/appdata/roost/
+#   docker compose -f /mnt/user/appdata/roost/owl-compose.yml up -d
+
+name: roost-unraid
+
+networks:
+  roost_net:
+    driver: bridge
+
+volumes:
+  roost_postgres_data:
+    driver: local
+  roost_redis_data:
+    driver: local
+
+services:
+  # ─── PostgreSQL ─────────────────────────────────────────────────────────────
+  postgres:
+    image: postgres:16-alpine
+    container_name: roost_postgres
+    restart: unless-stopped
+    networks:
+      - roost_net
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-roost}
+      POSTGRES_USER: ${POSTGRES_USER:-roost}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+    volumes:
+      - roost_postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-roost}"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ─── Redis ──────────────────────────────────────────────────────────────────
+  redis:
+    image: redis:7-alpine
+    container_name: roost_redis
+    restart: unless-stopped
+    networks:
+      - roost_net
+    command: redis-server --requirepass ${REDIS_PASSWORD:-roostredis} --save 60 1
+    volumes:
+      - roost_redis_data:/data
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "${REDIS_PASSWORD:-roostredis}", "ping"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+
+  # ─── Roost ──────────────────────────────────────────────────────────────────
+  roost:
+    image: ghcr.io/yourflock/roost:latest
+    container_name: roost_app
+    restart: unless-stopped
+    networks:
+      - roost_net
+    depends_on:
+      postgres:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+    ports:
+      # Unraid convention: expose on user-chosen port (default 7979)
+      - "${ROOST_PORT:-7979}:8080"
+    environment:
+      ROOST_MODE: ${ROOST_MODE:-private}
+      ROOST_SECRET_KEY: ${ROOST_SECRET_KEY}
+      POSTGRES_HOST: postgres
+      POSTGRES_PORT: 5432
+      POSTGRES_DB: ${POSTGRES_DB:-roost}
+      POSTGRES_USER: ${POSTGRES_USER:-roost}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      REDIS_URL: redis://:${REDIS_PASSWORD:-roostredis}@redis:6379/0
+      STORAGE_ENDPOINT: ${STORAGE_ENDPOINT:-}
+      STORAGE_ACCESS_KEY: ${STORAGE_ACCESS_KEY:-}
+      STORAGE_SECRET_KEY: ${STORAGE_SECRET_KEY:-}
+      STORAGE_BUCKET: ${STORAGE_BUCKET:-roost-media}
+      MEDIA_PATH: /media
+      RECORDINGS_PATH: /recordings
+    volumes:
+      # Unraid paths — /mnt/user/ is the user share mount point
+      - ${MEDIA_PATH:-/mnt/user/Media}:/media:ro
+      - ${RECORDINGS_PATH:-/mnt/user/Recordings/Roost}:/recordings:rw
+      - ${APPDATA_PATH:-/mnt/user/appdata/roost}:/config:rw
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:8080/health || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3

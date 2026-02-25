@@ -89,3 +89,7 @@ FEEDBACK.md
 NEXT.md
 TRACKING.md
 PLAN.md
+
+# Go service compiled binaries
+backend/services/*/bin/
+backend/bin/

@@ -1,0 +1,43 @@
+# /lib/systemd/system/roost.service — systemd unit for Roost.
+# Manages the Roost media service as a system service.
+
+[Unit]
+Description=Roost — self-hosted media backend for Owl
+Documentation=https://github.com/yourflock/roost
+After=network.target postgresql.service redis.service
+Wants=network.target
+
+[Service]
+Type=simple
+User=roost
+Group=roost
+
+# Load configuration from /etc/roost/roost.env
+EnvironmentFile=-/etc/roost/roost.env
+
+ExecStart=/usr/bin/roost
+ExecReload=/bin/kill -HUP $MAINPID
+
+# Restart on failure with a short delay.
+Restart=on-failure
+RestartSec=5s
+
+# Logging — output goes to the systemd journal.
+# View with: journalctl -u roost -f
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=roost
+
+# Security hardening.
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ProtectHome=yes
+ReadWritePaths=/var/lib/roost /var/log/roost
+
+# Resource limits.
+LimitNOFILE=65536
+LimitNPROC=4096
+
+[Install]
+WantedBy=multi-user.target

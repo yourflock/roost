@@ -1,0 +1,54 @@
+name: Lint Commits
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+
+jobs:
+  commitlint:
+    name: Validate commit messages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Check conventional commit format
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          # Validate every commit in the PR against the conventional commit format.
+          # Format: type(scope): description
+          # Types: feat|fix|chore|docs|test|ci|refactor|perf
+          # Scopes: ingest|relay|billing|auth|catalog|epg|owl-api|sports|portal|admin|infra|db
+
+          VALID_TYPES="feat|fix|chore|docs|test|ci|refactor|perf"
+          PATTERN="^(${VALID_TYPES})(\([a-z][a-z0-9-]*\))?(!)?: .{1,72}$"
+
+          BASE_SHA="${{ github.event.pull_request.base.sha }}"
+          HEAD_SHA="${{ github.event.pull_request.head.sha }}"
+
+          FAILED=0
+          while IFS= read -r commit_sha; do
+            message=$(git log --format="%s" -n 1 "$commit_sha")
+            if ! echo "$message" | grep -qP "$PATTERN"; then
+              echo "FAIL: $commit_sha"
+              echo "  Message: $message"
+              echo "  Expected: type(scope): description"
+              echo "  Valid types: ${VALID_TYPES//|/, }"
+              FAILED=1
+            else
+              echo "OK:   $commit_sha — $message"
+            fi
+          done < <(git log --format="%H" "${BASE_SHA}..${HEAD_SHA}")
+
+          if [ "$FAILED" -eq 1 ]; then
+            echo ""
+            echo "One or more commits do not follow conventional commit format."
+            echo "See .github/commit-convention.md for the full specification."
+            exit 1
+          fi
+
+          echo ""
+          echo "All commits pass conventional commit format check."

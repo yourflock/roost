@@ -1,0 +1,32 @@
+#!/bin/sh
+# preinst — Roost SPK pre-install script.
+# Runs before the package payload is extracted.
+# Must be POSIX sh — DSM does not guarantee bash.
+
+PACKAGE_NAME="roost"
+MIN_DSM_VER="7.0"
+
+# Verify DSM version is supported.
+DSM_VER=$(cat /etc/VERSION 2>/dev/null | grep "majorversion=" | cut -d= -f2)
+if [ -n "$DSM_VER" ] && [ "$DSM_VER" -lt 7 ] 2>/dev/null; then
+    echo "Roost requires DSM 7.0 or later. Current: DSM $DSM_VER"
+    exit 1
+fi
+
+# Verify architecture is supported.
+ARCH=$(uname -m)
+case "$ARCH" in
+    x86_64|aarch64|armv8*)
+        ;;
+    *)
+        echo "Unsupported architecture: $ARCH"
+        echo "Roost supports x86_64 and aarch64."
+        exit 1
+        ;;
+esac
+
+# Create the config directory if it does not exist.
+mkdir -p /etc/roost
+chmod 755 /etc/roost
+
+exit 0

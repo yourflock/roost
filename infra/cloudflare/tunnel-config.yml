@@ -1,0 +1,27 @@
+# Cloudflare Tunnel Configuration — Roost Production
+# Tunnel: roost-prod (outbound from Hetzner VPS, no inbound ports needed)
+# All traffic enters via Cloudflare network, exits to local nginx:80
+
+tunnel: TUNNEL_ID
+credentials-file: /etc/cloudflared/credentials.json
+
+# Ingress rules: match hostname/path → route to internal service
+ingress:
+  # Main Roost application (subscriber portal, APIs, admin)
+  - hostname: roost.yourflock.com
+    service: http://nginx:80
+    originRequest:
+      connectTimeout: 10s
+      noTLSVerify: true
+
+  # Dedicated HLS relay subdomain (stream delivery)
+  - hostname: relay.roost.yourflock.com
+    service: http://relay:8090
+    originRequest:
+      connectTimeout: 5s
+      # Longer timeout for streaming connections
+      tcpKeepAlive: 30s
+      noTLSVerify: true
+
+  # Catch-all: return 404 for unmatched hostnames
+  - service: http_status:404

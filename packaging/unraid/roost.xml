@@ -1,0 +1,221 @@
+<?xml version="1.0"?>
+<Container version="2">
+  <Name>Roost</Name>
+  <Repository>ghcr.io/yourflock/roost:latest</Repository>
+  <Registry>https://ghcr.io/</Registry>
+  <Network>bridge</Network>
+  <MyIP/>
+  <Shell>sh</Shell>
+  <Privileged>false</Privileged>
+  <Support>https://github.com/yourflock/roost/issues</Support>
+  <Project>https://github.com/yourflock/roost</Project>
+  <Overview>
+    Roost is a self-hosted media backend for Owl. It handles Live TV (DVR, EPG), VOD,
+    music, podcasts, and games in a single open-source package.
+
+    Connect it to the Owl media player app and all your content appears in one unified
+    library across all your devices.
+
+    GitHub: https://github.com/yourflock/roost
+  </Overview>
+  <Category>MediaServer:Video MediaServer:Music</Category>
+  <WebUI>http://[IP]:[PORT:7979]</WebUI>
+  <TemplateURL>https://raw.githubusercontent.com/yourflock/roost/main/packaging/unraid/roost.xml</TemplateURL>
+  <Icon>https://raw.githubusercontent.com/yourflock/roost/main/.wiki/images/icon-256.png</Icon>
+  <ExtraParams>--restart=unless-stopped</ExtraParams>
+  <PostArgs/>
+  <CPUset/>
+  <DateInstalled/>
+  <DonateText>Support Roost development</DonateText>
+  <DonateLink>https://github.com/yourflock/roost</DonateLink>
+  <Requires/>
+
+  <!-- ─── Paths ─────────────────────────────────────────────────────────── -->
+
+  <Config
+    Name="Media Library"
+    Target="/media"
+    Default="/mnt/user/Media"
+    Mode="ro"
+    Description="Path to your media library (read-only). Roost indexes and serves files from here."
+    Type="Path"
+    Display="always"
+    Required="false"
+    Mask="false"/>
+
+  <Config
+    Name="DVR Recordings"
+    Target="/recordings"
+    Default="/mnt/user/Recordings/Roost"
+    Mode="rw"
+    Description="Path where Roost writes DVR recordings."
+    Type="Path"
+    Display="always"
+    Required="false"
+    Mask="false"/>
+
+  <Config
+    Name="App Data / Config"
+    Target="/config"
+    Default="/mnt/user/appdata/roost"
+    Mode="rw"
+    Description="Persistent config and database for Roost."
+    Type="Path"
+    Display="always"
+    Required="true"
+    Mask="false"/>
+
+  <!-- ─── Ports ─────────────────────────────────────────────────────────── -->
+
+  <Config
+    Name="HTTP Port"
+    Target="8080"
+    Default="7979"
+    Mode="tcp"
+    Description="The port Roost listens on. Access the web UI at http://UNRAID-IP:PORT"
+    Type="Port"
+    Display="always"
+    Required="true"
+    Mask="false"/>
+
+  <!-- ─── Core variables ────────────────────────────────────────────────── -->
+
+  <Config
+    Name="Operating Mode"
+    Target="ROOST_MODE"
+    Default="private"
+    Mode=""
+    Description="private = self-hosted (default). public = managed deployment with Stripe billing."
+    Type="Variable"
+    Display="always"
+    Required="true"
+    Mask="false"/>
+
+  <Config
+    Name="Secret Key"
+    Target="ROOST_SECRET_KEY"
+    Default=""
+    Mode=""
+    Description="Secret key for signing auth tokens. Generate with: openssl rand -hex 32. REQUIRED."
+    Type="Variable"
+    Display="always"
+    Required="true"
+    Mask="true"/>
+
+  <!-- ─── Database variables ────────────────────────────────────────────── -->
+
+  <Config
+    Name="Postgres Host"
+    Target="POSTGRES_HOST"
+    Default="localhost"
+    Mode=""
+    Description="PostgreSQL hostname. Use the Unraid container name if running Postgres in Docker."
+    Type="Variable"
+    Display="advanced"
+    Required="false"
+    Mask="false"/>
+
+  <Config
+    Name="Postgres Port"
+    Target="POSTGRES_PORT"
+    Default="5432"
+    Mode=""
+    Description="PostgreSQL port."
+    Type="Variable"
+    Display="advanced"
+    Required="false"
+    Mask="false"/>
+
+  <Config
+    Name="Postgres Database"
+    Target="POSTGRES_DB"
+    Default="roost"
+    Mode=""
+    Description="PostgreSQL database name."
+    Type="Variable"
+    Display="advanced"
+    Required="false"
+    Mask="false"/>
+
+  <Config
+    Name="Postgres User"
+    Target="POSTGRES_USER"
+    Default="roost"
+    Mode=""
+    Description="PostgreSQL username."
+    Type="Variable"
+    Display="advanced"
+    Required="false"
+    Mask="false"/>
+
+  <Config
+    Name="Postgres Password"
+    Target="POSTGRES_PASSWORD"
+    Default=""
+    Mode=""
+    Description="PostgreSQL password. REQUIRED."
+    Type="Variable"
+    Display="advanced"
+    Required="true"
+    Mask="true"/>
+
+  <!-- ─── Redis ─────────────────────────────────────────────────────────── -->
+
+  <Config
+    Name="Redis URL"
+    Target="REDIS_URL"
+    Default="redis://localhost:6379/0"
+    Mode=""
+    Description="Redis connection URL. Used for rate limiting and caching. Optional — disables rate limiting if not set."
+    Type="Variable"
+    Display="advanced"
+    Required="false"
+    Mask="false"/>
+
+  <!-- ─── Storage ───────────────────────────────────────────────────────── -->
+
+  <Config
+    Name="Storage Endpoint"
+    Target="STORAGE_ENDPOINT"
+    Default="http://localhost:9000"
+    Mode=""
+    Description="S3-compatible object storage endpoint (MinIO or Cloudflare R2). Used for DVR segments and cached HLS."
+    Type="Variable"
+    Display="advanced"
+    Required="false"
+    Mask="false"/>
+
+  <Config
+    Name="Storage Access Key"
+    Target="STORAGE_ACCESS_KEY"
+    Default="roost"
+    Mode=""
+    Description="S3-compatible storage access key ID."
+    Type="Variable"
+    Display="advanced"
+    Required="false"
+    Mask="false"/>
+
+  <Config
+    Name="Storage Secret Key"
+    Target="STORAGE_SECRET_KEY"
+    Default=""
+    Mode=""
+    Description="S3-compatible storage secret key."
+    Type="Variable"
+    Display="advanced"
+    Required="false"
+    Mask="true"/>
+
+  <Config
+    Name="Storage Bucket"
+    Target="STORAGE_BUCKET"
+    Default="roost-media"
+    Mode=""
+    Description="S3 bucket name for media storage."
+    Type="Variable"
+    Display="advanced"
+    Required="false"
+    Mask="false"/>
+
+</Container>

@@ -1,0 +1,5 @@
+#!/bin/sh
+# This file is replaced by the compiled Roost binary during the DEB build process.
+# If you see this message, the build was not completed correctly.
+echo "Roost binary placeholder — not a real binary" >&2
+exit 1

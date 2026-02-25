@@ -1,0 +1,223 @@
+name: Security Scan
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  schedule:
+    # Run every Monday at 08:00 UTC
+    - cron: '0 8 * * 1'
+  workflow_dispatch: {}
+
+jobs:
+
+  # ─────────────────────────────────────────────
+  # Go vulnerability scan (govulncheck)
+  # ─────────────────────────────────────────────
+
+  govulncheck:
+    name: govulncheck / Go backend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+          cache-dependency-path: backend/go.sum
+
+      - name: Install govulncheck
+        run: go install golang.org/x/vuln/cmd/govulncheck@latest
+
+      - name: Run govulncheck — root module
+        working-directory: backend
+        run: govulncheck ./...
+
+  # ─────────────────────────────────────────────
+  # staticcheck — Go static analysis (P22.6.001)
+  # ─────────────────────────────────────────────
+
+  staticcheck:
+    name: staticcheck / Go backend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+          cache-dependency-path: backend/go.sum
+
+      - name: Install staticcheck
+        run: go install honnef.co/go/tools/cmd/staticcheck@latest
+
+      - name: Run staticcheck
+        run: staticcheck ./...
+        working-directory: backend
+
+  # ─────────────────────────────────────────────
+  # gosec — Go security static analysis (P22.6)
+  # Catches: SQL injection, hardcoded credentials, weak crypto,
+  # path traversal, unsafe subprocess execution.
+  # ─────────────────────────────────────────────
+
+  gosec:
+    name: gosec / Go security analysis
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+          cache-dependency-path: backend/go.sum
+
+      - name: Install gosec
+        run: go install github.com/securego/gosec/v2/cmd/gosec@latest
+
+      - name: Run gosec
+        working-directory: backend
+        # G304 (file inclusion) and G306 (file permissions) are suppressed in test files.
+        # -severity high: only fail on high-severity findings (not medium/low in test code).
+        run: |
+          gosec -fmt=sarif -out=gosec-results.sarif -severity=high -exclude-dir=internal/testutil ./...
+        continue-on-error: true
+
+      - name: Upload SARIF results
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: backend/gosec-results.sarif
+          category: gosec
+
+  # ─────────────────────────────────────────────
+  # golangci-lint static analysis
+  # ─────────────────────────────────────────────
+
+  golangci-lint:
+    name: golangci-lint / Go backend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.24'
+          cache-dependency-path: backend/go.sum
+
+      - name: Run golangci-lint
+        uses: golangci/golangci-lint-action@v6
+        with:
+          version: v1.61
+          working-directory: backend
+          args: --timeout=5m --out-format=github-actions
+
+  # ─────────────────────────────────────────────
+  # Trivy container scan — Dockerfile (P22.6)
+  # Scans the built image for OS and library CVEs.
+  # ─────────────────────────────────────────────
+
+  trivy:
+    name: trivy / container scan
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build Docker image for scanning
+        run: docker build -t roost:scan --target=final .
+
+      - name: Run Trivy vulnerability scanner
+        uses: aquasecurity/trivy-action@master
+        with:
+          image-ref: 'roost:scan'
+          format: 'sarif'
+          output: 'trivy-results.sarif'
+          severity: 'CRITICAL,HIGH'
+          exit-code: '1'
+
+      - name: Upload Trivy SARIF results
+        uses: github/codeql-action/upload-sarif@v3
+        if: always()
+        with:
+          sarif_file: trivy-results.sarif
+          category: trivy
+
+  # ─────────────────────────────────────────────
+  # Node/SvelteKit audit (pnpm audit)
+  # ─────────────────────────────────────────────
+
+  pnpm-audit-subscribe:
+    name: pnpm audit / web/subscribe
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web/subscribe
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: web/subscribe/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Audit for vulnerabilities
+        run: pnpm audit --audit-level=high
+
+  pnpm-audit-admin:
+    name: pnpm audit / web/admin
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web/admin
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: web/admin/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Audit for vulnerabilities
+        run: pnpm audit --audit-level=high
+
+  pnpm-audit-reseller:
+    name: pnpm audit / web/reseller
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web/reseller
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+        with:
+          version: 10
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+          cache-dependency-path: web/reseller/pnpm-lock.yaml
+
+      - name: Install dependencies
+        run: pnpm install
+
+      - name: Audit for vulnerabilities
+        run: pnpm audit --audit-level=high

@@ -1,0 +1,73 @@
+# Dockerfile.roost — Multi-stage build for the Roost binary.
+# Stage 1: compile the Go binary with embedded assets.
+# Stage 2: minimal distroless runtime — no shell, no package manager.
+#
+# Build:
+#   docker build -f Dockerfile.roost -t roost:latest .
+#
+# Notes:
+#   - CGO_ENABLED=0 — pure Go build, compatible with distroless/static
+#   - Migrations and seed SQL are embedded into the binary via //go:embed
+#   - Final image runs as nonroot (UID 65532) for security hardening
+#   - Target size: <50 MB
+
+# ─── Stage 1: Builder ────────────────────────────────────────────────────────
+FROM golang:1.22-alpine AS builder
+
+WORKDIR /build
+
+# Install CA certificates for HTTPS calls during build (e.g., go mod download)
+RUN apk add --no-cache ca-certificates git
+
+# Copy dependency manifests first — Docker caches this layer separately.
+# This means `go mod download` only re-runs when go.mod or go.sum changes.
+COPY backend/go.mod backend/go.sum ./
+
+RUN go mod download
+
+# Copy the full backend source tree.
+COPY backend/ ./
+
+# Read version from VERSION file if it exists, otherwise use "dev".
+ARG VERSION=dev
+ARG GIT_COMMIT=unknown
+ARG BUILD_DATE=unknown
+
+# Build the roost binary.
+# -ldflags:
+#   -s   strip symbol table (smaller binary)
+#   -w   strip DWARF debug info (smaller binary)
+#   -X   inject version metadata into the binary
+# CGO_ENABLED=0 — pure Go, no C libs, compatible with distroless/static
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
+    -ldflags="-s -w \
+      -X main.version=${VERSION} \
+      -X main.gitCommit=${GIT_COMMIT} \
+      -X main.buildDate=${BUILD_DATE}" \
+    -o /roost \
+    ./cmd/api/
+
+# ─── Stage 2: Runtime ────────────────────────────────────────────────────────
+# gcr.io/distroless/static:nonroot — ~2 MB base, no shell, no package manager.
+# Only contains: CA certificates, /etc/passwd, /tmp.
+FROM gcr.io/distroless/static:nonroot
+
+LABEL org.opencontainers.image.source="https://github.com/yourflock/roost"
+LABEL org.opencontainers.image.description="Roost — self-hosted media backend for Owl"
+LABEL org.opencontainers.image.licenses="MIT"
+
+# Copy the compiled binary from the builder stage.
+COPY --from=builder /roost /roost
+
+# Run as nonroot (UID 65532) — matches the :nonroot distroless tag.
+USER nonroot:nonroot
+
+# Roost HTTP API port (override with PORT env var).
+EXPOSE 8080
+
+# Health check — calls the /health endpoint.
+# Uses wget from busybox; distroless/static does not have wget.
+# Health checks are handled by the orchestrator (Docker Compose / Kubernetes).
+# The binary itself responds on /health when running.
+
+ENTRYPOINT ["/roost"]

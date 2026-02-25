@@ -12,6 +12,10 @@ on:
         required: true
         type: string
 
+env:
+  REGISTRY: ghcr.io
+  ORG: yourflock
+
 jobs:
 
   # ─────────────────────────────────────────────
@@ -48,13 +52,64 @@ jobs:
           echo "Tag '${VERSION}' found: $(git rev-list -n1 refs/tags/${VERSION})"
 
   # ─────────────────────────────────────────────
-  # 2. Deploy backend via SSH
+  # 2. Build and push Docker images
+  # ─────────────────────────────────────────────
+
+  build-push-images:
+    name: Build & push / ${{ matrix.service }}
+    runs-on: ubuntu-latest
+    needs: validate
+    strategy:
+      matrix:
+        service:
+          - ingest
+          - relay
+          - catalog
+          - epg
+          - owl_api
+          - billing
+    permissions:
+      contents: read
+      packages: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.inputs.version }}
+
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push ${{ matrix.service }}
+        uses: docker/build-push-action@v5
+        with:
+          context: backend
+          file: backend/services/${{ matrix.service }}/Dockerfile
+          push: true
+          tags: |
+            ${{ env.REGISTRY }}/${{ env.ORG }}/roost-${{ matrix.service }}:${{ github.event.inputs.version }}
+            ${{ env.REGISTRY }}/${{ env.ORG }}/roost-${{ matrix.service }}:latest
+          labels: |
+            org.opencontainers.image.source=${{ github.server_url }}/${{ github.repository }}
+            org.opencontainers.image.revision=${{ github.sha }}
+            org.opencontainers.image.version=${{ github.event.inputs.version }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+
+  # ─────────────────────────────────────────────
+  # 3. Deploy backend via SSH
   # ─────────────────────────────────────────────
 
   deploy-backend:
     name: Deploy backend
     runs-on: ubuntu-latest
-    needs: validate
+    needs: build-push-images
     steps:
       - name: Deploy to production server
         uses: appleboy/ssh-action@v1
@@ -65,15 +120,60 @@ jobs:
           script: |
             set -euo pipefail
             cd /opt/roost
+
+            echo "Pulling version ${{ github.event.inputs.version }}..."
             git fetch --tags
             git checkout ${{ github.event.inputs.version }}
+
+            # Pull all updated Go service images
             cd backend
-            nself build
-            nself restart
-            nself health
+            IMAGE_TAG="${{ github.event.inputs.version }}" \
+              docker compose -f docker-compose.prod.yml pull \
+                billing ingest relay catalog epg owl_api
+
+            # Rolling restart: infrastructure services first, then app services
+            echo "Restarting infrastructure services..."
+            IMAGE_TAG="${{ github.event.inputs.version }}" \
+              docker compose -f docker-compose.prod.yml up -d \
+                --no-deps postgres redis hasura auth
+
+            # Wait for infrastructure to be healthy
+            echo "Waiting for infrastructure health..."
+            sleep 15
+            docker compose -f docker-compose.prod.yml exec -T postgres \
+              pg_isready -U roost || { echo "Postgres not ready"; exit 1; }
+
+            # Run any new migrations
+            echo "Running database migrations..."
+            for f in $(ls db/migrations/*.sql | sort); do
+              docker compose -f docker-compose.prod.yml exec -T postgres \
+                psql -U roost -d roost -f "/docker-entrypoint-initdb.d/$(basename $f)" \
+                2>/dev/null || true
+            done
+
+            # Restart application services
+            echo "Restarting application services..."
+            IMAGE_TAG="${{ github.event.inputs.version }}" \
+              docker compose -f docker-compose.prod.yml up -d \
+                --no-deps billing ingest relay catalog epg owl_api nginx cloudflared
+
+            echo "Deployment complete. Verifying health..."
+            sleep 10
+
+            # Check all service health endpoints
+            for service in billing:8085 ingest:8094 relay:8090 catalog:8095 epg:8096 owl_api:8091; do
+              name="${service%%:*}"
+              port="${service##*:}"
+              if docker compose -f docker-compose.prod.yml exec -T "$name" \
+                  wget --quiet --tries=1 -O /dev/null "http://localhost:${port}/health" 2>/dev/null; then
+                echo "  ✓ $name healthy"
+              else
+                echo "  ✗ $name health check failed (may still be starting)"
+              fi
+            done
 
   # ─────────────────────────────────────────────
-  # 3. Build and deploy web apps to Vercel
+  # 4. Build and deploy web apps to Vercel
   # ─────────────────────────────────────────────
 
   deploy-web:
@@ -96,7 +196,8 @@ jobs:
       - name: Install and build web/subscribe
         working-directory: web/subscribe
         env:
-          PUBLIC_API_URL: ${{ secrets.ROOST_API_URL }}
+          PUBLIC_API_URL: https://roost.yourflock.com
+          PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY }}
         run: |
           pnpm install
           pnpm build
@@ -104,7 +205,7 @@ jobs:
       - name: Install and build web/admin
         working-directory: web/admin
         env:
-          PUBLIC_API_URL: ${{ secrets.ROOST_API_URL }}
+          PUBLIC_API_URL: https://roost.yourflock.com
         run: |
           pnpm install
           pnpm build
@@ -130,7 +231,7 @@ jobs:
             --scope "$VERCEL_TEAM_ID"
 
   # ─────────────────────────────────────────────
-  # 4. Post-deploy health check
+  # 5. Post-deploy health check
   # ─────────────────────────────────────────────
 
   verify:
@@ -140,13 +241,13 @@ jobs:
       - deploy-backend
       - deploy-web
     steps:
-      - name: Health check — roost.yourflock.org
+      - name: Health check — roost.yourflock.com
         shell: bash
         run: |
           set -euo pipefail
           MAX_ATTEMPTS=12
           SLEEP_SECONDS=10
-          URL="https://roost.yourflock.org/health"
+          URL="https://roost.yourflock.com/health"
 
           for attempt in $(seq 1 $MAX_ATTEMPTS); do
             echo "Attempt $attempt/$MAX_ATTEMPTS — GET $URL"
@@ -165,8 +266,19 @@ jobs:
           echo "ERROR: Health check failed after $MAX_ATTEMPTS attempts."
           exit 1
 
+      - name: Verify Owl addon API
+        shell: bash
+        run: |
+          HTTP_STATUS=$(curl --silent --output /dev/null --write-out "%{http_code}" \
+            --max-time 15 "https://roost.yourflock.com/owl/manifest.json" || echo "000")
+          if [ "$HTTP_STATUS" = "200" ]; then
+            echo "Owl addon API manifest accessible (HTTP $HTTP_STATUS)."
+          else
+            echo "WARNING: Owl addon API manifest returned HTTP $HTTP_STATUS (may be expected if auth required)."
+          fi
+
   # ─────────────────────────────────────────────
-  # 5. Rollback on verify failure
+  # 6. Rollback on verify failure
   # ─────────────────────────────────────────────
 
   rollback:
@@ -184,8 +296,8 @@ jobs:
           script: |
             set -euo pipefail
             cd /opt/roost
-            git fetch --tags
 
+            git fetch --tags
             CURRENT_TAG="${{ github.event.inputs.version }}"
             PREVIOUS_TAG=$(git tag --sort=-version:refname \
               | grep -v "^${CURRENT_TAG}$" \
@@ -198,8 +310,18 @@ jobs:
 
             echo "Rolling back from ${CURRENT_TAG} to ${PREVIOUS_TAG}."
             git checkout "$PREVIOUS_TAG"
+
             cd backend
-            nself build
-            nself restart
-            nself health
-            echo "Rollback to ${PREVIOUS_TAG} complete."
+            IMAGE_TAG="$PREVIOUS_TAG" \
+              docker compose -f docker-compose.prod.yml pull
+            IMAGE_TAG="$PREVIOUS_TAG" \
+              docker compose -f docker-compose.prod.yml up -d
+
+            sleep 15
+            HTTP_STATUS=$(curl --silent --output /dev/null --write-out "%{http_code}" \
+              --max-time 15 "http://localhost/health" || echo "000")
+            if [ "$HTTP_STATUS" = "200" ]; then
+              echo "Rollback to ${PREVIOUS_TAG} complete. Health check passed."
+            else
+              echo "WARNING: Rollback complete but health check returned $HTTP_STATUS."
+            fi

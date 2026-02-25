@@ -1,0 +1,16 @@
+#!/bin/sh
+# prerm — Roost DEB pre-remove script.
+# Runs before the package is removed.
+set -e
+
+# Stop and disable the service before removal.
+if command -v systemctl >/dev/null 2>&1; then
+    if systemctl is-active roost.service >/dev/null 2>&1; then
+        systemctl stop roost.service
+    fi
+    if systemctl is-enabled roost.service >/dev/null 2>&1; then
+        systemctl disable roost.service
+    fi
+fi
+
+exit 0

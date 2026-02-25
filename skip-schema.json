@@ -1,0 +1,117 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://roost.yourflock.org/skip/v1/schema",
+  "title": "Skip Sidecar File Format",
+  "description": "Standardized scene skip sidecar describing timestamped content scenes. Community-contributed and served by Roost; enforced by Owl during playback.",
+  "type": "object",
+  "required": ["content_id", "version", "scenes"],
+  "additionalProperties": false,
+  "properties": {
+    "content_id": {
+      "type": "string",
+      "description": "Canonical content identifier. Prefix denotes source: imdb:tt..., tmdb:movie:..., tmdb:tv:..., tvdb:..., custom:...",
+      "pattern": "^[a-z]+:[a-z0-9_:.-]+$",
+      "examples": ["imdb:tt1375666", "tmdb:movie:27205", "tvdb:series:75978:s01e01"]
+    },
+    "title": {
+      "type": "string",
+      "description": "Human-readable title (informational only — not used for lookup)"
+    },
+    "version": {
+      "type": "integer",
+      "minimum": 1,
+      "description": "Schema version. Current: 1"
+    },
+    "contributors": {
+      "type": "integer",
+      "minimum": 0,
+      "description": "Number of unique contributors to this sidecar"
+    },
+    "generated_at": {
+      "type": "string",
+      "format": "date-time",
+      "description": "ISO 8601 timestamp when this sidecar was generated"
+    },
+    "inferred_rating": {
+      "type": "string",
+      "enum": ["G", "PG", "PG-13", "R", "NC-17", "UNRATED"],
+      "description": "Rating inferred from scene data by Roost rating engine"
+    },
+    "scene_summary": {
+      "type": "object",
+      "description": "Aggregate count of scenes per category",
+      "properties": {
+        "sex":        { "type": "integer", "minimum": 0 },
+        "nudity":     { "type": "integer", "minimum": 0 },
+        "kissing":    { "type": "integer", "minimum": 0 },
+        "romance":    { "type": "integer", "minimum": 0 },
+        "violence":   { "type": "integer", "minimum": 0 },
+        "gore":       { "type": "integer", "minimum": 0 },
+        "language":   { "type": "integer", "minimum": 0 },
+        "drugs":      { "type": "integer", "minimum": 0 },
+        "jump_scare": { "type": "integer", "minimum": 0 },
+        "scary":      { "type": "integer", "minimum": 0 }
+      },
+      "additionalProperties": false
+    },
+    "scenes": {
+      "type": "array",
+      "description": "Sorted array of scene entries (ascending by start)",
+      "items": {
+        "type": "object",
+        "required": ["id", "start", "end", "category", "severity", "action"],
+        "additionalProperties": false,
+        "properties": {
+          "id": {
+            "type": "string",
+            "description": "Unique scene identifier (server-assigned UUID or community string)"
+          },
+          "start": {
+            "type": "integer",
+            "minimum": 0,
+            "description": "Scene start time in seconds from content start"
+          },
+          "end": {
+            "type": "integer",
+            "minimum": 1,
+            "description": "Scene end time in seconds (exclusive). Must be > start."
+          },
+          "category": {
+            "type": "string",
+            "enum": ["sex", "nudity", "kissing", "romance", "violence", "gore", "language", "drugs", "jump_scare", "scary"],
+            "description": "Category of objectionable content"
+          },
+          "severity": {
+            "type": "integer",
+            "minimum": 1,
+            "maximum": 5,
+            "description": "Intensity: 1=mild, 3=moderate, 5=extreme"
+          },
+          "action": {
+            "type": "string",
+            "enum": ["skip", "blur", "mute", "warn"],
+            "description": "Recommended default action: skip=seek past, blur=mosaic overlay, mute=audio off, warn=pause+prompt"
+          },
+          "description": {
+            "type": "string",
+            "maxLength": 280,
+            "description": "Plain-text scene description (community-contributed)"
+          },
+          "votes": {
+            "type": "integer",
+            "description": "Net vote count (upvotes minus downvotes)"
+          },
+          "disputed": {
+            "type": "boolean",
+            "description": "True if downvotes exceed upvotes by more than 3"
+          },
+          "confidence": {
+            "type": "string",
+            "enum": ["confirmed", "community_estimate"],
+            "description": "confirmed = votes >= 5; community_estimate = provisional"
+          }
+        }
+      }
+    }
+  }
+}

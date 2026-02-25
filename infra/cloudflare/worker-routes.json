@@ -1,0 +1,49 @@
+{
+  "_comment": "Worker route mappings for Roost. Applied via Cloudflare API.",
+  "_docs": "https://developers.cloudflare.com/workers/platform/routes/",
+  "_zone": "yourflock.com",
+  "_account_id": "29537f934ea5d6cb4111472ff8728f91",
+
+  "routes": [
+    {
+      "pattern": "stream.yourflock.com/*",
+      "script": "roost-stream-proxy",
+      "comment": "All stream requests → Worker for auth, rate limiting, manifest rewriting, header sanitization"
+    },
+    {
+      "pattern": "stream.yourflock.com/health",
+      "script": "roost-stream-proxy",
+      "comment": "Health endpoint — Worker responds directly, no origin contact needed"
+    }
+  ],
+
+  "_notes": [
+    "roost.yourflock.com does NOT have a Worker route — the API/portal goes directly through the Tunnel.",
+    "Only stream.yourflock.com has a Worker in front of it.",
+    "The Worker-to-origin leg uses the Cloudflare Tunnel (ROOST_ORIGIN env var in wrangler.toml).",
+    "Worker script: infra/cdn/workers/stream-proxy/ — deploy with: cd infra/cdn/workers/stream-proxy && wrangler deploy"
+  ],
+
+  "kv_namespaces": [
+    {
+      "binding": "SESSIONS",
+      "description": "Subscriber session cache. Token → Session JSON. TTL: 300s.",
+      "note": "Create in CF dashboard: Workers & Pages → KV → Create namespace 'roost-sessions'. Then update wrangler.toml with real ID."
+    },
+    {
+      "binding": "RATE_LIMITS",
+      "description": "Per-subscriber rate limit buckets. Key: rl:{sub}:{type}:{bucket}. TTL: 120s.",
+      "note": "Create in CF dashboard: Workers & Pages → KV → Create namespace 'roost-rate-limits'. Then update wrangler.toml."
+    }
+  ],
+
+  "setup_checklist": [
+    "1. Create KV namespaces in CF dashboard (see kv_namespaces above)",
+    "2. Update wrangler.toml with real KV namespace IDs",
+    "3. Set ROOST_ORIGIN secret: wrangler secret put ROOST_ORIGIN (value: http://relay:8090 via tunnel)",
+    "4. Set ROOST_AUTH_URL secret: wrangler secret put ROOST_AUTH_URL (value: https://roost.yourflock.com)",
+    "5. Deploy Worker: wrangler deploy",
+    "6. Verify route in CF dashboard: Workers & Pages → roost-stream-proxy → Routes",
+    "7. Test: curl -sI https://stream.yourflock.com/health"
+  ]
+}

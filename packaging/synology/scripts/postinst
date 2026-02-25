@@ -1,0 +1,41 @@
+#!/bin/sh
+# postinst — Roost SPK post-install script.
+# Runs after the package payload is extracted.
+# Must be POSIX sh.
+
+PACKAGE_DIR="/var/packages/roost"
+TARGET_DIR="${PACKAGE_DIR}/target"
+BINARY="${TARGET_DIR}/roost"
+CONFIG_DIR="/etc/roost"
+CONFIG_FILE="${CONFIG_DIR}/roost.env"
+
+# Make binary executable.
+chmod +x "${BINARY}" 2>/dev/null || true
+
+# Create default config if it does not exist.
+# Values are overwritten by the install wizard (setup.sh) when the user completes it.
+if [ ! -f "${CONFIG_FILE}" ]; then
+    cat > "${CONFIG_FILE}" << 'EOF'
+# Roost configuration — Synology DSM install
+# Edit this file and restart Roost from Package Center to apply changes.
+
+ROOST_MODE=private
+ROOST_PORT=7979
+ROOST_SECRET_KEY=
+POSTGRES_HOST=localhost
+POSTGRES_PORT=5432
+POSTGRES_DB=roost
+POSTGRES_USER=roost
+POSTGRES_PASSWORD=
+REDIS_URL=redis://localhost:6379/0
+MEDIA_PATH=/volume1/Media
+RECORDINGS_PATH=/volume1/Recordings/Roost
+EOF
+    chmod 600 "${CONFIG_FILE}"
+fi
+
+# Create PID file directory.
+mkdir -p /var/run/roost
+chmod 755 /var/run/roost
+
+exit 0
