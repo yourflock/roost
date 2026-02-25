@@ -7,7 +7,7 @@
 
 	$: subscriber = data.subscriber;
 	$: isLoggedIn = !!subscriber;
-	$: dir = $locale === 'ar' ? 'rtl' : 'ltr';
+	$: dir = $locale === 'ar' ? ('rtl' as const) : ('ltr' as const);
 
 	const navLinks = [
 		{ href: '/', label: 'Home' },

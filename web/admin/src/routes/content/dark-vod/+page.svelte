@@ -213,7 +213,7 @@
 					<input
 						id="dark-file"
 						type="file"
-						acceptable="video/*"
+						accept=".mp4,.mkv,.avi,.m4v,.ts"
 						onchange={(e) => {
 							const t = e.currentTarget as HTMLInputElement;
 							uploadFile = t.files?.[0] ?? null;

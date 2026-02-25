@@ -28,6 +28,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	goredis "github.com/redis/go-redis/v9"
 )
 
 // RateLimitStore is the minimal Redis-like interface needed for API rate limiting.
@@ -256,4 +258,31 @@ func extractSessionToken(r *http.Request) string {
 		}
 	}
 	return r.URL.Query().Get("token")
+}
+
+// goRedisRateLimitAdapter adapts a *goredis.Client to the RateLimitStore interface.
+// This allows the owl_api rate limiter to use the same Redis client used for other
+// operations without importing a separate rate-limit package.
+type goRedisRateLimitAdapter struct {
+	c *goredis.Client
+}
+
+func (a *goRedisRateLimitAdapter) Incr(ctx context.Context, key string) (int64, error) {
+	return a.c.Incr(ctx, key).Result()
+}
+
+func (a *goRedisRateLimitAdapter) Expire(ctx context.Context, key string, ttl time.Duration) error {
+	return a.c.Expire(ctx, key, ttl).Err()
+}
+
+func (a *goRedisRateLimitAdapter) Get(ctx context.Context, key string) (string, error) {
+	return a.c.Get(ctx, key).Result()
+}
+
+func (a *goRedisRateLimitAdapter) Set(ctx context.Context, key string, value interface{}, expiration time.Duration) error {
+	return a.c.Set(ctx, key, value, expiration).Err()
+}
+
+func (a *goRedisRateLimitAdapter) Del(ctx context.Context, keys ...string) error {
+	return a.c.Del(ctx, keys...).Err()
 }
