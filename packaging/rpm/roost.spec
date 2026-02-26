@@ -107,5 +107,5 @@ fi
 %dir %attr(755, roost, roost) %{_localstatedir}/lib/roost
 
 %changelog
-* Mon Feb 24 2026 yourflock <hello@yourflock.com> - 1.0.0-1
+* Mon Feb 24 2026 yourflock <hello@yourflock.org> - 1.0.0-1
 - Initial release

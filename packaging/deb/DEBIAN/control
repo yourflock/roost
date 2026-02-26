@@ -7,7 +7,7 @@ Depends: systemd, curl
 Recommends: postgresql-16 | postgresql, redis-server
 Suggests: nginx
 Installed-Size: 25000
-Maintainer: yourflock <hello@yourflock.com>
+Maintainer: yourflock <hello@yourflock.org>
 Homepage: https://github.com/yourflock/roost
 Description: Self-hosted media backend for Owl
  Roost is an open-source media backend that powers the Owl media player.
