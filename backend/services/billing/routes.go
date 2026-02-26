@@ -159,6 +159,14 @@ func (s *Server) RegisterRoutes(mux *http.ServeMux) {
 		}
 	})
 
+	// ── Update check: P22.6 ───────────────────────────────────────────────────
+	// GET /update/check — version comparison for self-hosters (no auth required)
+	mux.HandleFunc("/update/check", s.handleUpdateCheck)
+
+	// ── GDPR erasure: P16-T04 ─────────────────────────────────────────────────
+	// DELETE /gdpr/me — GDPR right to erasure (immediate hard-delete)
+	mux.HandleFunc("/gdpr/me", s.handleGDPRErasure)
+
 	// ── P22.2: JWT Revocation + P22.5: Security routes ───────────────────────
 	s.registerRoutesP22(mux)
 }

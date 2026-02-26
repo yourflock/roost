@@ -7,6 +7,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"log/slog"
 	"net/http"
 	"os"
 
@@ -101,6 +102,7 @@ func StartBillingService() {
 	srv.startAnalyticsCollector()
 	srv.startChurnNotifier()
 	srv.startPauseResumeChecker()
+	srv.startRetentionPurger(slog.Default())
 
 	if err := srv.Run(); err != nil {
 		log.Fatalf("Billing service failed: %v", err)

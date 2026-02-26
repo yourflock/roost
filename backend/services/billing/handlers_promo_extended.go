@@ -172,6 +172,7 @@ func (s *Server) handleAdminPromoUpdate(w http.ResponseWriter, r *http.Request) 
 	writeJSON(w, http.StatusOK, map[string]string{"status": "updated", "id": promoID})
 }
 
+//lint:ignore U1000 internal checkout helper — called by handleCheckout in handlers_checkout.go
 // validateAndRedeemPromo validates a promotional code and records a redemption.
 // Returns the code row data. Used internally by the checkout flow.
 func (s *Server) validateAndRedeemPromo(code, subscriberID string) (promoType string, value int, err error) {

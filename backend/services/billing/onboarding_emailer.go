@@ -206,6 +206,7 @@ func (s *Server) recordEmailEvent(subscriberID, template, category, status strin
 	`, subscriberID, template, category, status)
 }
 
+//lint:ignore U1000 package-level helper for non-Server callers (backwards compat)
 // sendElasticEmail is a package-level helper for non-Server callers.
 // Kept for backwards compatibility with any existing internal callers.
 func sendElasticEmail(to, subject, body, _ string) error {

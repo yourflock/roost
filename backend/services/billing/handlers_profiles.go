@@ -424,7 +424,7 @@ func (s *Server) updateProfile(w http.ResponseWriter, r *http.Request, profileID
 	}
 
 	if req.ClearPIN {
-		setClauses = append(setClauses, fmt.Sprintf("pin_hash = NULL"))
+		setClauses = append(setClauses, "pin_hash = NULL")
 	} else if req.PIN != nil {
 		if len(*req.PIN) != 4 || !isNumeric(*req.PIN) {
 			auth.WriteError(w, http.StatusBadRequest, "invalid_pin", "PIN must be exactly 4 digits")
