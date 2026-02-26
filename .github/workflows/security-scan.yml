@@ -65,6 +65,8 @@ jobs:
   gosec:
     name: gosec / Go security analysis
     runs-on: ubuntu-latest
+    permissions:
+      security-events: write
     steps:
       - uses: actions/checkout@v4
 
@@ -85,7 +87,7 @@ jobs:
         continue-on-error: true
 
       - name: Upload SARIF results
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         if: always()
         continue-on-error: true
         with:
@@ -122,6 +124,8 @@ jobs:
   trivy:
     name: trivy / container scan
     runs-on: ubuntu-latest
+    permissions:
+      security-events: write
     steps:
       - uses: actions/checkout@v4
 
@@ -139,8 +143,9 @@ jobs:
           exit-code: '1'
 
       - name: Upload Trivy SARIF results
-        uses: github/codeql-action/upload-sarif@v3
+        uses: github/codeql-action/upload-sarif@v4
         if: always()
+        continue-on-error: true
         with:
           sarif_file: trivy-results.sarif
           category: trivy
