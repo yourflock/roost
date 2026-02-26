@@ -175,15 +175,20 @@
 
 	function formatDate(dateStr: string): string {
 		return new Date(dateStr).toLocaleDateString('en-US', {
-			month: 'short', day: 'numeric', year: 'numeric'
+			month: 'short',
+			day: 'numeric',
+			year: 'numeric'
 		});
 	}
 
 	function statusColor(status: string): string {
 		switch (status) {
-			case 'active': return 'text-green-400';
-			case 'suspended': return 'text-red-400';
-			default: return 'text-yellow-400';
+			case 'active':
+				return 'text-green-400';
+			case 'suspended':
+				return 'text-red-400';
+			default:
+				return 'text-yellow-400';
 		}
 	}
 
@@ -201,21 +206,35 @@
 			<h2 class="text-lg font-semibold text-white mb-4">New Franchise Operator</h2>
 
 			{#if createSuccess}
-				<div class="bg-green-500/10 border border-green-500/30 text-green-400 text-sm px-3 py-3 rounded-lg mb-4">
+				<div
+					class="bg-green-500/10 border border-green-500/30 text-green-400 text-sm px-3 py-3 rounded-lg mb-4"
+				>
 					<p class="font-medium">Operator created! ID: <code>{createSuccess.id}</code></p>
 					{#if createSuccess.stripe_onboard_url}
-						<a href={createSuccess.stripe_onboard_url} target="_blank" rel="noopener"
-							class="mt-2 block underline text-green-300">
+						<a
+							href={createSuccess.stripe_onboard_url}
+							target="_blank"
+							rel="noopener"
+							class="mt-2 block underline text-green-300"
+						>
 							Complete Stripe Connect onboarding →
 						</a>
 					{/if}
 				</div>
-				<button class="btn-secondary w-full" onclick={() => { showCreateModal = false; createSuccess = null; }}>
+				<button
+					class="btn-secondary w-full"
+					onclick={() => {
+						showCreateModal = false;
+						createSuccess = null;
+					}}
+				>
 					Close
 				</button>
 			{:else}
 				{#if createError}
-					<div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-3 py-2 rounded-lg mb-4">
+					<div
+						class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-3 py-2 rounded-lg mb-4"
+					>
 						{createError}
 					</div>
 				{/if}
@@ -223,22 +242,51 @@
 				<div class="space-y-4">
 					<div>
 						<label class="block text-slate-400 text-sm mb-1" for="op-name">Operator Name</label>
-						<input id="op-name" type="text" bind:value={createName} placeholder="Acme TV" class="input w-full" />
+						<input
+							id="op-name"
+							type="text"
+							bind:value={createName}
+							placeholder="Acme TV"
+							class="input w-full"
+						/>
 					</div>
 					<div>
 						<label class="block text-slate-400 text-sm mb-1" for="op-owner">Owner User ID</label>
-						<input id="op-owner" type="text" bind:value={createOwnerID} placeholder="UUID" class="input w-full font-mono text-sm" />
+						<input
+							id="op-owner"
+							type="text"
+							bind:value={createOwnerID}
+							placeholder="UUID"
+							class="input w-full font-mono text-sm"
+						/>
 					</div>
 					<div>
 						<label class="block text-slate-400 text-sm mb-1" for="op-subdomain">Subdomain</label>
 						<div class="flex items-center">
-							<input id="op-subdomain" type="text" bind:value={createSubdomain} placeholder="acme" class="input flex-1 rounded-r-none" />
-							<span class="bg-slate-700 border border-slate-600 border-l-0 px-3 py-2 text-slate-400 text-sm rounded-r-lg">.yourflock.org</span>
+							<input
+								id="op-subdomain"
+								type="text"
+								bind:value={createSubdomain}
+								placeholder="acme"
+								class="input flex-1 rounded-r-none"
+							/>
+							<span
+								class="bg-slate-700 border border-slate-600 border-l-0 px-3 py-2 text-slate-400 text-sm rounded-r-lg"
+								>.yourflock.org</span
+							>
 						</div>
 					</div>
 					<div>
-						<label class="block text-slate-400 text-sm mb-1" for="op-email">Email (for Stripe)</label>
-						<input id="op-email" type="email" bind:value={createEmail} placeholder="operator@example.com" class="input w-full" />
+						<label class="block text-slate-400 text-sm mb-1" for="op-email"
+							>Email (for Stripe)</label
+						>
+						<input
+							id="op-email"
+							type="email"
+							bind:value={createEmail}
+							placeholder="operator@example.com"
+							class="input w-full"
+						/>
 					</div>
 				</div>
 
@@ -246,7 +294,13 @@
 					<button class="btn-primary flex-1" onclick={createOperator} disabled={creating}>
 						{creating ? 'Creating…' : 'Create Operator'}
 					</button>
-					<button class="btn-secondary" onclick={() => { showCreateModal = false; createError = ''; }}>
+					<button
+						class="btn-secondary"
+						onclick={() => {
+							showCreateModal = false;
+							createError = '';
+						}}
+					>
 						Cancel
 					</button>
 				</div>
@@ -263,15 +317,14 @@
 			<p class="text-slate-400 text-sm mb-4">{configTarget.operator_name}</p>
 
 			{#if configError}
-				<div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-3 py-2 rounded-lg mb-4">
+				<div
+					class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-3 py-2 rounded-lg mb-4"
+				>
 					{configError}
 				</div>
 			{/if}
 
-			<textarea
-				bind:value={configJSON}
-				rows="12"
-				class="input w-full font-mono text-xs resize-none"
+			<textarea bind:value={configJSON} rows="12" class="input w-full font-mono text-xs resize-none"
 			></textarea>
 
 			<div class="flex gap-3 mt-4">
@@ -327,12 +380,16 @@
 		</div>
 		<div class="flex gap-3">
 			<button class="btn-secondary btn-sm" onclick={loadOperators}>Refresh</button>
-			<button class="btn-primary btn-sm" onclick={() => (showCreateModal = true)}>New Operator</button>
+			<button class="btn-primary btn-sm" onclick={() => (showCreateModal = true)}
+				>New Operator</button
+			>
 		</div>
 	</div>
 
 	{#if error}
-		<div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded-lg mb-6">
+		<div
+			class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded-lg mb-6"
+		>
 			{error}
 		</div>
 	{/if}
@@ -355,11 +412,15 @@
 				<p class="text-slate-400 text-sm mt-0.5">Total</p>
 			</div>
 			<div class="card text-center">
-				<p class="text-2xl font-bold text-green-400">{operators.filter(o => o.status === 'active').length}</p>
+				<p class="text-2xl font-bold text-green-400">
+					{operators.filter((o) => o.status === 'active').length}
+				</p>
 				<p class="text-slate-400 text-sm mt-0.5">Active</p>
 			</div>
 			<div class="card text-center">
-				<p class="text-2xl font-bold text-yellow-400">{operators.filter(o => o.status === 'pending').length}</p>
+				<p class="text-2xl font-bold text-yellow-400">
+					{operators.filter((o) => o.status === 'pending').length}
+				</p>
 				<p class="text-slate-400 text-sm mt-0.5">Pending</p>
 			</div>
 		</div>
@@ -400,7 +461,9 @@
 								<code class="text-xs text-slate-300">{op.subdomain}.yourflock.org</code>
 							</td>
 							<td class="table-cell">
-								<span class="text-xs font-medium capitalize {statusColor(op.status)}">{op.status}</span>
+								<span class="text-xs font-medium capitalize {statusColor(op.status)}"
+									>{op.status}</span
+								>
 							</td>
 							<td class="table-cell">
 								{#if op.stripe_account_id}
@@ -437,17 +500,11 @@
 										Config
 									</button>
 									{#if op.status === 'active'}
-										<button
-											class="btn-danger btn-sm"
-											onclick={() => setStatus(op.id, 'suspend')}
-										>
+										<button class="btn-danger btn-sm" onclick={() => setStatus(op.id, 'suspend')}>
 											Suspend
 										</button>
 									{:else if op.status === 'suspended' || op.status === 'pending'}
-										<button
-											class="btn-primary btn-sm"
-											onclick={() => setStatus(op.id, 'activate')}
-										>
+										<button class="btn-primary btn-sm" onclick={() => setStatus(op.id, 'activate')}>
 											Activate
 										</button>
 									{/if}

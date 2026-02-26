@@ -13,7 +13,9 @@
 	<div class="flex items-center justify-between">
 		<div>
 			<h1 class="text-2xl font-bold text-white">Regions</h1>
-			<p class="text-slate-400 mt-1">Manage regional content packages and subscriber assignments.</p>
+			<p class="text-slate-400 mt-1">
+				Manage regional content packages and subscriber assignments.
+			</p>
 		</div>
 	</div>
 
@@ -23,12 +25,18 @@
 			<div class="bg-slate-800 rounded-lg border border-slate-700 p-5">
 				<div class="flex items-start justify-between mb-3">
 					<div>
-						<span class="inline-block bg-slate-700 text-slate-300 text-xs font-mono px-2 py-0.5 rounded mb-1">
+						<span
+							class="inline-block bg-slate-700 text-slate-300 text-xs font-mono px-2 py-0.5 rounded mb-1"
+						>
 							{region.code.toUpperCase()}
 						</span>
 						<h2 class="text-white font-semibold">{region.name}</h2>
 					</div>
-					<span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {region.is_active ? 'bg-green-900/50 text-green-400' : 'bg-red-900/50 text-red-400'}">
+					<span
+						class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium {region.is_active
+							? 'bg-green-900/50 text-green-400'
+							: 'bg-red-900/50 text-red-400'}"
+					>
 						{region.is_active ? 'Active' : 'Inactive'}
 					</span>
 				</div>
@@ -50,10 +58,14 @@
 						<p class="text-xs text-slate-500 mb-2">Countries</p>
 						<div class="flex flex-wrap gap-1">
 							{#each region.countries.slice(0, 8) as country}
-								<span class="bg-slate-700 text-slate-300 text-xs px-1.5 py-0.5 rounded font-mono">{country}</span>
+								<span class="bg-slate-700 text-slate-300 text-xs px-1.5 py-0.5 rounded font-mono"
+									>{country}</span
+								>
 							{/each}
 							{#if region.countries.length > 8}
-								<span class="text-slate-500 text-xs px-1.5 py-0.5">+{region.countries.length - 8} more</span>
+								<span class="text-slate-500 text-xs px-1.5 py-0.5"
+									>+{region.countries.length - 8} more</span
+								>
 							{/if}
 						</div>
 					</div>

@@ -18,8 +18,8 @@ export const load: PageServerLoad = async ({ cookies }) => {
 		}).catch(() => null)
 	]);
 
-	const movies = moviesRes?.ok ? (await moviesRes.json()).items ?? [] : [];
-	const series = seriesRes?.ok ? (await seriesRes.json()).items ?? [] : [];
+	const movies = moviesRes?.ok ? ((await moviesRes.json()).items ?? []) : [];
+	const series = seriesRes?.ok ? ((await seriesRes.json()).items ?? []) : [];
 
 	return { movies, series };
 };
@@ -61,9 +61,10 @@ export const actions: Actions = {
 		const isActive = data.get('is_active') === 'true';
 		if (!id) return fail(400, { error: 'ID required' });
 
-		const endpoint = vodType === 'series'
-			? `${VOD_SERVICE}/admin/vod/series/${id}`
-			: `${VOD_SERVICE}/admin/vod/movies/${id}`;
+		const endpoint =
+			vodType === 'series'
+				? `${VOD_SERVICE}/admin/vod/series/${id}`
+				: `${VOD_SERVICE}/admin/vod/movies/${id}`;
 
 		const res = await fetch(endpoint, {
 			method: 'PUT',

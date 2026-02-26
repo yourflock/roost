@@ -23,7 +23,11 @@
 	});
 
 	function formatTime(d: string): string {
-		return new Date(d).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+		return new Date(d).toLocaleTimeString('en-US', {
+			hour: '2-digit',
+			minute: '2-digit',
+			second: '2-digit'
+		});
 	}
 </script>
 
@@ -40,7 +44,14 @@
 			</p>
 		</div>
 		<div class="flex items-center gap-3">
-			<HealthBadge status={overallStatus()} label={overallStatus() === 'healthy' ? 'All systems operational' : overallStatus() === 'degraded' ? 'Partial outage' : 'Service disruption'} />
+			<HealthBadge
+				status={overallStatus()}
+				label={overallStatus() === 'healthy'
+					? 'All systems operational'
+					: overallStatus() === 'degraded'
+						? 'Partial outage'
+						: 'Service disruption'}
+			/>
 			<button class="btn-secondary btn-sm" onclick={() => window.location.reload()}>
 				Refresh
 			</button>

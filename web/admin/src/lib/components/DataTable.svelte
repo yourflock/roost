@@ -67,9 +67,9 @@
 		</thead>
 		<tbody class="divide-y divide-slate-700/50">
 			{#if loading}
-				{#each { length: 5 } as _}
+				{#each { length: 5 } as _item}
 					<tr class="table-row">
-						{#each columns as _col}
+						{#each columns as _colItem}
 							<td class="table-cell">
 								<div class="h-4 bg-slate-700 rounded animate-pulse w-24"></div>
 							</td>

@@ -1,5 +1,5 @@
 <script lang="ts">
-	import type { PageData, ActionData } from './$types';
+	import type { ActionData } from './$types';
 	export let form: ActionData;
 
 	let loading = false;
@@ -12,7 +12,11 @@
 <div class="min-h-[80vh] flex items-center justify-center px-4 py-16">
 	<div class="w-full max-w-md">
 		<div class="text-center mb-8">
-			<div class="w-14 h-14 bg-roost-500 rounded-2xl flex items-center justify-center text-white font-bold text-2xl mx-auto mb-4">R</div>
+			<div
+				class="w-14 h-14 bg-roost-500 rounded-2xl flex items-center justify-center text-white font-bold text-2xl mx-auto mb-4"
+			>
+				R
+			</div>
 			<h1 class="text-2xl font-bold text-white">Sign in to Roost</h1>
 			<p class="text-slate-400 mt-1 text-sm">Welcome back. Your channels are waiting.</p>
 		</div>
@@ -24,7 +28,9 @@
 				class="flex items-center justify-center gap-3 w-full py-3 px-4 bg-blue-600 hover:bg-blue-700 text-white rounded-lg font-medium transition-colors"
 			>
 				<svg class="w-5 h-5" viewBox="0 0 24 24" fill="currentColor">
-					<path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"/>
+					<path
+						d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 14H9V8h2v8zm4 0h-2V8h2v8z"
+					/>
 				</svg>
 				Sign in with Flock
 			</a>
@@ -41,16 +47,14 @@
 
 		<div class="card">
 			{#if form?.error}
-				<div class="bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-3 text-red-400 text-sm mb-4">
+				<div
+					class="bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-3 text-red-400 text-sm mb-4"
+				>
 					{form.error}
 				</div>
 			{/if}
 
-			<form
-				method="POST"
-				on:submit={() => (loading = true)}
-				class="space-y-4"
-			>
+			<form method="POST" on:submit={() => (loading = true)} class="space-y-4">
 				<div>
 					<label for="email" class="label">Email</label>
 					<input
@@ -77,11 +81,7 @@
 					/>
 				</div>
 
-				<button
-					type="submit"
-					class="btn-primary w-full py-2.5"
-					disabled={loading}
-				>
+				<button type="submit" class="btn-primary w-full py-2.5" disabled={loading}>
 					{loading ? 'Signing in...' : 'Sign In'}
 				</button>
 			</form>

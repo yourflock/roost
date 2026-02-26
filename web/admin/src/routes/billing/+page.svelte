@@ -33,11 +33,17 @@
 	let showNewPromoForm = $state(false);
 
 	function formatMoney(cents: number): string {
-		return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(cents / 100);
+		return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(
+			cents / 100
+		);
 	}
 
 	function formatDate(d: string): string {
-		return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+		return new Date(d).toLocaleDateString('en-US', {
+			month: 'short',
+			day: 'numeric',
+			year: 'numeric'
+		});
 	}
 </script>
 
@@ -89,7 +95,9 @@
 				<div>
 					<p class="text-sm text-slate-400">Revenue per subscriber</p>
 					<p class="text-2xl font-bold text-slate-100 mt-1">
-						{s.active_subscribers > 0 ? formatMoney(Math.round(s.mrr_cents / s.active_subscribers)) : '—'}
+						{s.active_subscribers > 0
+							? formatMoney(Math.round(s.mrr_cents / s.active_subscribers))
+							: '—'}
 					</p>
 				</div>
 			</div>
@@ -106,22 +114,38 @@
 		</div>
 
 		{#if form?.promoError}
-			<div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded-lg mb-4">
+			<div
+				class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded-lg mb-4"
+			>
 				{form.promoError}
 			</div>
 		{/if}
 		{#if form?.promoSuccess}
-			<div class="bg-green-500/10 border border-green-500/30 text-green-400 text-sm px-4 py-3 rounded-lg mb-4">
+			<div
+				class="bg-green-500/10 border border-green-500/30 text-green-400 text-sm px-4 py-3 rounded-lg mb-4"
+			>
 				Promo code saved successfully.
 			</div>
 		{/if}
 
 		{#if showNewPromoForm}
-			<form method="POST" action="?/createPromo" use:enhance class="bg-slate-700/30 rounded-lg p-4 mb-4">
+			<form
+				method="POST"
+				action="?/createPromo"
+				use:enhance
+				class="bg-slate-700/30 rounded-lg p-4 mb-4"
+			>
 				<div class="grid grid-cols-2 lg:grid-cols-4 gap-3 mb-3">
 					<div>
 						<label class="label" for="code">Code</label>
-						<input id="code" name="code" type="text" class="input" placeholder="WELCOME20" required />
+						<input
+							id="code"
+							name="code"
+							type="text"
+							class="input"
+							placeholder="WELCOME20"
+							required
+						/>
 					</div>
 					<div>
 						<label class="label" for="discount_type">Type</label>
@@ -132,11 +156,27 @@
 					</div>
 					<div>
 						<label class="label" for="discount_value">Value</label>
-						<input id="discount_value" name="discount_value" type="number" class="input" placeholder="20" min="0" step="0.01" required />
+						<input
+							id="discount_value"
+							name="discount_value"
+							type="number"
+							class="input"
+							placeholder="20"
+							min="0"
+							step="0.01"
+							required
+						/>
 					</div>
 					<div>
 						<label class="label" for="max_uses">Max Uses</label>
-						<input id="max_uses" name="max_uses" type="number" class="input" placeholder="Unlimited" min="1" />
+						<input
+							id="max_uses"
+							name="max_uses"
+							type="number"
+							class="input"
+							placeholder="Unlimited"
+							min="1"
+						/>
 					</div>
 				</div>
 				<div class="flex items-center gap-4">

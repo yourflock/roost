@@ -55,10 +55,7 @@
 				>
 					{revealed ? 'Hide' : 'Reveal'}
 				</button>
-				<button
-					on:click={copyToken}
-					class="btn-secondary text-xs py-1 px-3"
-				>
+				<button on:click={copyToken} class="btn-secondary text-xs py-1 px-3">
 					{copied ? 'Copied!' : 'Copy'}
 				</button>
 			</div>

@@ -20,10 +20,14 @@
 
 	function statusClass(status: string): string {
 		switch (status) {
-			case 'paid': return 'text-green-400';
-			case 'open': return 'text-yellow-400';
-			case 'void': return 'text-slate-400';
-			default: return 'text-red-400';
+			case 'paid':
+				return 'text-green-400';
+			case 'open':
+				return 'text-yellow-400';
+			case 'void':
+				return 'text-slate-400';
+			default:
+				return 'text-red-400';
 		}
 	}
 </script>

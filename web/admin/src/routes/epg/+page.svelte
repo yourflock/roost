@@ -28,7 +28,12 @@
 
 	function formatDate(d: string | null): string {
 		if (!d) return 'Never';
-		return new Date(d).toLocaleString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+		return new Date(d).toLocaleString('en-US', {
+			month: 'short',
+			day: 'numeric',
+			hour: '2-digit',
+			minute: '2-digit'
+		});
 	}
 </script>
 
@@ -54,9 +59,18 @@
 	oncancel={() => (removeTarget = null)}
 />
 
-<form id="remove-form" method="POST" action="?/remove" use:enhance={() => {
-	return async ({ update }) => { removeLoading = false; removeTarget = null; update(); };
-}}>
+<form
+	id="remove-form"
+	method="POST"
+	action="?/remove"
+	use:enhance={() => {
+		return async ({ update }) => {
+			removeLoading = false;
+			removeTarget = null;
+			update();
+		};
+	}}
+>
 	<input type="hidden" name="id" value="" />
 </form>
 
@@ -64,7 +78,9 @@
 	<div class="flex items-center justify-between mb-6">
 		<div>
 			<h1 class="text-2xl font-bold text-slate-100">EPG Sources</h1>
-			<p class="text-slate-400 text-sm mt-1">{data.sources.length} source{data.sources.length !== 1 ? 's' : ''} configured</p>
+			<p class="text-slate-400 text-sm mt-1">
+				{data.sources.length} source{data.sources.length !== 1 ? 's' : ''} configured
+			</p>
 		</div>
 		<button class="btn-primary" onclick={() => (showAddForm = !showAddForm)}>
 			{showAddForm ? 'Cancel' : '+ Add Source'}
@@ -72,32 +88,54 @@
 	</div>
 
 	{#if form?.addError}
-		<div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded-lg mb-4">
+		<div
+			class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded-lg mb-4"
+		>
 			{form.addError}
 		</div>
 	{/if}
 	{#if form?.addSuccess}
-		<div class="bg-green-500/10 border border-green-500/30 text-green-400 text-sm px-4 py-3 rounded-lg mb-4">
+		<div
+			class="bg-green-500/10 border border-green-500/30 text-green-400 text-sm px-4 py-3 rounded-lg mb-4"
+		>
 			EPG source saved.
 		</div>
 	{/if}
 	{#if form?.syncTriggered}
-		<div class="bg-blue-500/10 border border-blue-500/30 text-blue-400 text-sm px-4 py-3 rounded-lg mb-4">
+		<div
+			class="bg-blue-500/10 border border-blue-500/30 text-blue-400 text-sm px-4 py-3 rounded-lg mb-4"
+		>
 			Sync triggered. Check status in a few minutes.
 		</div>
 	{/if}
 
 	{#if showAddForm}
 		<form method="POST" action="?/add" use:enhance class="card mb-6">
-			<h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Add EPG Source</h2>
+			<h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">
+				Add EPG Source
+			</h2>
 			<div class="grid grid-cols-1 lg:grid-cols-3 gap-4 mb-4">
 				<div>
 					<label class="label" for="epg_name">Name</label>
-					<input id="epg_name" name="name" type="text" class="input" placeholder="XMLTV US" required />
+					<input
+						id="epg_name"
+						name="name"
+						type="text"
+						class="input"
+						placeholder="XMLTV US"
+						required
+					/>
 				</div>
 				<div class="lg:col-span-1">
 					<label class="label" for="epg_url">URL</label>
-					<input id="epg_url" name="url" type="url" class="input" placeholder="https://..." required />
+					<input
+						id="epg_url"
+						name="url"
+						type="url"
+						class="input"
+						placeholder="https://..."
+						required
+					/>
 				</div>
 				<div>
 					<label class="label" for="epg_format">Format</label>
@@ -125,7 +163,9 @@
 							<div class="flex items-center gap-3 mb-2">
 								<h3 class="font-semibold text-slate-100">{src.name}</h3>
 								<HealthBadge status={src.sync_status} />
-								<span class="text-xs text-slate-500 bg-slate-700/50 px-2 py-0.5 rounded uppercase">{src.format}</span>
+								<span class="text-xs text-slate-500 bg-slate-700/50 px-2 py-0.5 rounded uppercase"
+									>{src.format}</span
+								>
 							</div>
 							<div class="text-xs text-slate-400 mb-1">
 								<span class="font-mono">{src.url}</span>
@@ -143,7 +183,11 @@
 						<div class="flex items-center gap-2 ml-4">
 							<form method="POST" action="?/sync" use:enhance>
 								<input type="hidden" name="id" value={src.id} />
-								<button type="submit" class="btn-secondary btn-sm" disabled={src.sync_status === 'syncing'}>
+								<button
+									type="submit"
+									class="btn-secondary btn-sm"
+									disabled={src.sync_status === 'syncing'}
+								>
 									{src.sync_status === 'syncing' ? 'Syncing...' : 'Sync Now'}
 								</button>
 							</form>

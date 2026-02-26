@@ -87,7 +87,10 @@
 		}
 	}
 
-	async function sendFeedback(contentID: string, feedback: 'like' | 'dislike' | 'not_interested' | 'already_seen') {
+	async function sendFeedback(
+		contentID: string,
+		feedback: 'like' | 'dislike' | 'not_interested' | 'already_seen'
+	) {
 		sendingFeedback = contentID;
 		try {
 			const res = await fetch('/api/ai-guide/feedback', {
@@ -167,19 +170,19 @@
 	<div class="flex items-start justify-between mb-6">
 		<div>
 			<h1 class="text-2xl font-bold text-white">AI Guide</h1>
-			<p class="text-slate-400 text-sm mt-1">Personalized recommendations powered by your watch history</p>
+			<p class="text-slate-400 text-sm mt-1">
+				Personalized recommendations powered by your watch history
+			</p>
 		</div>
-		<button
-			class="btn-secondary btn-sm"
-			onclick={refreshRecommendations}
-			disabled={refreshing}
-		>
+		<button class="btn-secondary btn-sm" onclick={refreshRecommendations} disabled={refreshing}>
 			{refreshing ? 'Generating…' : 'Refresh'}
 		</button>
 	</div>
 
 	{#if refreshJobID}
-		<div class="bg-blue-500/10 border border-blue-500/30 text-blue-300 text-sm px-4 py-3 rounded-lg mb-6">
+		<div
+			class="bg-blue-500/10 border border-blue-500/30 text-blue-300 text-sm px-4 py-3 rounded-lg mb-6"
+		>
 			Generating new recommendations in the background. They will appear in a few seconds.
 		</div>
 	{/if}
@@ -189,8 +192,8 @@
 		<button
 			class="px-4 py-2.5 text-sm font-medium transition-colors
 				{activeTab === 'for-you'
-					? 'text-white border-b-2 border-roost-500'
-					: 'text-slate-400 hover:text-slate-300'}"
+				? 'text-white border-b-2 border-roost-500'
+				: 'text-slate-400 hover:text-slate-300'}"
 			onclick={() => switchTab('for-you')}
 		>
 			For You
@@ -198,8 +201,8 @@
 		<button
 			class="px-4 py-2.5 text-sm font-medium transition-colors
 				{activeTab === 'trending'
-					? 'text-white border-b-2 border-roost-500'
-					: 'text-slate-400 hover:text-slate-300'}"
+				? 'text-white border-b-2 border-roost-500'
+				: 'text-slate-400 hover:text-slate-300'}"
 			onclick={() => switchTab('trending')}
 		>
 			Trending
@@ -209,7 +212,9 @@
 	<!-- For You tab -->
 	{#if activeTab === 'for-you'}
 		{#if recsError}
-			<div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded-lg mb-6">
+			<div
+				class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded-lg mb-6"
+			>
 				{recsError}
 			</div>
 		{/if}
@@ -250,11 +255,16 @@
 								<div class="flex items-start justify-between gap-2 mb-1.5">
 									<div class="flex items-center gap-2 min-w-0">
 										<code class="text-white font-medium text-sm truncate">{rec.content_id}</code>
-										<span class="shrink-0 text-xs px-1.5 py-0.5 rounded-full {contentTypeColor(rec.content_type)}">
+										<span
+											class="shrink-0 text-xs px-1.5 py-0.5 rounded-full {contentTypeColor(
+												rec.content_type
+											)}"
+										>
 											{contentTypeLabel(rec.content_type)}
 										</span>
 									</div>
-									<span class="shrink-0 text-xs text-slate-500">{formatExpiry(rec.expires_at)}</span>
+									<span class="shrink-0 text-xs text-slate-500">{formatExpiry(rec.expires_at)}</span
+									>
 								</div>
 
 								{#if rec.reason}
@@ -316,8 +326,8 @@
 			</div>
 
 			<p class="text-xs text-slate-500 mt-6 text-center">
-				{recommendations.length} recommendation{recommendations.length !== 1 ? 's' : ''} ·
-				Feedback improves future suggestions
+				{recommendations.length} recommendation{recommendations.length !== 1 ? 's' : ''} · Feedback improves
+				future suggestions
 			</p>
 		{/if}
 	{/if}
@@ -325,7 +335,9 @@
 	<!-- Trending tab -->
 	{#if activeTab === 'trending'}
 		{#if trendingError}
-			<div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded-lg mb-6">
+			<div
+				class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded-lg mb-6"
+			>
 				{trendingError}
 			</div>
 		{/if}
@@ -336,7 +348,9 @@
 			</div>
 		{:else if trending.length === 0}
 			<div class="card text-center py-12">
-				<p class="text-slate-400">No trending data yet. Check back once more families are watching.</p>
+				<p class="text-slate-400">
+					No trending data yet. Check back once more families are watching.
+				</p>
 			</div>
 		{:else}
 			<div class="space-y-2">
@@ -346,14 +360,21 @@
 						<div class="flex-1 min-w-0">
 							<div class="flex items-center gap-2">
 								<code class="text-white text-sm font-medium truncate">{item.content_id}</code>
-								<span class="shrink-0 text-xs px-1.5 py-0.5 rounded-full {contentTypeColor(item.content_type)}">
+								<span
+									class="shrink-0 text-xs px-1.5 py-0.5 rounded-full {contentTypeColor(
+										item.content_type
+									)}"
+								>
 									{contentTypeLabel(item.content_type)}
 								</span>
 							</div>
 						</div>
 						<div class="shrink-0 text-right">
 							<p class="text-white text-sm font-medium">{(item.avg_score * 10).toFixed(1)}/10</p>
-							<p class="text-slate-500 text-xs">{item.family_count} {item.family_count === 1 ? 'family' : 'families'}</p>
+							<p class="text-slate-500 text-xs">
+								{item.family_count}
+								{item.family_count === 1 ? 'family' : 'families'}
+							</p>
 						</div>
 					</div>
 				{/each}

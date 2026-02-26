@@ -108,12 +108,16 @@
 	function copyToClipboard(text: string, key: string) {
 		navigator.clipboard.writeText(text);
 		copiedCode = key;
-		setTimeout(() => { copiedCode = ''; }, 2000);
+		setTimeout(() => {
+			copiedCode = '';
+		}, 2000);
 	}
 
 	function formatDate(iso: string) {
 		return new Date(iso).toLocaleDateString('en-US', {
-			year: 'numeric', month: 'short', day: 'numeric'
+			year: 'numeric',
+			month: 'short',
+			day: 'numeric'
 		});
 	}
 
@@ -131,20 +135,24 @@
 		<div>
 			<h1 class="text-2xl font-bold text-white">Dark VOD</h1>
 			<p class="text-slate-400 text-sm mt-1">
-				Private content distribution via invite codes. Content is stored in R2 and
-				access is controlled by signed viewer tokens. Recipients do not need a Roost account.
+				Private content distribution via invite codes. Content is stored in R2 and access is
+				controlled by signed viewer tokens. Recipients do not need a Roost account.
 			</p>
 		</div>
 		<button
 			class="btn-primary"
-			onclick={() => { showUpload = true; }}
+			onclick={() => {
+				showUpload = true;
+			}}
 		>
 			Upload Dark Content
 		</button>
 	</div>
 
 	{#if errorMsg}
-		<div class="bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-3 text-red-400 text-sm mb-6">
+		<div
+			class="bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-3 text-red-400 text-sm mb-6"
+		>
 			{errorMsg}
 		</div>
 	{/if}
@@ -154,7 +162,9 @@
 	{:else if contents.length === 0}
 		<div class="card text-center py-16">
 			<p class="text-slate-400 text-sm">No dark content yet.</p>
-			<p class="text-slate-500 text-xs mt-1">Upload content to generate invite codes for private distribution.</p>
+			<p class="text-slate-500 text-xs mt-1">
+				Upload content to generate invite codes for private distribution.
+			</p>
 		</div>
 	{:else}
 		<div class="space-y-3">
@@ -173,10 +183,7 @@
 						</p>
 						<p class="text-slate-600 text-xs mt-0.5 font-mono truncate">{content.r2_path}</p>
 					</div>
-					<button
-						class="btn-secondary text-sm shrink-0"
-						onclick={() => openInviteModal(content)}
-					>
+					<button class="btn-secondary text-sm shrink-0" onclick={() => openInviteModal(content)}>
 						Generate Invite Codes
 					</button>
 				</div>
@@ -192,7 +199,9 @@
 			<h2 class="text-lg font-semibold text-white mb-4">Upload Dark Content</h2>
 
 			{#if uploadError}
-				<div class="bg-red-500/10 border border-red-500/30 rounded-lg px-3 py-2 text-red-400 text-sm mb-4">
+				<div
+					class="bg-red-500/10 border border-red-500/30 rounded-lg px-3 py-2 text-red-400 text-sm mb-4"
+				>
 					{uploadError}
 				</div>
 			{/if}
@@ -222,22 +231,21 @@
 					/>
 				</div>
 				<p class="text-slate-500 text-xs">
-					Content is stored in R2 at <code class="font-mono">roost-vod/dark/</code>.
-					Only recipients with a valid invite code can access it.
+					Content is stored in R2 at <code class="font-mono">roost-vod/dark/</code>. Only recipients
+					with a valid invite code can access it.
 				</p>
 			</div>
 
 			<div class="flex gap-3 mt-6">
-				<button
-					class="btn-primary flex-1"
-					onclick={handleUpload}
-					disabled={uploading}
-				>
+				<button class="btn-primary flex-1" onclick={handleUpload} disabled={uploading}>
 					{uploading ? 'Uploading...' : 'Upload'}
 				</button>
 				<button
 					class="btn-secondary flex-1"
-					onclick={() => { showUpload = false; uploadError = ''; }}
+					onclick={() => {
+						showUpload = false;
+						uploadError = '';
+					}}
 					disabled={uploading}
 				>
 					Cancel
@@ -250,7 +258,9 @@
 <!-- Invite Code Modal -->
 {#if showInviteModal && selectedContent}
 	<div class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
-		<div class="bg-slate-800 border border-slate-700 rounded-xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto">
+		<div
+			class="bg-slate-800 border border-slate-700 rounded-xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto"
+		>
 			<h2 class="text-lg font-semibold text-white mb-1">Generate Invite Codes</h2>
 			<p class="text-slate-400 text-sm mb-4">{selectedContent.title}</p>
 
@@ -267,11 +277,7 @@
 					</select>
 				</div>
 				<div class="pt-5">
-					<button
-						class="btn-primary"
-						onclick={generateInviteCodes}
-						disabled={generatingCodes}
-					>
+					<button class="btn-primary" onclick={generateInviteCodes} disabled={generatingCodes}>
 						{generatingCodes ? 'Generating...' : 'Generate'}
 					</button>
 				</div>
@@ -302,7 +308,10 @@
 			<div class="mt-6">
 				<button
 					class="btn-secondary w-full"
-					onclick={() => { showInviteModal = false; generatedCodes = []; }}
+					onclick={() => {
+						showInviteModal = false;
+						generatedCodes = [];
+					}}
 				>
 					Close
 				</button>

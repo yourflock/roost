@@ -13,7 +13,13 @@ const DEFAULT_PLANS: Plan[] = [
 		price_monthly: 599,
 		price_annual: 5990,
 		max_streams: 2,
-		features: ['200+ live channels', 'Full EPG (14 days)', '2 concurrent streams', 'Standard quality (1080p)', 'Works with Owl, TiviMate, VLC']
+		features: [
+			'200+ live channels',
+			'Full EPG (14 days)',
+			'2 concurrent streams',
+			'Standard quality (1080p)',
+			'Works with Owl, TiviMate, VLC'
+		]
 	},
 	{
 		id: 'premium',
@@ -22,7 +28,15 @@ const DEFAULT_PLANS: Plan[] = [
 		price_monthly: 999,
 		price_annual: 9990,
 		max_streams: 4,
-		features: ['200+ live channels', 'Full EPG (14 days)', '4 concurrent streams', 'HD + 4K quality', 'Sports intelligence + commercial skip', 'VOD library access', 'Priority support'],
+		features: [
+			'200+ live channels',
+			'Full EPG (14 days)',
+			'4 concurrent streams',
+			'HD + 4K quality',
+			'Sports intelligence + commercial skip',
+			'VOD library access',
+			'Priority support'
+		],
 		is_popular: true
 	},
 	{
@@ -32,7 +46,16 @@ const DEFAULT_PLANS: Plan[] = [
 		price_monthly: 1499,
 		price_annual: 14990,
 		max_streams: 6,
-		features: ['200+ live channels', 'Full EPG (14 days)', '6 concurrent streams', 'HD + 4K quality', 'Sports intelligence + commercial skip', 'VOD library access', 'Parental controls', 'Priority support']
+		features: [
+			'200+ live channels',
+			'Full EPG (14 days)',
+			'6 concurrent streams',
+			'HD + 4K quality',
+			'Sports intelligence + commercial skip',
+			'VOD library access',
+			'Parental controls',
+			'Priority support'
+		]
 	}
 ];
 

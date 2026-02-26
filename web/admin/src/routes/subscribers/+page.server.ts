@@ -15,7 +15,12 @@ export const load: PageServerLoad = async (event) => {
 	const page = parseInt(url.searchParams.get('page') ?? '1');
 
 	const client = new AdminApiClient(API_URL, event.locals.sessionToken);
-	let result: { subscribers: Subscriber[]; total: number; page: number; per_page: number } = { subscribers: [], total: 0, page: 1, per_page: 25 };
+	let result: { subscribers: Subscriber[]; total: number; page: number; per_page: number } = {
+		subscribers: [],
+		total: 0,
+		page: 1,
+		per_page: 25
+	};
 	try {
 		result = await client.getSubscribers({ search, plan, status, page, per_page: 25 });
 	} catch {

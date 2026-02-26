@@ -22,7 +22,13 @@ const DEFAULT_PLANS: Plan[] = [
 		price_monthly: 999,
 		price_annual: 9990,
 		max_streams: 4,
-		features: ['200+ live channels', '4 concurrent streams', 'HD + 4K', 'Sports + commercial skip', 'VOD library'],
+		features: [
+			'200+ live channels',
+			'4 concurrent streams',
+			'HD + 4K',
+			'Sports + commercial skip',
+			'VOD library'
+		],
 		is_popular: true
 	},
 	{
@@ -32,7 +38,14 @@ const DEFAULT_PLANS: Plan[] = [
 		price_monthly: 1499,
 		price_annual: 14990,
 		max_streams: 6,
-		features: ['200+ live channels', '6 concurrent streams', 'HD + 4K', 'Sports + commercial skip', 'VOD library', 'Parental controls']
+		features: [
+			'200+ live channels',
+			'6 concurrent streams',
+			'HD + 4K',
+			'Sports + commercial skip',
+			'VOD library',
+			'Parental controls'
+		]
 	}
 ];
 
@@ -42,7 +55,7 @@ export const load: PageServerLoad = async ({ parent, url }) => {
 	if (subscriber) throw redirect(303, '/dashboard');
 
 	const selectedPlan = url.searchParams.get('plan') ?? 'premium';
-	const selectedPeriod = url.searchParams.get('period') as 'monthly' | 'annual' ?? 'monthly';
+	const selectedPeriod = (url.searchParams.get('period') as 'monthly' | 'annual') ?? 'monthly';
 
 	let plans: Plan[] = DEFAULT_PLANS;
 	try {

@@ -45,7 +45,16 @@ export const actions: Actions = {
 
 		const client = new AdminApiClient(API_URL, event.locals.sessionToken);
 		try {
-			await client.createChannel({ name, slug, category, stream_url, logo_url, epg_id, sort_order, is_active });
+			await client.createChannel({
+				name,
+				slug,
+				category,
+				stream_url,
+				logo_url,
+				epg_id,
+				sort_order,
+				is_active
+			});
 		} catch (err: unknown) {
 			const e = err as { message?: string };
 			return fail(500, {

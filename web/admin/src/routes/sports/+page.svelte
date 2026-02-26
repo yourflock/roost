@@ -71,10 +71,13 @@
 					<div class="flex items-center justify-between py-3">
 						<div>
 							<span class="font-medium text-slate-100">{league.name}</span>
-							<span class="ml-2 text-xs text-slate-500 uppercase tracking-wide">{league.abbreviation}</span>
+							<span class="ml-2 text-xs text-slate-500 uppercase tracking-wide"
+								>{league.abbreviation}</span
+							>
 						</div>
 						<div class="flex items-center gap-3">
-							<span class="text-xs text-slate-500 capitalize">{league.sport.replace('_', ' ')}</span>
+							<span class="text-xs text-slate-500 capitalize">{league.sport.replace('_', ' ')}</span
+							>
 							<span class="badge {league.is_active ? 'badge-green' : 'badge-gray'}">
 								{league.is_active ? 'Active' : 'Inactive'}
 							</span>

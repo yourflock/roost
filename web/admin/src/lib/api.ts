@@ -237,7 +237,11 @@ export class AdminApiClient {
 		return this.request('GET', '/epg/sources');
 	}
 
-	async addEpgSource(data: { name: string; url: string; format: 'xmltv' | 'm3u' }): Promise<EpgSource> {
+	async addEpgSource(data: {
+		name: string;
+		url: string;
+		format: 'xmltv' | 'm3u';
+	}): Promise<EpgSource> {
 		return this.request('POST', '/epg/sources', data);
 	}
 
@@ -254,9 +258,7 @@ export class AdminApiClient {
 		return this.request('GET', '/billing/admin/promo-codes');
 	}
 
-	async createPromoCode(
-		data: Omit<PromoCode, 'id' | 'used_count'>
-	): Promise<PromoCode> {
+	async createPromoCode(data: Omit<PromoCode, 'id' | 'used_count'>): Promise<PromoCode> {
 		return this.request('POST', '/billing/admin/promo-codes', data);
 	}
 

@@ -8,7 +8,7 @@ const CATCHUP_SERVICE = process.env.CATCHUP_SERVICE_URL ?? 'http://localhost:809
 
 export const load: PageServerLoad = async () => {
 	const res = await fetch(`${CATCHUP_SERVICE}/catchup/status`).catch(() => null);
-	const channels = res?.ok ? (await res.json()).channels ?? [] : [];
+	const channels = res?.ok ? ((await res.json()).channels ?? []) : [];
 	return { channels };
 };
 

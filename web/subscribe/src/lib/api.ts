@@ -62,11 +62,7 @@ export class RoostApiClient {
 		this.sessionToken = sessionToken ?? null;
 	}
 
-	private async request<T>(
-		method: string,
-		path: string,
-		body?: unknown
-	): Promise<T> {
+	private async request<T>(method: string, path: string, body?: unknown): Promise<T> {
 		const headers: Record<string, string> = {
 			'Content-Type': 'application/json'
 		};
@@ -84,7 +80,7 @@ export class RoostApiClient {
 			let errBody: Partial<ApiError> = {};
 			try {
 				errBody = await res.json();
-			} catch (_) {
+			} catch {
 				// ignore parse failure
 			}
 			throw {
@@ -99,7 +95,10 @@ export class RoostApiClient {
 	}
 
 	// Auth
-	async login(email: string, password: string): Promise<{ session_token: string; subscriber: Subscriber }> {
+	async login(
+		email: string,
+		password: string
+	): Promise<{ session_token: string; subscriber: Subscriber }> {
 		return this.request('POST', '/auth/login', { email, password });
 	}
 
@@ -112,7 +111,10 @@ export class RoostApiClient {
 	}
 
 	async changePassword(currentPassword: string, newPassword: string): Promise<void> {
-		return this.request('POST', '/auth/change-password', { current_password: currentPassword, new_password: newPassword });
+		return this.request('POST', '/auth/change-password', {
+			current_password: currentPassword,
+			new_password: newPassword
+		});
 	}
 
 	async changeEmail(email: string, password: string): Promise<void> {
@@ -140,8 +142,14 @@ export class RoostApiClient {
 	}
 
 	// Checkout
-	async createCheckout(planId: string, billingPeriod: 'monthly' | 'annual'): Promise<{ checkout_url: string }> {
-		return this.request('POST', '/billing/checkout', { plan_id: planId, billing_period: billingPeriod });
+	async createCheckout(
+		planId: string,
+		billingPeriod: 'monthly' | 'annual'
+	): Promise<{ checkout_url: string }> {
+		return this.request('POST', '/billing/checkout', {
+			plan_id: planId,
+			billing_period: billingPeriod
+		});
 	}
 
 	// Billing portal (Stripe)

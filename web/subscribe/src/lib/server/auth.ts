@@ -7,7 +7,9 @@ const API_URL = env.API_URL ?? 'http://localhost:4000';
 export const SESSION_COOKIE = 'roost_session';
 
 /** Validate session token with Roost auth service and return subscriber, or null if invalid */
-export async function validateSession(event: RequestEvent): Promise<{ subscriber: Subscriber; token: string } | null> {
+export async function validateSession(
+	event: RequestEvent
+): Promise<{ subscriber: Subscriber; token: string } | null> {
 	const token = event.cookies.get(SESSION_COOKIE);
 	if (!token) return null;
 

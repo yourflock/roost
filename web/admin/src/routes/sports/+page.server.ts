@@ -16,7 +16,7 @@ export const load: PageServerLoad = async (event) => {
 	try {
 		const [leaguesRes, liveRes] = await Promise.allSettled([
 			fetch(`${SPORTS_API_URL}/sports/leagues`),
-			fetch(`${SPORTS_API_URL}/sports/live`),
+			fetch(`${SPORTS_API_URL}/sports/live`)
 		]);
 
 		if (leaguesRes.status === 'fulfilled' && leaguesRes.value.ok) {
@@ -42,9 +42,7 @@ export const load: PageServerLoad = async (event) => {
 		}
 
 		// Upcoming this week
-		const eventsRes = await fetch(
-			`${SPORTS_API_URL}/sports/events?status=scheduled`
-		);
+		const eventsRes = await fetch(`${SPORTS_API_URL}/sports/events?status=scheduled`);
 		if (eventsRes.ok) {
 			const data = await eventsRes.json();
 			const events = (data.events ?? []) as Array<{ scheduled_time: string }>;

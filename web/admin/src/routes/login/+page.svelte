@@ -18,7 +18,9 @@
 	<div class="w-full max-w-sm">
 		<!-- Logo -->
 		<div class="text-center mb-8">
-			<div class="w-12 h-12 bg-roost-500 rounded-xl flex items-center justify-center text-white font-bold text-xl mx-auto mb-3">
+			<div
+				class="w-12 h-12 bg-roost-500 rounded-xl flex items-center justify-center text-white font-bold text-xl mx-auto mb-3"
+			>
 				R
 			</div>
 			<h1 class="text-xl font-semibold text-slate-100">Roost Admin</h1>
@@ -27,7 +29,9 @@
 
 		<div class="card">
 			{#if form?.error}
-				<div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded-lg mb-4">
+				<div
+					class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded-lg mb-4"
+				>
 					{form.error}
 				</div>
 			{/if}
@@ -75,8 +79,6 @@
 			</form>
 		</div>
 
-		<p class="text-center text-xs text-slate-500 mt-4">
-			Roost Admin Console — restricted access
-		</p>
+		<p class="text-center text-xs text-slate-500 mt-4">Roost Admin Console — restricted access</p>
 	</div>
 </div>

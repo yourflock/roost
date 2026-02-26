@@ -26,7 +26,10 @@ export const actions: Actions = {
 			return fail(400, { action: 'password', error: 'New passwords do not match.' });
 		}
 		if (newPassword.length < 8) {
-			return fail(400, { action: 'password', error: 'New password must be at least 8 characters.' });
+			return fail(400, {
+				action: 'password',
+				error: 'New password must be at least 8 characters.'
+			});
 		}
 
 		try {
@@ -37,7 +40,10 @@ export const actions: Actions = {
 			});
 			if (!res.ok) {
 				const body = await res.json().catch(() => ({}));
-				return fail(res.status, { action: 'password', error: body.message ?? 'Failed to change password.' });
+				return fail(res.status, {
+					action: 'password',
+					error: body.message ?? 'Failed to change password.'
+				});
 			}
 		} catch {
 			return fail(500, { action: 'password', error: 'Service unavailable.' });
@@ -64,7 +70,10 @@ export const actions: Actions = {
 			});
 			if (!res.ok) {
 				const body = await res.json().catch(() => ({}));
-				return fail(res.status, { action: 'email', error: body.message ?? 'Failed to change email.' });
+				return fail(res.status, {
+					action: 'email',
+					error: body.message ?? 'Failed to change email.'
+				});
 			}
 		} catch {
 			return fail(500, { action: 'email', error: 'Service unavailable.' });
@@ -90,7 +99,10 @@ export const actions: Actions = {
 			});
 			if (!res.ok) {
 				const body = await res.json().catch(() => ({}));
-				return fail(res.status, { action: 'delete', error: body.message ?? 'Failed to delete account.' });
+				return fail(res.status, {
+					action: 'delete',
+					error: body.message ?? 'Failed to delete account.'
+				});
 			}
 		} catch {
 			return fail(500, { action: 'delete', error: 'Service unavailable.' });

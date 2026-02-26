@@ -35,13 +35,17 @@
 			</nav>
 			<h1 class="text-2xl font-bold text-slate-100">Sports Leagues</h1>
 		</div>
-		<form method="POST" action="?/sync" use:enhance={() => {
-			syncing = true;
-			return async ({ update }) => {
-				syncing = false;
-				await update();
-			};
-		}}>
+		<form
+			method="POST"
+			action="?/sync"
+			use:enhance={() => {
+				syncing = true;
+				return async ({ update }) => {
+					syncing = false;
+					await update();
+				};
+			}}
+		>
 			<button type="submit" class="btn-primary" disabled={syncing}>
 				{syncing ? 'Syncing...' : 'Sync All Schedules'}
 			</button>
@@ -49,7 +53,11 @@
 	</div>
 
 	{#if form}
-		<div class="mb-4 p-3 rounded-lg {form.success ? 'bg-green-900/30 text-green-400' : 'bg-red-900/30 text-red-400'} text-sm">
+		<div
+			class="mb-4 p-3 rounded-lg {form.success
+				? 'bg-green-900/30 text-green-400'
+				: 'bg-red-900/30 text-red-400'} text-sm"
+		>
 			{form.message}
 		</div>
 	{/if}

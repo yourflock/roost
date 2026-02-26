@@ -45,7 +45,16 @@ export const actions: Actions = {
 
 		const client = new AdminApiClient(API_URL, event.locals.sessionToken);
 		try {
-			await client.updateChannel(id, { name, slug, category, stream_url, logo_url, epg_id, sort_order, is_active });
+			await client.updateChannel(id, {
+				name,
+				slug,
+				category,
+				stream_url,
+				logo_url,
+				epg_id,
+				sort_order,
+				is_active
+			});
 		} catch (err: unknown) {
 			const e = err as { message?: string };
 			return fail(500, { error: e.message ?? 'Failed to update channel.' });

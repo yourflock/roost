@@ -40,7 +40,8 @@
 				const body = await res.json();
 				throw new Error(body.message ?? 'Cancellation failed.');
 			}
-			successMessage = 'Subscription cancelled. You\'ll retain access until the end of your billing period.';
+			successMessage =
+				"Subscription cancelled. You'll retain access until the end of your billing period.";
 			window.location.reload();
 		} catch (e: unknown) {
 			error = (e as Error).message ?? 'Service unavailable.';
@@ -68,7 +69,11 @@
 	}
 
 	function formatDate(dateStr: string): string {
-		return new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+		return new Date(dateStr).toLocaleDateString('en-US', {
+			year: 'numeric',
+			month: 'long',
+			day: 'numeric'
+		});
 	}
 </script>
 
@@ -83,13 +88,17 @@
 	</div>
 
 	{#if error}
-		<div class="bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-3 text-red-400 text-sm mb-6">
+		<div
+			class="bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-3 text-red-400 text-sm mb-6"
+		>
 			{error}
 		</div>
 	{/if}
 
 	{#if successMessage}
-		<div class="bg-green-500/10 border border-green-500/30 rounded-lg px-4 py-3 text-green-400 text-sm mb-6">
+		<div
+			class="bg-green-500/10 border border-green-500/30 rounded-lg px-4 py-3 text-green-400 text-sm mb-6"
+		>
 			{successMessage}
 		</div>
 	{/if}
@@ -100,7 +109,9 @@
 				<span class="text-2xl">♾️</span>
 				<div>
 					<h2 class="font-semibold text-white">Founding Family</h2>
-					<p class="text-slate-400 text-sm">Lifetime access — no billing, ever. Thank you for being here from the start.</p>
+					<p class="text-slate-400 text-sm">
+						Lifetime access — no billing, ever. Thank you for being here from the start.
+					</p>
 				</div>
 			</div>
 		</div>
@@ -145,7 +156,9 @@
 				{:else if data.subscription.status === 'active' || data.subscription.status === 'trialing'}
 					<button
 						on:click={cancelSubscription}
-						class="{confirmCancel ? 'btn-danger' : 'text-red-400 hover:text-red-300 text-sm underline'}"
+						class={confirmCancel
+							? 'btn-danger'
+							: 'text-red-400 hover:text-red-300 text-sm underline'}
 						disabled={loading}
 					>
 						{confirmCancel ? 'Click again to confirm cancellation' : 'Cancel Subscription'}

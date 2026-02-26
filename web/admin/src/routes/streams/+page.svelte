@@ -21,7 +21,7 @@
 
 	let { data, form }: Props = $props();
 
-	let streams = $state(data.streams);
+	let streams = $derived(data.streams);
 	let terminateTarget = $state<ActiveStream | null>(null);
 	let terminateLoading = $state(false);
 
@@ -61,9 +61,18 @@
 	oncancel={() => (terminateTarget = null)}
 />
 
-<form id="terminate-form" method="POST" action="?/terminate" use:enhance={() => {
-	return async ({ update }) => { terminateLoading = false; terminateTarget = null; update(); };
-}}>
+<form
+	id="terminate-form"
+	method="POST"
+	action="?/terminate"
+	use:enhance={() => {
+		return async ({ update }) => {
+			terminateLoading = false;
+			terminateTarget = null;
+			update();
+		};
+	}}
+>
 	<input type="hidden" name="stream_id" value="" />
 </form>
 
@@ -75,16 +84,13 @@
 				{streams.length} active stream{streams.length !== 1 ? 's' : ''}
 			</p>
 		</div>
-		<button
-			class="btn-secondary btn-sm"
-			onclick={() => window.location.reload()}
-		>
-			Refresh
-		</button>
+		<button class="btn-secondary btn-sm" onclick={() => window.location.reload()}> Refresh </button>
 	</div>
 
 	{#if form?.error}
-		<div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded-lg mb-4">
+		<div
+			class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded-lg mb-4"
+		>
 			{form.error}
 		</div>
 	{/if}
@@ -113,7 +119,10 @@
 						<tr class="table-row">
 							<td class="table-cell">
 								<div>
-									<a href="/subscribers/{stream.subscriber_id}" class="text-roost-400 hover:underline text-sm">
+									<a
+										href="/subscribers/{stream.subscriber_id}"
+										class="text-roost-400 hover:underline text-sm"
+									>
 										{stream.subscriber_email}
 									</a>
 								</div>
@@ -126,11 +135,15 @@
 							</td>
 							<td class="table-cell text-slate-300">{formatDuration(stream.started_at)}</td>
 							<td class="table-cell">
-								<code class="text-xs text-slate-300 bg-slate-700/50 px-2 py-0.5 rounded">{stream.quality}</code>
+								<code class="text-xs text-slate-300 bg-slate-700/50 px-2 py-0.5 rounded"
+									>{stream.quality}</code
+								>
 							</td>
 							<td class="table-cell text-slate-300">{formatBitrate(stream.bitrate_kbps)}</td>
 							<td class="table-cell">
-								<span class="text-xs text-slate-500 truncate max-w-[160px] block">{stream.user_agent}</span>
+								<span class="text-xs text-slate-500 truncate max-w-[160px] block"
+									>{stream.user_agent}</span
+								>
 							</td>
 							<td class="table-cell">
 								<button class="btn-danger btn-sm" onclick={() => (terminateTarget = stream)}>

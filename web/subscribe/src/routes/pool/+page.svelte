@@ -165,16 +165,6 @@
 		}
 	}
 
-	async function deletePool(poolID: string) {
-		try {
-			await fetch(`/api/pool/groups/${poolID}`, { method: 'DELETE' });
-			goBack();
-			await loadPools();
-		} catch {
-			// ignore
-		}
-	}
-
 	async function addSource() {
 		if (!addSourceURL.trim() || !selectedPool) {
 			addSourceError = 'Source URL is required';
@@ -218,7 +208,9 @@
 		checkingHealth = true;
 		healthJobID = '';
 		try {
-			const res = await fetch(`/api/pool/groups/${selectedPool.id}/health-check`, { method: 'POST' });
+			const res = await fetch(`/api/pool/groups/${selectedPool.id}/health-check`, {
+				method: 'POST'
+			});
 			if (res.ok) {
 				const data = await res.json();
 				healthJobID = data.job_id || '';
@@ -235,7 +227,9 @@
 		try {
 			await navigator.clipboard.writeText(code);
 			copiedCode = true;
-			setTimeout(() => { copiedCode = false; }, 2000);
+			setTimeout(() => {
+				copiedCode = false;
+			}, 2000);
 		} catch {
 			// ignore
 		}
@@ -256,7 +250,9 @@
 	function formatDate(dateStr: string): string {
 		if (!dateStr) return '—';
 		return new Date(dateStr).toLocaleDateString('en-US', {
-			month: 'short', day: 'numeric', year: 'numeric'
+			month: 'short',
+			day: 'numeric',
+			year: 'numeric'
 		});
 	}
 
@@ -273,11 +269,14 @@
 		<div class="bg-slate-800 border border-slate-700 rounded-xl p-6 w-full max-w-md">
 			<h2 class="text-lg font-semibold text-white mb-4">Create Pool</h2>
 			<p class="text-slate-400 text-sm mb-4">
-				A pool lets your neighborhood share media sources. Members contribute IPTV accounts, NAS servers, or VPS instances.
+				A pool lets your neighborhood share media sources. Members contribute IPTV accounts, NAS
+				servers, or VPS instances.
 			</p>
 
 			{#if createError}
-				<div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-3 py-2 rounded-lg mb-4">
+				<div
+					class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-3 py-2 rounded-lg mb-4"
+				>
 					{createError}
 				</div>
 			{/if}
@@ -285,11 +284,24 @@
 			<div class="space-y-4">
 				<div>
 					<label class="block text-slate-400 text-sm mb-1" for="pool-name">Pool Name</label>
-					<input id="pool-name" type="text" bind:value={createName} placeholder="Maple Street Media Pool" class="input w-full" />
+					<input
+						id="pool-name"
+						type="text"
+						bind:value={createName}
+						placeholder="Maple Street Media Pool"
+						class="input w-full"
+					/>
 				</div>
 				<div>
 					<label class="block text-slate-400 text-sm mb-1" for="pool-max">Max Members</label>
-					<input id="pool-max" type="number" min="2" max="50" bind:value={createMaxMembers} class="input w-full" />
+					<input
+						id="pool-max"
+						type="number"
+						min="2"
+						max="50"
+						bind:value={createMaxMembers}
+						class="input w-full"
+					/>
 				</div>
 			</div>
 
@@ -297,7 +309,13 @@
 				<button class="btn-primary flex-1" onclick={createPool} disabled={creating}>
 					{creating ? 'Creating…' : 'Create Pool'}
 				</button>
-				<button class="btn-secondary" onclick={() => { showCreateModal = false; createError = ''; }}>Cancel</button>
+				<button
+					class="btn-secondary"
+					onclick={() => {
+						showCreateModal = false;
+						createError = '';
+					}}>Cancel</button
+				>
 			</div>
 		</div>
 	</div>
@@ -310,25 +328,47 @@
 			<h2 class="text-lg font-semibold text-white mb-4">Join a Pool</h2>
 
 			{#if joinSuccess}
-				<div class="bg-green-500/10 border border-green-500/30 text-green-400 text-sm px-3 py-2 rounded-lg mb-4">
+				<div
+					class="bg-green-500/10 border border-green-500/30 text-green-400 text-sm px-3 py-2 rounded-lg mb-4"
+				>
 					{joinSuccess}
 				</div>
-				<button class="btn-secondary w-full" onclick={() => { showJoinModal = false; joinSuccess = ''; }}>Close</button>
+				<button
+					class="btn-secondary w-full"
+					onclick={() => {
+						showJoinModal = false;
+						joinSuccess = '';
+					}}>Close</button
+				>
 			{:else}
 				{#if joinError}
-					<div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-3 py-2 rounded-lg mb-4">
+					<div
+						class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-3 py-2 rounded-lg mb-4"
+					>
 						{joinError}
 					</div>
 				{/if}
 				<div class="mb-4">
 					<label class="block text-slate-400 text-sm mb-1" for="join-code">Invite Code</label>
-					<input id="join-code" type="text" bind:value={joinCode} placeholder="e.g. a1b2c3d4e5f6" class="input w-full font-mono" />
+					<input
+						id="join-code"
+						type="text"
+						bind:value={joinCode}
+						placeholder="e.g. a1b2c3d4e5f6"
+						class="input w-full font-mono"
+					/>
 				</div>
 				<div class="flex gap-3">
 					<button class="btn-primary flex-1" onclick={joinPool} disabled={joining}>
 						{joining ? 'Joining…' : 'Join Pool'}
 					</button>
-					<button class="btn-secondary" onclick={() => { showJoinModal = false; joinError = ''; }}>Cancel</button>
+					<button
+						class="btn-secondary"
+						onclick={() => {
+							showJoinModal = false;
+							joinError = '';
+						}}>Cancel</button
+					>
 				</div>
 			{/if}
 		</div>
@@ -342,7 +382,9 @@
 			<h2 class="text-lg font-semibold text-white mb-4">Add Source</h2>
 
 			{#if addSourceError}
-				<div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-3 py-2 rounded-lg mb-4">
+				<div
+					class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-3 py-2 rounded-lg mb-4"
+				>
 					{addSourceError}
 				</div>
 			{/if}
@@ -350,7 +392,13 @@
 			<div class="space-y-4">
 				<div>
 					<label class="block text-slate-400 text-sm mb-1" for="source-url">Source URL</label>
-					<input id="source-url" type="url" bind:value={addSourceURL} placeholder="http://…/playlist.m3u8" class="input w-full" />
+					<input
+						id="source-url"
+						type="url"
+						bind:value={addSourceURL}
+						placeholder="http://…/playlist.m3u8"
+						class="input w-full"
+					/>
 				</div>
 				<div>
 					<label class="block text-slate-400 text-sm mb-1" for="source-type">Source Type</label>
@@ -367,14 +415,19 @@
 				<button class="btn-primary flex-1" onclick={addSource} disabled={addingSource}>
 					{addingSource ? 'Adding…' : 'Add Source'}
 				</button>
-				<button class="btn-secondary" onclick={() => { showAddSourceModal = false; addSourceError = ''; }}>Cancel</button>
+				<button
+					class="btn-secondary"
+					onclick={() => {
+						showAddSourceModal = false;
+						addSourceError = '';
+					}}>Cancel</button
+				>
 			</div>
 		</div>
 	</div>
 {/if}
 
 <div class="max-w-4xl mx-auto px-4 py-10">
-
 	<!-- List view -->
 	{#if view === 'list'}
 		<div class="flex items-center justify-between mb-8">
@@ -383,13 +436,18 @@
 				<p class="text-slate-400 text-sm mt-1">Share media sources with trusted neighbors</p>
 			</div>
 			<div class="flex gap-3">
-				<button class="btn-secondary btn-sm" onclick={() => (showJoinModal = true)}>Join Pool</button>
-				<button class="btn-primary btn-sm" onclick={() => (showCreateModal = true)}>New Pool</button>
+				<button class="btn-secondary btn-sm" onclick={() => (showJoinModal = true)}
+					>Join Pool</button
+				>
+				<button class="btn-primary btn-sm" onclick={() => (showCreateModal = true)}>New Pool</button
+				>
 			</div>
 		</div>
 
 		{#if poolsError}
-			<div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded-lg mb-6">
+			<div
+				class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded-lg mb-6"
+			>
 				{poolsError}
 			</div>
 		{/if}
@@ -407,7 +465,9 @@
 				</p>
 				<div class="flex gap-3 justify-center">
 					<button class="btn-primary" onclick={() => (showCreateModal = true)}>Create Pool</button>
-					<button class="btn-secondary" onclick={() => (showJoinModal = true)}>Join with Code</button>
+					<button class="btn-secondary" onclick={() => (showJoinModal = true)}
+						>Join with Code</button
+					>
 				</div>
 			</div>
 		{:else}
@@ -426,7 +486,9 @@
 							</span>
 						</div>
 						<p class="text-slate-400 text-sm mb-3">
-							{pool.member_count} member{pool.member_count !== 1 ? 's' : ''} · Joined {formatDate(pool.created_at)}
+							{pool.member_count} member{pool.member_count !== 1 ? 's' : ''} · Joined {formatDate(
+								pool.created_at
+							)}
 						</p>
 						<div class="flex items-center gap-2">
 							<code class="text-xs text-slate-500 font-mono">{pool.invite_code}</code>
@@ -436,7 +498,7 @@
 			</div>
 		{/if}
 
-	<!-- Detail view -->
+		<!-- Detail view -->
 	{:else if view === 'detail' && selectedPool}
 		<div class="flex items-center gap-3 mb-6">
 			<button class="text-slate-400 hover:text-white transition-colors" onclick={goBack}>
@@ -463,28 +525,20 @@
 				</div>
 				<div class="text-right text-sm">
 					<p class="text-slate-400">Members</p>
-					<p class="text-white font-medium">{selectedPool.member_count} / {selectedPool.max_members}</p>
+					<p class="text-white font-medium">
+						{selectedPool.member_count} / {selectedPool.max_members}
+					</p>
 				</div>
 			</div>
 
 			<div class="flex gap-2 mt-4">
-				<button
-					class="btn-secondary btn-sm"
-					onclick={() => (showAddSourceModal = true)}
-				>
+				<button class="btn-secondary btn-sm" onclick={() => (showAddSourceModal = true)}>
 					Add Source
 				</button>
-				<button
-					class="btn-secondary btn-sm"
-					onclick={runHealthCheck}
-					disabled={checkingHealth}
-				>
+				<button class="btn-secondary btn-sm" onclick={runHealthCheck} disabled={checkingHealth}>
 					{checkingHealth ? 'Checking…' : 'Health Check'}
 				</button>
-				<button
-					class="btn-danger btn-sm"
-					onclick={() => leavePool(selectedPool!.id)}
-				>
+				<button class="btn-danger btn-sm" onclick={() => leavePool(selectedPool!.id)}>
 					Leave Pool
 				</button>
 			</div>
@@ -498,7 +552,9 @@
 		<h2 class="text-base font-semibold text-slate-100 mb-3">Sources</h2>
 
 		{#if sourcesError}
-			<div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded-lg mb-4">
+			<div
+				class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded-lg mb-4"
+			>
 				{sourcesError}
 			</div>
 		{/if}
@@ -510,7 +566,9 @@
 		{:else if sources.length === 0}
 			<div class="card text-center py-10">
 				<div class="text-3xl mb-2">📡</div>
-				<p class="text-slate-400 text-sm">No sources yet. Add your first source to contribute to the pool.</p>
+				<p class="text-slate-400 text-sm">
+					No sources yet. Add your first source to contribute to the pool.
+				</p>
 				<button class="btn-primary btn-sm mt-4" onclick={() => (showAddSourceModal = true)}>
 					Add Source
 				</button>
@@ -521,7 +579,9 @@
 					<div class="card flex items-center gap-4">
 						<div class="flex-1 min-w-0">
 							<div class="flex items-center gap-2 mb-0.5">
-								<span class="text-xs bg-slate-700 text-slate-300 px-1.5 py-0.5 rounded uppercase font-mono">
+								<span
+									class="text-xs bg-slate-700 text-slate-300 px-1.5 py-0.5 rounded uppercase font-mono"
+								>
 									{source.source_type}
 								</span>
 								<span class="text-xs {healthColor(source.health_score)} font-medium">
@@ -530,7 +590,9 @@
 							</div>
 							<p class="text-slate-300 text-sm truncate">{source.source_url}</p>
 							{#if source.last_checked_at}
-								<p class="text-slate-500 text-xs mt-0.5">Last checked: {formatDate(source.last_checked_at)}</p>
+								<p class="text-slate-500 text-xs mt-0.5">
+									Last checked: {formatDate(source.last_checked_at)}
+								</p>
 							{/if}
 						</div>
 
@@ -539,11 +601,17 @@
 							<div class="h-1.5 bg-slate-700 rounded-full overflow-hidden">
 								<div
 									class="h-full rounded-full transition-all
-										{source.health_score >= 0.8 ? 'bg-green-400' : source.health_score >= 0.4 ? 'bg-yellow-400' : 'bg-red-400'}"
+										{source.health_score >= 0.8
+										? 'bg-green-400'
+										: source.health_score >= 0.4
+											? 'bg-yellow-400'
+											: 'bg-red-400'}"
 									style="width: {Math.round(source.health_score * 100)}%"
 								></div>
 							</div>
-							<p class="text-xs text-slate-500 text-right mt-0.5">{Math.round(source.health_score * 100)}%</p>
+							<p class="text-xs text-slate-500 text-right mt-0.5">
+								{Math.round(source.health_score * 100)}%
+							</p>
 						</div>
 
 						<button

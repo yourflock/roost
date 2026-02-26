@@ -12,12 +12,16 @@
 	async function regenerateToken() {
 		const res = await fetch('/api/token/regenerate', { method: 'POST' });
 		if (res.ok) {
-			apiToken = await res.json() as ApiToken;
+			apiToken = (await res.json()) as ApiToken;
 		}
 	}
 
 	function formatDate(dateStr: string): string {
-		return new Date(dateStr).toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+		return new Date(dateStr).toLocaleDateString('en-US', {
+			year: 'numeric',
+			month: 'long',
+			day: 'numeric'
+		});
 	}
 </script>
 
@@ -30,7 +34,9 @@
 	<div class="flex items-start justify-between mb-8">
 		<div>
 			<h1 class="text-2xl font-bold text-white">Dashboard</h1>
-			<p class="text-slate-400 text-sm mt-1">Welcome back, {data.subscriber.name || data.subscriber.email}</p>
+			<p class="text-slate-400 text-sm mt-1">
+				Welcome back, {data.subscriber.name || data.subscriber.email}
+			</p>
 		</div>
 		<div class="flex items-center gap-3">
 			<PlanBadge
@@ -77,7 +83,11 @@
 					<div>
 						<span class="text-slate-500">Streams</span>
 						<p class="text-white mt-0.5">
-							Up to {data.subscription.plan === 'basic' ? 2 : data.subscription.plan === 'premium' ? 4 : 6} concurrent
+							Up to {data.subscription.plan === 'basic'
+								? 2
+								: data.subscription.plan === 'premium'
+									? 4
+									: 6} concurrent
 						</p>
 					</div>
 				</div>

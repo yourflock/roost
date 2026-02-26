@@ -52,25 +52,17 @@
 			icon="✅"
 			loading={!s}
 		/>
-		<StatCard
-			label="Live Streams"
-			value={s?.active_streams ?? '—'}
-			icon="🔴"
-			loading={!s}
-		/>
-		<StatCard
-			label="Channels"
-			value={s?.total_channels ?? '—'}
-			icon="📺"
-			loading={!s}
-		/>
+		<StatCard label="Live Streams" value={s?.active_streams ?? '—'} icon="🔴" loading={!s} />
+		<StatCard label="Channels" value={s?.total_channels ?? '—'} icon="📺" loading={!s} />
 	</div>
 
 	<div class="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-8">
 		<StatCard
 			label="Monthly Recurring Revenue"
 			value={s ? formatMoney(s.mrr_cents) : '—'}
-			change={s?.new_subscribers_7d ? Math.round((s.new_subscribers_7d / Math.max(s.total_subscribers, 1)) * 100) : undefined}
+			change={s?.new_subscribers_7d
+				? Math.round((s.new_subscribers_7d / Math.max(s.total_subscribers, 1)) * 100)
+				: undefined}
 			changeLabel="subscriber growth (7d)"
 			icon="💰"
 			loading={!s}
@@ -91,7 +83,7 @@
 			</h2>
 			{#if !s}
 				<div class="space-y-3">
-					{#each { length: 3 } as _}
+					{#each { length: 3 } as _item}
 						<div class="h-4 bg-slate-700 rounded animate-pulse"></div>
 					{/each}
 				</div>
@@ -103,13 +95,19 @@
 					</div>
 					<div class="flex justify-between items-center">
 						<span class="text-sm text-slate-400">Churned</span>
-						<span class="text-sm font-semibold {s.churn_7d > 0 ? 'text-red-400' : 'text-slate-400'}">
+						<span
+							class="text-sm font-semibold {s.churn_7d > 0 ? 'text-red-400' : 'text-slate-400'}"
+						>
 							{s.churn_7d > 0 ? `-${s.churn_7d}` : '0'}
 						</span>
 					</div>
 					<div class="flex justify-between items-center">
 						<span class="text-sm text-slate-400">Net growth</span>
-						<span class="text-sm font-semibold {s.new_subscribers_7d - s.churn_7d >= 0 ? 'text-green-400' : 'text-red-400'}">
+						<span
+							class="text-sm font-semibold {s.new_subscribers_7d - s.churn_7d >= 0
+								? 'text-green-400'
+								: 'text-red-400'}"
+						>
 							{s.new_subscribers_7d - s.churn_7d >= 0 ? '+' : ''}{s.new_subscribers_7d - s.churn_7d}
 						</span>
 					</div>
@@ -131,16 +129,17 @@
 				<a href="/streams" class="btn-secondary btn-sm block text-center w-full">
 					Monitor Streams
 				</a>
-				<a href="/system" class="btn-secondary btn-sm block text-center w-full">
-					System Health
-				</a>
+				<a href="/system" class="btn-secondary btn-sm block text-center w-full"> System Health </a>
 			</div>
 		</div>
 	</div>
 
 	{#if !data.stats}
-		<div class="bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 text-sm px-4 py-3 rounded-lg">
-			Could not connect to Roost API. Dashboard stats unavailable. Check that the backend services are running.
+		<div
+			class="bg-yellow-500/10 border border-yellow-500/30 text-yellow-400 text-sm px-4 py-3 rounded-lg"
+		>
+			Could not connect to Roost API. Dashboard stats unavailable. Check that the backend services
+			are running.
 		</div>
 	{/if}
 </div>

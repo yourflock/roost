@@ -19,7 +19,7 @@
 
 	let { data }: Props = $props();
 
-	let channels = $state(data.channels);
+	let channels = $derived(data.channels);
 	let deleteTarget = $state<Channel | null>(null);
 	let deleteLoading = $state(false);
 	let search = $state('');
@@ -58,13 +58,18 @@
 />
 
 <!-- Hidden delete form -->
-<form id="delete-form" method="POST" action="?/delete" use:enhance={() => {
-	return async ({ update }) => {
-		deleteLoading = false;
-		deleteTarget = null;
-		update();
-	};
-}}>
+<form
+	id="delete-form"
+	method="POST"
+	action="?/delete"
+	use:enhance={() => {
+		return async ({ update }) => {
+			deleteLoading = false;
+			deleteTarget = null;
+			update();
+		};
+	}}
+>
 	<input type="hidden" name="id" value="" />
 </form>
 
@@ -104,7 +109,9 @@
 				{#if filtered.length === 0}
 					<tr>
 						<td colspan="6" class="table-cell text-center text-slate-500 py-10">
-							{search ? 'No channels match your search.' : 'No channels yet. Add your first channel.'}
+							{search
+								? 'No channels match your search.'
+								: 'No channels yet. Add your first channel.'}
 						</td>
 					</tr>
 				{:else}
@@ -120,7 +127,9 @@
 											class="w-8 h-8 rounded object-contain bg-slate-700 p-1"
 										/>
 									{:else}
-										<div class="w-8 h-8 rounded bg-slate-700 flex items-center justify-center text-slate-500 text-xs">
+										<div
+											class="w-8 h-8 rounded bg-slate-700 flex items-center justify-center text-slate-500 text-xs"
+										>
 											TV
 										</div>
 									{/if}
@@ -151,10 +160,7 @@
 							<td class="table-cell">
 								<div class="flex items-center gap-2">
 									<a href="/channels/{channel.id}" class="btn-secondary btn-sm">Edit</a>
-									<button
-										class="btn-danger btn-sm"
-										onclick={() => (deleteTarget = channel)}
-									>
+									<button class="btn-danger btn-sm" onclick={() => (deleteTarget = channel)}>
 										Delete
 									</button>
 								</div>

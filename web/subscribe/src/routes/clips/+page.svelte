@@ -131,7 +131,9 @@
 
 	function formatDate(dateStr: string): string {
 		return new Date(dateStr).toLocaleDateString('en-US', {
-			month: 'short', day: 'numeric', year: 'numeric'
+			month: 'short',
+			day: 'numeric',
+			year: 'numeric'
 		});
 	}
 
@@ -148,11 +150,14 @@
 		<div class="bg-slate-800 border border-slate-700 rounded-xl p-6 w-full max-w-md">
 			<h2 class="text-lg font-semibold text-white mb-4">Create Clip</h2>
 			<p class="text-slate-400 text-sm mb-4">
-				Clips are cut from DVR segments and uploaded to your library. Encoding may take a few seconds.
+				Clips are cut from DVR segments and uploaded to your library. Encoding may take a few
+				seconds.
 			</p>
 
 			{#if createError}
-				<div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-3 py-2 rounded-lg mb-4">
+				<div
+					class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-3 py-2 rounded-lg mb-4"
+				>
 					{createError}
 				</div>
 			{/if}
@@ -180,7 +185,8 @@
 				</div>
 				<div class="grid grid-cols-2 gap-3">
 					<div>
-						<label class="block text-slate-400 text-sm mb-1" for="clip-start">Start (seconds)</label>
+						<label class="block text-slate-400 text-sm mb-1" for="clip-start">Start (seconds)</label
+						>
 						<input
 							id="clip-start"
 							type="number"
@@ -190,7 +196,9 @@
 						/>
 					</div>
 					<div>
-						<label class="block text-slate-400 text-sm mb-1" for="clip-duration">Duration (seconds)</label>
+						<label class="block text-slate-400 text-sm mb-1" for="clip-duration"
+							>Duration (seconds)</label
+						>
 						<input
 							id="clip-duration"
 							type="number"
@@ -207,7 +215,13 @@
 				<button class="btn-primary flex-1" onclick={createClip} disabled={creating}>
 					{creating ? 'Encoding…' : 'Create Clip'}
 				</button>
-				<button class="btn-secondary" onclick={() => { showCreateModal = false; createError = ''; }}>
+				<button
+					class="btn-secondary"
+					onclick={() => {
+						showCreateModal = false;
+						createError = '';
+					}}
+				>
 					Cancel
 				</button>
 			</div>
@@ -256,13 +270,13 @@
 			<h1 class="text-2xl font-bold text-white">My Clips</h1>
 			<p class="text-slate-400 text-sm mt-1">Short clips cut from your DVR recordings</p>
 		</div>
-		<button class="btn-primary btn-sm" onclick={() => (showCreateModal = true)}>
-			New Clip
-		</button>
+		<button class="btn-primary btn-sm" onclick={() => (showCreateModal = true)}> New Clip </button>
 	</div>
 
 	{#if error}
-		<div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded-lg mb-6">
+		<div
+			class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded-lg mb-6"
+		>
 			{error}
 		</div>
 	{/if}
@@ -287,7 +301,9 @@
 			{#each clips as clip}
 				<div class="card group hover:border-roost-500/40 transition-colors">
 					<!-- Thumbnail -->
-					<div class="bg-slate-700/50 rounded-lg aspect-video mb-3 flex items-center justify-center overflow-hidden">
+					<div
+						class="bg-slate-700/50 rounded-lg aspect-video mb-3 flex items-center justify-center overflow-hidden"
+					>
 						{#if clip.thumbnail_key}
 							<img
 								src="/api/clips/{clip.id}/thumbnail"
@@ -307,7 +323,9 @@
 					</div>
 
 					{#if clip.share_count > 0}
-						<p class="text-xs text-slate-500 mb-3">Shared {clip.share_count} time{clip.share_count !== 1 ? 's' : ''}</p>
+						<p class="text-xs text-slate-500 mb-3">
+							Shared {clip.share_count} time{clip.share_count !== 1 ? 's' : ''}
+						</p>
 					{/if}
 
 					<div class="flex gap-2">

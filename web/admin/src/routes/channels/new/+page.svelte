@@ -23,8 +23,8 @@
 	let { data, form }: Props = $props();
 
 	// Auto-generate slug from name
-	let name = $state(form?.values?.name ?? '');
-	let slug = $state(form?.values?.slug ?? '');
+	let name = $derived(form?.values?.name ?? '');
+	let slug = $derived(form?.values?.slug ?? '');
 
 	function generateSlug(n: string): string {
 		return n
@@ -56,7 +56,9 @@
 	<h1 class="text-2xl font-bold text-slate-100 mb-6">Add Channel</h1>
 
 	{#if form?.error}
-		<div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded-lg mb-6">
+		<div
+			class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded-lg mb-6"
+		>
 			{form.error}
 		</div>
 	{/if}
@@ -186,8 +188,13 @@
 		<!-- Region availability (P14-T02) -->
 		<div class="card space-y-4">
 			<div>
-				<h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-1">Region Availability</h2>
-				<p class="text-xs text-slate-500">Select which regions this channel is available in. Leave all unchecked to make it available globally.</p>
+				<h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-1">
+					Region Availability
+				</h2>
+				<p class="text-xs text-slate-500">
+					Select which regions this channel is available in. Leave all unchecked to make it
+					available globally.
+				</p>
 			</div>
 			<div class="grid grid-cols-2 gap-2">
 				{#each data?.regions ?? [] as region}

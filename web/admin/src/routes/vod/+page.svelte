@@ -32,8 +32,8 @@
 
 	let { data }: Props = $props();
 
-	let movies = $state(data.movies);
-	let seriesList = $state(data.series);
+	let movies = $derived(data.movies);
+	let seriesList = $derived(data.series);
 	let activeTab = $state<'movies' | 'series'>('movies');
 	let search = $state('');
 
@@ -172,20 +172,14 @@
 							</td>
 							<td class="p-3 text-right">
 								<div class="flex items-center justify-end gap-2">
-									<a
-										href="/vod/{movie.id}/edit"
-										class="text-blue-400 hover:text-blue-300 text-xs"
-									>
+									<a href="/vod/{movie.id}/edit" class="text-blue-400 hover:text-blue-300 text-xs">
 										Edit
 									</a>
 									<form method="POST" action="?/toggleActive" use:enhance>
 										<input type="hidden" name="id" value={movie.id} />
 										<input type="hidden" name="type" value="movie" />
 										<input type="hidden" name="is_active" value={movie.is_active} />
-										<button
-											type="submit"
-											class="text-yellow-400 hover:text-yellow-300 text-xs"
-										>
+										<button type="submit" class="text-yellow-400 hover:text-yellow-300 text-xs">
 											{movie.is_active ? 'Deactivate' : 'Activate'}
 										</button>
 									</form>
@@ -264,7 +258,9 @@
 									<span class="text-slate-500">—</span>
 								{/if}
 							</td>
-							<td class="p-3 text-slate-300">{series.seasons_count} season{series.seasons_count !== 1 ? 's' : ''}</td>
+							<td class="p-3 text-slate-300"
+								>{series.seasons_count} season{series.seasons_count !== 1 ? 's' : ''}</td
+							>
 							<td class="p-3">
 								<span
 									class="px-2 py-0.5 rounded-full text-xs font-medium {series.is_active
@@ -276,10 +272,7 @@
 							</td>
 							<td class="p-3 text-right">
 								<div class="flex items-center justify-end gap-2">
-									<a
-										href="/vod/{series.id}/edit"
-										class="text-blue-400 hover:text-blue-300 text-xs"
-									>
+									<a href="/vod/{series.id}/edit" class="text-blue-400 hover:text-blue-300 text-xs">
 										Manage
 									</a>
 									<form method="POST" action="?/toggleActive" use:enhance>

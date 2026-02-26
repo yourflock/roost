@@ -90,7 +90,9 @@
 		try {
 			await navigator.clipboard.writeText(key);
 			copyFeedback[id] = true;
-			setTimeout(() => { copyFeedback[id] = false; }, 2000);
+			setTimeout(() => {
+				copyFeedback[id] = false;
+			}, 2000);
 		} catch {
 			// clipboard not available
 		}
@@ -107,7 +109,10 @@
 
 	function formatDate(dateStr: string): string {
 		return new Date(dateStr).toLocaleDateString('en-US', {
-			month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+			month: 'short',
+			day: 'numeric',
+			hour: '2-digit',
+			minute: '2-digit'
 		});
 	}
 
@@ -125,7 +130,9 @@
 			<h2 class="text-lg font-semibold text-white mb-4">Create Broadcast Session</h2>
 
 			{#if createError}
-				<div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-3 py-2 rounded-lg mb-4">
+				<div
+					class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-3 py-2 rounded-lg mb-4"
+				>
 					{createError}
 				</div>
 			{/if}
@@ -157,7 +164,13 @@
 				<button class="btn-primary flex-1" onclick={createSession} disabled={creating}>
 					{creating ? 'Creating…' : 'Create Session'}
 				</button>
-				<button class="btn-secondary" onclick={() => { showCreateModal = false; createError = ''; }}>
+				<button
+					class="btn-secondary"
+					onclick={() => {
+						showCreateModal = false;
+						createError = '';
+					}}
+				>
 					Cancel
 				</button>
 			</div>
@@ -169,9 +182,7 @@
 	<div class="flex items-center justify-between mb-6">
 		<div>
 			<h1 class="text-2xl font-bold text-slate-100">Broadcast Studio</h1>
-			<p class="text-slate-400 text-sm mt-1">
-				Monitor and manage family live broadcast sessions
-			</p>
+			<p class="text-slate-400 text-sm mt-1">Monitor and manage family live broadcast sessions</p>
 		</div>
 		<div class="flex gap-3">
 			<button class="btn-secondary btn-sm" onclick={loadSessions} disabled={loading}>
@@ -184,7 +195,9 @@
 	</div>
 
 	{#if error}
-		<div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded-lg mb-6">
+		<div
+			class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded-lg mb-6"
+		>
 			{error}
 		</div>
 	{/if}
@@ -193,15 +206,21 @@
 	{#if !loading && sessions.length > 0}
 		<div class="grid grid-cols-3 gap-4 mb-6">
 			<div class="card text-center">
-				<p class="text-2xl font-bold text-white">{sessions.filter(s => s.status === 'live').length}</p>
+				<p class="text-2xl font-bold text-white">
+					{sessions.filter((s) => s.status === 'live').length}
+				</p>
 				<p class="text-slate-400 text-sm mt-0.5">Live now</p>
 			</div>
 			<div class="card text-center">
-				<p class="text-2xl font-bold text-white">{sessions.filter(s => s.status === 'idle').length}</p>
+				<p class="text-2xl font-bold text-white">
+					{sessions.filter((s) => s.status === 'idle').length}
+				</p>
 				<p class="text-slate-400 text-sm mt-0.5">Idle</p>
 			</div>
 			<div class="card text-center">
-				<p class="text-2xl font-bold text-white">{sessions.reduce((a, s) => a + s.viewer_count, 0)}</p>
+				<p class="text-2xl font-bold text-white">
+					{sessions.reduce((a, s) => a + s.viewer_count, 0)}
+				</p>
 				<p class="text-slate-400 text-sm mt-0.5">Total viewers</p>
 			</div>
 		</div>
@@ -215,7 +234,9 @@
 		<div class="card text-center py-12">
 			<div class="text-4xl mb-3">📡</div>
 			<p class="text-slate-300 font-medium">No broadcast sessions</p>
-			<p class="text-slate-500 text-sm mt-1">Sessions are created by families from the Flock app.</p>
+			<p class="text-slate-500 text-sm mt-1">
+				Sessions are created by families from the Flock app.
+			</p>
 		</div>
 	{:else}
 		<div class="overflow-x-auto rounded-xl border border-slate-700">
@@ -286,10 +307,7 @@
 							</td>
 							<td class="table-cell">
 								{#if sess.status === 'live'}
-									<button
-										class="btn-danger btn-sm"
-										onclick={() => terminateSession(sess.id)}
-									>
+									<button class="btn-danger btn-sm" onclick={() => terminateSession(sess.id)}>
 										End
 									</button>
 								{/if}

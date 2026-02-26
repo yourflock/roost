@@ -45,7 +45,7 @@
 
 	let { data, form }: Props = $props();
 
-	const sub = data.subscriber;
+	const sub = $derived(data.subscriber);
 	let showSuspendModal = $state(false);
 	let showReinstateModal = $state(false);
 	let suspendLoading = $state(false);
@@ -53,11 +53,18 @@
 	let suspendReason = $state('');
 
 	function formatDate(d: string): string {
-		return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+		return new Date(d).toLocaleDateString('en-US', {
+			month: 'short',
+			day: 'numeric',
+			year: 'numeric'
+		});
 	}
 
 	function formatMoney(cents: number, currency: string): string {
-		return new Intl.NumberFormat('en-US', { style: 'currency', currency: currency.toUpperCase() }).format(cents / 100);
+		return new Intl.NumberFormat('en-US', {
+			style: 'currency',
+			currency: currency.toUpperCase()
+		}).format(cents / 100);
 	}
 </script>
 
@@ -74,7 +81,9 @@
 	loading={suspendLoading}
 	onconfirm={() => {
 		suspendLoading = true;
-		document.getElementById('suspend-form')?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+		document
+			.getElementById('suspend-form')
+			?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
 	}}
 	oncancel={() => (showSuspendModal = false)}
 />
@@ -87,21 +96,40 @@
 	loading={reinstateLoading}
 	onconfirm={() => {
 		reinstateLoading = true;
-		document.getElementById('reinstate-form')?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
+		document
+			.getElementById('reinstate-form')
+			?.dispatchEvent(new Event('submit', { bubbles: true, cancelable: true }));
 	}}
 	oncancel={() => (showReinstateModal = false)}
 />
 
 <!-- Hidden forms -->
-<form id="suspend-form" method="POST" action="?/suspend" use:enhance={() => {
-	return async ({ update }) => { suspendLoading = false; showSuspendModal = false; update(); };
-}}>
+<form
+	id="suspend-form"
+	method="POST"
+	action="?/suspend"
+	use:enhance={() => {
+		return async ({ update }) => {
+			suspendLoading = false;
+			showSuspendModal = false;
+			update();
+		};
+	}}
+>
 	<input type="hidden" name="reason" value={suspendReason || 'Suspended by admin'} />
 </form>
-<form id="reinstate-form" method="POST" action="?/reinstate" use:enhance={() => {
-	return async ({ update }) => { reinstateLoading = false; showReinstateModal = false; update(); };
-}}>
-</form>
+<form
+	id="reinstate-form"
+	method="POST"
+	action="?/reinstate"
+	use:enhance={() => {
+		return async ({ update }) => {
+			reinstateLoading = false;
+			showReinstateModal = false;
+			update();
+		};
+	}}
+></form>
 
 <div class="p-6 max-w-5xl mx-auto">
 	<div class="mb-6">
@@ -111,12 +139,16 @@
 	</div>
 
 	{#if form?.error}
-		<div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded-lg mb-4">
+		<div
+			class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded-lg mb-4"
+		>
 			{form.error}
 		</div>
 	{/if}
 	{#if form?.success}
-		<div class="bg-green-500/10 border border-green-500/30 text-green-400 text-sm px-4 py-3 rounded-lg mb-4">
+		<div
+			class="bg-green-500/10 border border-green-500/30 text-green-400 text-sm px-4 py-3 rounded-lg mb-4"
+		>
 			Subscriber {form.action} successfully.
 		</div>
 	{/if}
@@ -156,12 +188,16 @@
 	<div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-6">
 		<!-- Subscription -->
 		<div class="card lg:col-span-2">
-			<h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Subscription</h2>
+			<h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">
+				Subscription
+			</h2>
 			{#if sub.subscription}
 				<div class="space-y-3">
 					<div class="flex justify-between">
 						<span class="text-sm text-slate-400">Plan</span>
-						<span class="text-sm text-slate-200 capitalize">{sub.subscription.plan} ({sub.subscription.billing_period})</span>
+						<span class="text-sm text-slate-200 capitalize"
+							>{sub.subscription.plan} ({sub.subscription.billing_period})</span
+						>
 					</div>
 					<div class="flex justify-between">
 						<span class="text-sm text-slate-400">Status</span>
@@ -169,10 +205,14 @@
 					</div>
 					<div class="flex justify-between">
 						<span class="text-sm text-slate-400">Renews</span>
-						<span class="text-sm text-slate-200">{formatDate(sub.subscription.current_period_end)}</span>
+						<span class="text-sm text-slate-200"
+							>{formatDate(sub.subscription.current_period_end)}</span
+						>
 					</div>
 					{#if sub.subscription.cancel_at_period_end}
-						<div class="text-xs text-yellow-400 bg-yellow-500/10 border border-yellow-500/30 rounded px-3 py-2">
+						<div
+							class="text-xs text-yellow-400 bg-yellow-500/10 border border-yellow-500/30 rounded px-3 py-2"
+						>
 							Cancels at end of billing period
 						</div>
 					{/if}
@@ -192,7 +232,11 @@
 			<div class="space-y-3">
 				<div class="flex justify-between">
 					<span class="text-sm text-slate-400">Active Streams</span>
-					<span class="text-sm font-semibold {sub.stream_count > 0 ? 'text-green-400' : 'text-slate-200'}">{sub.stream_count}</span>
+					<span
+						class="text-sm font-semibold {sub.stream_count > 0
+							? 'text-green-400'
+							: 'text-slate-200'}">{sub.stream_count}</span
+					>
 				</div>
 				<div class="flex justify-between">
 					<span class="text-sm text-slate-400">API Tokens</span>
@@ -215,7 +259,9 @@
 			<div class="space-y-2">
 				{#each data.tokens as tok}
 					<div class="flex items-center justify-between bg-slate-700/30 rounded-lg px-4 py-3">
-						<code class="text-xs text-slate-300 font-mono">{tok.token.slice(0, 8)}...{tok.token.slice(-8)}</code>
+						<code class="text-xs text-slate-300 font-mono"
+							>{tok.token.slice(0, 8)}...{tok.token.slice(-8)}</code
+						>
 						<div class="text-xs text-slate-500">
 							Created {formatDate(tok.created_at)}
 							{#if tok.last_used_at}
@@ -230,7 +276,9 @@
 
 	<!-- Invoices -->
 	<div class="card">
-		<h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">Invoice History</h2>
+		<h2 class="text-sm font-semibold text-slate-400 uppercase tracking-wider mb-4">
+			Invoice History
+		</h2>
 		{#if data.invoices.length === 0}
 			<p class="text-slate-500 text-sm">No invoices found.</p>
 		{:else}
@@ -266,7 +314,12 @@
 								</td>
 								<td class="table-cell">
 									{#if inv.pdf_url}
-										<a href={inv.pdf_url} target="_blank" rel="noopener" class="text-roost-400 text-xs hover:underline">
+										<a
+											href={inv.pdf_url}
+											target="_blank"
+											rel="noopener"
+											class="text-roost-400 text-xs hover:underline"
+										>
 											PDF
 										</a>
 									{/if}

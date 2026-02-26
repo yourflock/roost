@@ -16,7 +16,7 @@
 	}
 
 	let { data }: Props = $props();
-	let channels = $state(data.channels);
+	let channels = $derived(data.channels);
 	let cleanupLoading = $state(false);
 
 	const totalStorageMB = $derived(channels.reduce((sum, c) => sum + c.total_mb, 0));
@@ -138,9 +138,7 @@
 					</tr>
 				{:else}
 					<tr>
-						<td colspan="7" class="p-8 text-center text-slate-500">
-							No channels found.
-						</td>
+						<td colspan="7" class="p-8 text-center text-slate-500"> No channels found. </td>
 					</tr>
 				{/each}
 			</tbody>

@@ -9,7 +9,13 @@ export const load: PageServerLoad = async (event) => {
 	if (!event.locals.admin) redirect(302, '/login');
 
 	const client = new AdminApiClient(API_URL, event.locals.sessionToken);
-	let services: { name: string; status: string; latency_ms: number | null; details: string | null; checked_at: string }[] = [];
+	let services: {
+		name: string;
+		status: string;
+		latency_ms: number | null;
+		details: string | null;
+		checked_at: string;
+	}[] = [];
 
 	try {
 		services = await client.getServiceHealth();

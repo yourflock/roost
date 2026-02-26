@@ -39,24 +39,29 @@
 		scheduled: 'badge-blue',
 		final: 'badge-gray',
 		postponed: 'badge-yellow',
-		cancelled: 'badge-gray',
+		cancelled: 'badge-gray'
 	};
 
 	function formatTime(iso: string): string {
 		return new Date(iso).toLocaleString('en-US', {
-			month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit',
+			month: 'short',
+			day: 'numeric',
+			hour: 'numeric',
+			minute: '2-digit'
 		});
 	}
 
 	function applyFilter() {
 		const params = new URLSearchParams($page.url.searchParams);
-		if (league) params.set('league', league); else params.delete('league');
-		if (status) params.set('status', status); else params.delete('status');
+		if (league) params.set('league', league);
+		else params.delete('league');
+		if (status) params.set('status', status);
+		else params.delete('status');
 		goto(`?${params}`);
 	}
 
-	let league = $state(data.filterLeague);
-	let status = $state(data.filterStatus);
+	let league = $derived(data.filterLeague);
+	let status = $derived(data.filterStatus);
 </script>
 
 <svelte:head>
@@ -110,13 +115,17 @@
 						<tr class="hover:bg-slate-700/30 transition-colors">
 							<td class="py-3 text-slate-100">
 								{event.home_team_id ? 'Home' : '?'} vs {event.away_team_id ? 'Away' : '?'}
-								{#if event.week}<span class="text-xs text-slate-500 ml-1">Wk {event.week}</span>{/if}
+								{#if event.week}<span class="text-xs text-slate-500 ml-1">Wk {event.week}</span
+									>{/if}
 							</td>
 							<td class="py-3 font-mono text-slate-300">
 								{event.home_score}–{event.away_score}
-								{#if event.period}<span class="text-xs text-slate-500 ml-1">({event.period})</span>{/if}
+								{#if event.period}<span class="text-xs text-slate-500 ml-1">({event.period})</span
+									>{/if}
 							</td>
-							<td class="py-3 text-slate-400">{event.season} <span class="text-xs capitalize">{event.season_type}</span></td>
+							<td class="py-3 text-slate-400"
+								>{event.season} <span class="text-xs capitalize">{event.season_type}</span></td
+							>
 							<td class="py-3 text-slate-400 text-xs">{formatTime(event.scheduled_time)}</td>
 							<td class="py-3">
 								<span class="badge {statusColors[event.status] ?? 'badge-gray'}">

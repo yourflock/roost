@@ -20,7 +20,14 @@ export const load: PageServerLoad = async (event) => {
 
 	const client = new AdminApiClient(API_URL, event.locals.sessionToken);
 
-	let result = { entries: [], total: 0, page: 1, per_page: 50, total_pages: 1 };
+	type AuditResult = {
+		entries: unknown[];
+		total: number;
+		page: number;
+		per_page: number;
+		total_pages: number;
+	};
+	let result: AuditResult = { entries: [], total: 0, page: 1, per_page: 50, total_pages: 1 };
 	try {
 		const params = new URLSearchParams({ page: String(page), per_page: '50' });
 		if (actor_id) params.set('actor_id', actor_id);
@@ -28,7 +35,10 @@ export const load: PageServerLoad = async (event) => {
 		if (resource_type) params.set('resource_type', resource_type);
 		if (date_from) params.set('date_from', date_from);
 		if (date_to) params.set('date_to', date_to);
-		result = await (client as any).request('GET', `/admin/audit?${params}`);
+		const fetcher = client as unknown as {
+			request: (m: string, p: string) => Promise<AuditResult>;
+		};
+		result = await fetcher.request('GET', `/admin/audit?${params}`);
 	} catch {
 		// Return empty
 	}

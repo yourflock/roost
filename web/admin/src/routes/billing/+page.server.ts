@@ -13,10 +13,7 @@ export const load: PageServerLoad = async (event) => {
 	let promoCodes: PromoCode[] = [];
 
 	try {
-		[stats, promoCodes] = await Promise.all([
-			client.getDashboardStats(),
-			client.getPromoCodes()
-		]);
+		[stats, promoCodes] = await Promise.all([client.getDashboardStats(), client.getPromoCodes()]);
 	} catch {
 		// Return whatever succeeded
 	}
@@ -42,7 +39,14 @@ export const actions: Actions = {
 
 		const client = new AdminApiClient(API_URL, event.locals.sessionToken);
 		try {
-			await client.createPromoCode({ code, discount_type, discount_value, max_uses, expires_at, is_active });
+			await client.createPromoCode({
+				code,
+				discount_type,
+				discount_value,
+				max_uses,
+				expires_at,
+				is_active
+			});
 		} catch (err: unknown) {
 			const e = err as { message?: string };
 			return fail(500, { promoError: e.message ?? 'Failed to create promo code.' });

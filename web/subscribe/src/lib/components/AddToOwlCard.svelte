@@ -3,11 +3,8 @@
 	export let domain: string = 'roost.yourflock.org';
 
 	let copiedM3U = false;
-	let showQR = false;
 
-	$: m3uUrl = token
-		? `https://${domain}/owl/playlist.m3u8?token=${token}`
-		: null;
+	$: m3uUrl = token ? `https://${domain}/owl/playlist.m3u8?token=${token}` : null;
 
 	$: owlDeepLink = token
 		? `owl://addons/install?url=https://${domain}/owl/manifest.json&token=${token}`
@@ -40,10 +37,7 @@
 		},
 		{
 			name: 'VLC',
-			steps: [
-				'Open VLC → Media → Open Network Stream',
-				'Paste the M3U URL and click Play'
-			]
+			steps: ['Open VLC → Media → Open Network Stream', 'Paste the M3U URL and click Play']
 		}
 	];
 </script>
@@ -76,13 +70,17 @@
 					<div class="flex items-center gap-2 mb-2">
 						<span class="font-medium text-slate-200">{player.name}</span>
 						{#if player.recommended}
-							<span class="bg-roost-500/20 text-roost-400 border border-roost-500/30 px-2 py-0.5 rounded-full text-xs">Recommended</span>
+							<span
+								class="bg-roost-500/20 text-roost-400 border border-roost-500/30 px-2 py-0.5 rounded-full text-xs"
+								>Recommended</span
+							>
 						{/if}
 					</div>
 					<ol class="space-y-1">
 						{#each player.steps as step, i}
 							<li class="text-sm text-slate-400">
-								<span class="text-roost-400 font-medium">{i + 1}.</span> {step}
+								<span class="text-roost-400 font-medium">{i + 1}.</span>
+								{step}
 							</li>
 						{/each}
 					</ol>
@@ -94,8 +92,15 @@
 		{#if owlDeepLink}
 			<div class="mt-4 pt-4 border-t border-slate-700">
 				<a href={owlDeepLink} class="btn-primary inline-flex items-center gap-2 text-sm">
-					<svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-						<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-4 w-4"
+						viewBox="0 0 24 24"
+						fill="none"
+						stroke="currentColor"
+						stroke-width="2"
+					>
+						<path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
 					</svg>
 					Open in Owl App
 				</a>

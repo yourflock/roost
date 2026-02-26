@@ -3,7 +3,10 @@
 	import { page } from '$app/stores';
 
 	interface Props {
-		data: { admin: { id: string; email: string; name: string; role: string } | null; sessionToken: string | null };
+		data: {
+			admin: { id: string; email: string; name: string; role: string } | null;
+			sessionToken: string | null;
+		};
 		children?: import('svelte').Snippet;
 	}
 
@@ -42,7 +45,9 @@
 			<!-- Logo / Brand -->
 			<div class="px-5 py-5 border-b border-slate-700">
 				<div class="flex items-center gap-2.5">
-					<div class="w-8 h-8 bg-roost-500 rounded-lg flex items-center justify-center text-white font-bold text-sm">
+					<div
+						class="w-8 h-8 bg-roost-500 rounded-lg flex items-center justify-center text-white font-bold text-sm"
+					>
 						R
 					</div>
 					<div>
@@ -55,10 +60,7 @@
 			<!-- Navigation -->
 			<nav class="flex-1 px-3 py-4 space-y-1 overflow-y-auto">
 				{#each navItems as item}
-					<a
-						href={item.href}
-						class="sidebar-link {isActive(item.href) ? 'active' : ''}"
-					>
+					<a href={item.href} class="sidebar-link {isActive(item.href) ? 'active' : ''}">
 						<span class="text-base">{item.icon}</span>
 						{item.label}
 					</a>

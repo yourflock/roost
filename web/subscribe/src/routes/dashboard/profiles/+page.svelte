@@ -37,7 +37,6 @@
 	let editClearSchedule = false;
 
 	let loading = false;
-	let error = '';
 
 	// Avatar presets
 	const avatarPresets = Array.from({ length: 12 }, (_, i) => `owl-${i + 1}`);
@@ -75,22 +74,22 @@
 		showEditModal = false;
 		showDeleteModal = false;
 		selectedProfile = null;
-		error = '';
 	}
 
 	function avatarUrl(profile: Profile): string {
 		if (profile.avatar_url) return profile.avatar_url;
-		if (profile.avatar_preset) return `https://media.yourflock.org/avatars/presets/${profile.avatar_preset}.png`;
+		if (profile.avatar_preset)
+			return `https://media.yourflock.org/avatars/presets/${profile.avatar_preset}.png`;
 		return '/images/avatar-default.png';
 	}
 
 	$: successMsg = $page.url.searchParams.get('created')
 		? 'Profile created.'
 		: $page.url.searchParams.get('updated')
-		? 'Profile updated.'
-		: $page.url.searchParams.get('deleted')
-		? 'Profile deleted.'
-		: '';
+			? 'Profile updated.'
+			: $page.url.searchParams.get('deleted')
+				? 'Profile deleted.'
+				: '';
 
 	$: canAddProfile = data.limits.current < data.limits.max;
 </script>
@@ -113,14 +112,18 @@
 
 	<!-- Success banner -->
 	{#if successMsg}
-		<div class="bg-green-900/30 border border-green-700/50 text-green-400 rounded-xl px-4 py-3 mb-6 text-sm">
+		<div
+			class="bg-green-900/30 border border-green-700/50 text-green-400 rounded-xl px-4 py-3 mb-6 text-sm"
+		>
 			{successMsg}
 		</div>
 	{/if}
 
 	<!-- Form action error -->
 	{#if form?.error}
-		<div class="bg-red-900/30 border border-red-700/50 text-red-400 rounded-xl px-4 py-3 mb-6 text-sm">
+		<div
+			class="bg-red-900/30 border border-red-700/50 text-red-400 rounded-xl px-4 py-3 mb-6 text-sm"
+		>
 			{form.error}
 		</div>
 	{/if}
@@ -148,7 +151,9 @@
 						src={avatarUrl(profile)}
 						alt="{profile.name} avatar"
 						class="w-16 h-16 rounded-full object-cover bg-slate-700"
-						on:error={(e) => { (e.target as HTMLImageElement).src='/images/avatar-default.png'; }}
+						on:error={(e) => {
+							(e.target as HTMLImageElement).src = '/images/avatar-default.png';
+						}}
 					/>
 					<!-- Badges -->
 					{#if profile.is_primary}
@@ -178,7 +183,9 @@
 				{/if}
 
 				<!-- Actions -->
-				<div class="mt-3 flex gap-2 justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+				<div
+					class="mt-3 flex gap-2 justify-center opacity-0 group-hover:opacity-100 transition-opacity"
+				>
 					<button
 						on:click={() => openEdit(profile)}
 						class="text-xs text-roost-400 hover:text-roost-300 font-medium"
@@ -204,7 +211,9 @@
 				on:click={() => (showCreateModal = true)}
 				class="card text-center flex flex-col items-center justify-center gap-3 border-dashed border-slate-600 hover:border-roost-500 hover:bg-slate-800/60 transition-all min-h-[140px]"
 			>
-				<div class="w-12 h-12 rounded-full bg-slate-700 flex items-center justify-center text-2xl text-slate-400">
+				<div
+					class="w-12 h-12 rounded-full bg-slate-700 flex items-center justify-center text-2xl text-slate-400"
+				>
 					+
 				</div>
 				<span class="text-sm text-slate-400">Add Profile</span>
@@ -249,7 +258,8 @@
 			>
 				<!-- Name -->
 				<div>
-					<label for="create-name" class="block text-sm font-medium text-slate-300 mb-1">Name</label>
+					<label for="create-name" class="block text-sm font-medium text-slate-300 mb-1">Name</label
+					>
 					<input
 						id="create-name"
 						name="name"
@@ -278,8 +288,13 @@
 								<img
 									src="https://media.yourflock.org/avatars/presets/{preset}.png"
 									alt={preset}
-									class="w-9 h-9 rounded-full object-cover border-2 transition-all {createAvatarPreset === preset ? 'border-roost-500 scale-110' : 'border-transparent hover:border-slate-500'}"
-									on:error={(e) => { (e.target as HTMLImageElement).src='/images/avatar-default.png'; }}
+									class="w-9 h-9 rounded-full object-cover border-2 transition-all {createAvatarPreset ===
+									preset
+										? 'border-roost-500 scale-110'
+										: 'border-transparent hover:border-slate-500'}"
+									on:error={(e) => {
+										(e.target as HTMLImageElement).src = '/images/avatar-default.png';
+									}}
 								/>
 							</label>
 						{/each}
@@ -297,14 +312,18 @@
 					/>
 					<label for="create-kids" class="text-sm text-slate-300">
 						Kids profile
-						<span class="text-slate-500 text-xs">(simplified interface, only TV-Y and TV-G content)</span>
+						<span class="text-slate-500 text-xs"
+							>(simplified interface, only TV-Y and TV-G content)</span
+						>
 					</label>
 				</div>
 
 				<!-- Age rating limit (only shown if not kids) -->
 				{#if !createIsKids}
 					<div>
-						<label for="create-rating" class="block text-sm font-medium text-slate-300 mb-1">Age rating limit</label>
+						<label for="create-rating" class="block text-sm font-medium text-slate-300 mb-1"
+							>Age rating limit</label
+						>
 						<select
 							id="create-rating"
 							name="age_rating_limit"
@@ -406,8 +425,13 @@
 								<img
 									src="https://media.yourflock.org/avatars/presets/{preset}.png"
 									alt={preset}
-									class="w-9 h-9 rounded-full object-cover border-2 transition-all {editAvatarPreset === preset ? 'border-roost-500 scale-110' : 'border-transparent hover:border-slate-500'}"
-									on:error={(e) => { (e.target as HTMLImageElement).src='/images/avatar-default.png'; }}
+									class="w-9 h-9 rounded-full object-cover border-2 transition-all {editAvatarPreset ===
+									preset
+										? 'border-roost-500 scale-110'
+										: 'border-transparent hover:border-slate-500'}"
+									on:error={(e) => {
+										(e.target as HTMLImageElement).src = '/images/avatar-default.png';
+									}}
 								/>
 							</label>
 						{/each}
@@ -434,8 +458,15 @@
 				<!-- Age rating limit (only shown if not kids) -->
 				{#if !editIsKids}
 					<div>
-						<label for="edit-rating" class="block text-sm font-medium text-slate-300 mb-1">Age rating limit</label>
-						<select id="edit-rating" name="age_rating_limit" bind:value={editAgeRating} class="input w-full">
+						<label for="edit-rating" class="block text-sm font-medium text-slate-300 mb-1"
+							>Age rating limit</label
+						>
+						<select
+							id="edit-rating"
+							name="age_rating_limit"
+							bind:value={editAgeRating}
+							class="input w-full"
+						>
 							{#each ageRatingOptions as opt}
 								<option value={opt.value}>{opt.label}</option>
 							{/each}
@@ -465,7 +496,9 @@
 							type="password"
 							bind:value={editNewPIN}
 							class="input w-full"
-							placeholder={selectedProfile.has_pin ? 'New PIN (leave blank to keep)' : 'Set a 4-digit PIN (optional)'}
+							placeholder={selectedProfile.has_pin
+								? 'New PIN (leave blank to keep)'
+								: 'Set a 4-digit PIN (optional)'}
 							maxlength="4"
 							pattern="[0-9]{4}"
 						/>
@@ -485,7 +518,9 @@
 								bind:checked={editClearSchedule}
 								class="w-4 h-4 rounded border-slate-600"
 							/>
-							<label for="edit-clear-sched" class="text-sm text-slate-400">Remove viewing schedule</label>
+							<label for="edit-clear-sched" class="text-sm text-slate-400"
+								>Remove viewing schedule</label
+							>
 						</div>
 					{/if}
 					{#if !editClearSchedule}

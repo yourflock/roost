@@ -18,10 +18,11 @@
 	let passwordConfirm = '';
 	let selectedRegion = ''; // P14-T06: region selector
 
-	$: selectedPlan = data.plans.find(p => p.id === selectedPlanId) ?? data.plans[1];
+	$: selectedPlan = data.plans.find((p) => p.id === selectedPlanId) ?? data.plans[1];
 
 	function price(plan: Plan): string {
-		const cents = billingPeriod === 'annual' ? Math.round(plan.price_annual / 12) : plan.price_monthly;
+		const cents =
+			billingPeriod === 'annual' ? Math.round(plan.price_annual / 12) : plan.price_monthly;
 		return (cents / 100).toFixed(2);
 	}
 
@@ -42,7 +43,13 @@
 			const registerRes = await fetch('/api/subscribe/register', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ name, email, password, plan_id: selectedPlanId, billing_period: billingPeriod })
+				body: JSON.stringify({
+					name,
+					email,
+					password,
+					plan_id: selectedPlanId,
+					billing_period: billingPeriod
+				})
 			});
 			const registerData = await registerRes.json();
 			if (!registerRes.ok) {
@@ -52,7 +59,7 @@
 			}
 			// Redirect to Stripe Checkout
 			window.location.href = registerData.checkout_url;
-		} catch (e: unknown) {
+		} catch {
 			error = 'Service unavailable. Please try again.';
 			loading = false;
 		}
@@ -76,10 +83,13 @@
 
 			<!-- Billing period -->
 			<div class="flex gap-2 mb-4">
-				{#each (['monthly', 'annual'] as const) as period}
+				{#each ['monthly', 'annual'] as const as period}
 					<button
 						on:click={() => (billingPeriod = period)}
-						class="flex-1 py-2 rounded-lg text-sm font-medium border transition-colors {billingPeriod === period ? 'bg-roost-500 border-roost-500 text-white' : 'border-slate-600 text-slate-400 hover:border-slate-500'}"
+						class="flex-1 py-2 rounded-lg text-sm font-medium border transition-colors {billingPeriod ===
+						period
+							? 'bg-roost-500 border-roost-500 text-white'
+							: 'border-slate-600 text-slate-400 hover:border-slate-500'}"
 					>
 						{period === 'annual' ? 'Annual (save 2 months)' : 'Monthly'}
 					</button>
@@ -96,7 +106,12 @@
 							bind:group={selectedPlanId}
 							class="accent-roost-500 w-4 h-4"
 						/>
-						<div class="flex-1 flex items-center justify-between bg-slate-900 rounded-lg px-4 py-3 {selectedPlanId === plan.id ? 'ring-1 ring-roost-500' : ''}">
+						<div
+							class="flex-1 flex items-center justify-between bg-slate-900 rounded-lg px-4 py-3 {selectedPlanId ===
+							plan.id
+								? 'ring-1 ring-roost-500'
+								: ''}"
+						>
 							<div>
 								<span class="font-medium text-white">{plan.name}</span>
 								<span class="text-slate-400 text-xs ml-2">{plan.max_streams} streams</span>
@@ -115,23 +130,40 @@
 			Continue with {selectedPlan?.name ?? 'Selected'} Plan
 		</button>
 		<p class="text-center text-sm text-slate-400 mt-3">
-			Already have an account? <a href="/login" class="text-roost-400 hover:text-roost-300 underline">Sign in</a>
+			Already have an account? <a
+				href="/login"
+				class="text-roost-400 hover:text-roost-300 underline">Sign in</a
+			>
 		</p>
-
 	{:else if step === 2}
 		<!-- Account creation -->
 		<div class="card mb-6">
 			<div class="flex items-center gap-3 mb-4">
-				<button on:click={() => (step = 1)} class="text-slate-400 hover:text-white" aria-label="Go back to plan selection">
-					<svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
-						<path fill-rule="evenodd" d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z" clip-rule="evenodd" />
+				<button
+					on:click={() => (step = 1)}
+					class="text-slate-400 hover:text-white"
+					aria-label="Go back to plan selection"
+				>
+					<svg
+						xmlns="http://www.w3.org/2000/svg"
+						class="h-5 w-5"
+						viewBox="0 0 20 20"
+						fill="currentColor"
+					>
+						<path
+							fill-rule="evenodd"
+							d="M9.707 16.707a1 1 0 01-1.414 0l-6-6a1 1 0 010-1.414l6-6a1 1 0 011.414 1.414L5.414 9H17a1 1 0 110 2H5.414l4.293 4.293a1 1 0 010 1.414z"
+							clip-rule="evenodd"
+						/>
 					</svg>
 				</button>
 				<h2 class="font-semibold text-white">Create Your Account</h2>
 			</div>
 
 			{#if error}
-				<div class="bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-3 text-red-400 text-sm mb-4">
+				<div
+					class="bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-3 text-red-400 text-sm mb-4"
+				>
 					{error}
 				</div>
 			{/if}
@@ -139,23 +171,58 @@
 			<div class="space-y-4">
 				<div>
 					<label for="name" class="label">Full Name</label>
-					<input id="name" bind:value={name} type="text" autocomplete="name" required class="input" placeholder="Your name" />
+					<input
+						id="name"
+						bind:value={name}
+						type="text"
+						autocomplete="name"
+						required
+						class="input"
+						placeholder="Your name"
+					/>
 				</div>
 				<div>
 					<label for="email" class="label">Email</label>
-					<input id="email" bind:value={email} type="email" autocomplete="email" required class="input" placeholder="you@example.com" />
+					<input
+						id="email"
+						bind:value={email}
+						type="email"
+						autocomplete="email"
+						required
+						class="input"
+						placeholder="you@example.com"
+					/>
 				</div>
 				<div>
 					<label for="password" class="label">Password</label>
-					<input id="password" bind:value={password} type="password" autocomplete="new-password" required minlength="8" class="input" placeholder="At least 8 characters" />
+					<input
+						id="password"
+						bind:value={password}
+						type="password"
+						autocomplete="new-password"
+						required
+						minlength="8"
+						class="input"
+						placeholder="At least 8 characters"
+					/>
 				</div>
 				<div>
 					<label for="password-confirm" class="label">Confirm Password</label>
-					<input id="password-confirm" bind:value={passwordConfirm} type="password" autocomplete="new-password" required class="input" placeholder="Repeat password" />
+					<input
+						id="password-confirm"
+						bind:value={passwordConfirm}
+						type="password"
+						autocomplete="new-password"
+						required
+						class="input"
+						placeholder="Repeat password"
+					/>
 				</div>
 				<!-- Region selector (P14-T02/T06) -->
 				<div>
-					<label for="region" class="label">Region <span class="text-slate-500 font-normal">(optional)</span></label>
+					<label for="region" class="label"
+						>Region <span class="text-slate-500 font-normal">(optional)</span></label
+					>
 					<select id="region" bind:value={selectedRegion} class="select">
 						<option value="">Select your region</option>
 						<option value="us">🌎 North America</option>
@@ -174,13 +241,13 @@
 			<h3 class="font-medium text-slate-300 mb-3">Order Summary</h3>
 			<div class="flex justify-between text-sm mb-1">
 				<span class="text-slate-400">{selectedPlan?.name} — {billingPeriod}</span>
-				<span class="text-white">${
-					selectedPlan
+				<span class="text-white"
+					>${selectedPlan
 						? billingPeriod === 'annual'
 							? (selectedPlan.price_annual / 100).toFixed(2)
 							: (selectedPlan.price_monthly / 100).toFixed(2)
-						: '—'
-				}</span>
+						: '—'}</span
+				>
 			</div>
 			<div class="text-xs text-slate-500">
 				{billingPeriod === 'annual' ? 'Billed once per year' : 'Billed monthly'}

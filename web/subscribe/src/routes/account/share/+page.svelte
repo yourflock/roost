@@ -52,7 +52,10 @@
 
 	function formatDate(iso: string): string {
 		return new Date(iso).toLocaleDateString('en-US', {
-			month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit'
+			month: 'short',
+			day: 'numeric',
+			hour: '2-digit',
+			minute: '2-digit'
 		});
 	}
 
@@ -115,7 +118,9 @@
 		if (!newLink) return;
 		navigator.clipboard.writeText(newLink.share_url);
 		copied = true;
-		setTimeout(() => { copied = false; }, 2000);
+		setTimeout(() => {
+			copied = false;
+		}, 2000);
 	}
 
 	$effect(() => {
@@ -132,20 +137,26 @@
 		<div>
 			<h1 class="text-2xl font-bold text-white">Share Streams</h1>
 			<p class="text-slate-400 text-sm mt-1">
-				Create time-limited share links. Recipients can watch without a Roost account.
-				Stream hours count against your subscription.
+				Create time-limited share links. Recipients can watch without a Roost account. Stream hours
+				count against your subscription.
 			</p>
 		</div>
 		<button
 			class="btn-primary shrink-0"
-			onclick={() => { showCreate = true; newLink = null; createError = ''; }}
+			onclick={() => {
+				showCreate = true;
+				newLink = null;
+				createError = '';
+			}}
 		>
 			Create Share Link
 		</button>
 	</div>
 
 	{#if errorMsg}
-		<div class="bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-3 text-red-400 text-sm mb-6">
+		<div
+			class="bg-red-500/10 border border-red-500/30 rounded-lg px-4 py-3 text-red-400 text-sm mb-6"
+		>
 			{errorMsg}
 		</div>
 	{/if}
@@ -155,7 +166,9 @@
 	{:else if links.length === 0}
 		<div class="card text-center py-14">
 			<p class="text-slate-400 text-sm">No active share links.</p>
-			<p class="text-slate-500 text-xs mt-1">Share links expire automatically. Recipients stream directly — no account needed.</p>
+			<p class="text-slate-500 text-xs mt-1">
+				Share links expire automatically. Recipients stream directly — no account needed.
+			</p>
 		</div>
 	{:else}
 		<div class="space-y-3">
@@ -164,10 +177,16 @@
 					<div class="flex items-start justify-between gap-4">
 						<div class="min-w-0">
 							<div class="flex items-center gap-2 mb-1">
-								<span class="text-xs font-medium px-2 py-0.5 rounded-full {link.content_type === 'live' ? 'bg-red-500/20 text-red-300' : 'bg-indigo-500/20 text-indigo-300'}">
+								<span
+									class="text-xs font-medium px-2 py-0.5 rounded-full {link.content_type === 'live'
+										? 'bg-red-500/20 text-red-300'
+										: 'bg-indigo-500/20 text-indigo-300'}"
+								>
 									{link.content_type.toUpperCase()}
 								</span>
-								<span class="text-white text-sm font-medium font-mono truncate">{link.content_id}</span>
+								<span class="text-white text-sm font-medium font-mono truncate"
+									>{link.content_id}</span
+								>
 							</div>
 							<div class="text-slate-500 text-xs space-x-2">
 								<span>{formatTimeRemaining(link.expiresAt)}</span>
@@ -192,8 +211,8 @@
 	{/if}
 
 	<p class="text-slate-600 text-xs mt-8">
-		Share links are ephemeral. Once expired or revoked, they cannot be recovered.
-		Recipients must start watching before the link expires.
+		Share links are ephemeral. Once expired or revoked, they cannot be recovered. Recipients must
+		start watching before the link expires.
 	</p>
 </div>
 
@@ -201,7 +220,6 @@
 {#if showCreate}
 	<div class="fixed inset-0 bg-black/70 flex items-center justify-center z-50 p-4">
 		<div class="bg-slate-800 border border-slate-700 rounded-xl w-full max-w-md p-6">
-
 			{#if newLink}
 				<!-- Success state — show generated link -->
 				<h2 class="text-lg font-semibold text-white mb-4">Share Link Ready</h2>
@@ -216,13 +234,20 @@
 					<p>Max concurrent viewers: {newLink.max_concurrent}</p>
 				</div>
 
-				<div class="bg-amber-500/10 border border-amber-500/20 rounded-lg px-3 py-2 text-amber-300 text-xs mb-5">
+				<div
+					class="bg-amber-500/10 border border-amber-500/20 rounded-lg px-3 py-2 text-amber-300 text-xs mb-5"
+				>
 					Stream hours count against your subscription. Recipients do not need a Roost account.
 				</div>
 
 				<!-- QR code placeholder -->
-				<div class="bg-white rounded-lg p-4 flex items-center justify-center mb-5" style="height: 140px">
-					<p class="text-slate-500 text-xs text-center">QR code generation coming soon.<br/>Copy the URL above to share.</p>
+				<div
+					class="bg-white rounded-lg p-4 flex items-center justify-center mb-5"
+					style="height: 140px"
+				>
+					<p class="text-slate-500 text-xs text-center">
+						QR code generation coming soon.<br />Copy the URL above to share.
+					</p>
 				</div>
 
 				<div class="flex gap-3">
@@ -231,18 +256,22 @@
 					</button>
 					<button
 						class="btn-secondary flex-1"
-						onclick={() => { showCreate = false; newLink = null; }}
+						onclick={() => {
+							showCreate = false;
+							newLink = null;
+						}}
 					>
 						Done
 					</button>
 				</div>
-
 			{:else}
 				<!-- Create form -->
 				<h2 class="text-lg font-semibold text-white mb-4">Create Share Link</h2>
 
 				{#if createError}
-					<div class="bg-red-500/10 border border-red-500/30 rounded-lg px-3 py-2 text-red-400 text-sm mb-4">
+					<div
+						class="bg-red-500/10 border border-red-500/30 rounded-lg px-3 py-2 text-red-400 text-sm mb-4"
+					>
 						{createError}
 					</div>
 				{/if}
@@ -260,17 +289,27 @@
 					</div>
 
 					<div>
-						<label class="label">Content Type</label>
+						<p class="label">Content Type</p>
 						<div class="flex gap-2">
 							<button
-								class="flex-1 py-2 rounded-lg text-sm font-medium border transition-colors {contentType === 'vod' ? 'bg-indigo-600 border-indigo-500 text-white' : 'bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600'}"
-								onclick={() => { contentType = 'vod'; }}
+								class="flex-1 py-2 rounded-lg text-sm font-medium border transition-colors {contentType ===
+								'vod'
+									? 'bg-indigo-600 border-indigo-500 text-white'
+									: 'bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600'}"
+								onclick={() => {
+									contentType = 'vod';
+								}}
 							>
 								VOD
 							</button>
 							<button
-								class="flex-1 py-2 rounded-lg text-sm font-medium border transition-colors {contentType === 'live' ? 'bg-red-600 border-red-500 text-white' : 'bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600'}"
-								onclick={() => { contentType = 'live'; }}
+								class="flex-1 py-2 rounded-lg text-sm font-medium border transition-colors {contentType ===
+								'live'
+									? 'bg-red-600 border-red-500 text-white'
+									: 'bg-slate-700 border-slate-600 text-slate-300 hover:bg-slate-600'}"
+								onclick={() => {
+									contentType = 'live';
+								}}
 							>
 								Live
 							</button>
@@ -296,22 +335,21 @@
 					</div>
 
 					<p class="text-slate-500 text-xs">
-						Stream hours count against your subscription.
-						Recipients do not need a Roost account to watch.
+						Stream hours count against your subscription. Recipients do not need a Roost account to
+						watch.
 					</p>
 				</div>
 
 				<div class="flex gap-3 mt-6">
-					<button
-						class="btn-primary flex-1"
-						onclick={createLink}
-						disabled={creating}
-					>
+					<button class="btn-primary flex-1" onclick={createLink} disabled={creating}>
 						{creating ? 'Generating...' : 'Generate Link'}
 					</button>
 					<button
 						class="btn-secondary flex-1"
-						onclick={() => { showCreate = false; createError = ''; }}
+						onclick={() => {
+							showCreate = false;
+							createError = '';
+						}}
 						disabled={creating}
 					>
 						Cancel

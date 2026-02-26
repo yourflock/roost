@@ -1,18 +1,3 @@
-<!-- ModeIndicator.svelte — Shows ROOST_MODE in the admin UI header. -->
-<!-- P20.1.002: Mode indicator in admin UI -->
-<!--
-  Displays a persistent badge indicating whether the Roost instance is running
-  in private (self-hosted) or public (managed/subscriber) mode.
-
-  Private mode: amber badge — billing and Owl addon API are disabled.
-  Public mode:  green badge  — full subscriber stack active.
-
-  Usage:
-    <ModeIndicator mode="private" />
-    <ModeIndicator mode="public" />
-    <ModeIndicator /> <!-- auto-fetches from /system/info -->
--->
-
 <script lang="ts">
 	import { onMount } from 'svelte';
 
@@ -80,10 +65,26 @@
 	});
 </script>
 
+<!-- ModeIndicator.svelte — Shows ROOST_MODE in the admin UI header. -->
+<!-- P20.1.002: Mode indicator in admin UI -->
+<!--
+  Displays a persistent badge indicating whether the Roost instance is running
+  in private (self-hosted) or public (managed/subscriber) mode.
+
+  Private mode: amber badge — billing and Owl addon API are disabled.
+  Public mode:  green badge  — full subscriber stack active.
+
+  Usage:
+    <ModeIndicator mode="private" />
+    <ModeIndicator mode="public" />
+    <ModeIndicator /> <!-- auto-fetches from /system/info -->
+-->
+
 <!-- Mode badge -->
 <div class="inline-flex items-center gap-2">
 	<span
-		class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset {badgeConfig().cls}"
+		class="inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ring-1 ring-inset {badgeConfig()
+			.cls}"
 		title={badgeConfig().title}
 	>
 		<span class="h-1.5 w-1.5 rounded-full {badgeConfig().dot}"></span>

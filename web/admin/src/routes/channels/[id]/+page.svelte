@@ -17,7 +17,7 @@
 	}
 
 	let { data, form }: Props = $props();
-	const ch = data.channel;
+	const ch = $derived(data.channel);
 </script>
 
 <svelte:head>
@@ -34,7 +34,9 @@
 	<h1 class="text-2xl font-bold text-slate-100 mb-6">Edit Channel: {ch.name}</h1>
 
 	{#if form?.error}
-		<div class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded-lg mb-6">
+		<div
+			class="bg-red-500/10 border border-red-500/30 text-red-400 text-sm px-4 py-3 rounded-lg mb-6"
+		>
 			{form.error}
 		</div>
 	{/if}
@@ -58,14 +60,23 @@
 				<div>
 					<label class="label" for="category">Category *</label>
 					<select id="category" name="category" class="select" required>
-						{#each ['sports','news','entertainment','movies','kids','music','documentary','international','local','other'] as cat}
-							<option value={cat} selected={ch.category === cat}>{cat.charAt(0).toUpperCase() + cat.slice(1)}</option>
+						{#each ['sports', 'news', 'entertainment', 'movies', 'kids', 'music', 'documentary', 'international', 'local', 'other'] as cat}
+							<option value={cat} selected={ch.category === cat}
+								>{cat.charAt(0).toUpperCase() + cat.slice(1)}</option
+							>
 						{/each}
 					</select>
 				</div>
 				<div>
 					<label class="label" for="sort_order">Sort Order</label>
-					<input id="sort_order" name="sort_order" type="number" class="input" value={ch.sort_order} min="0" />
+					<input
+						id="sort_order"
+						name="sort_order"
+						type="number"
+						class="input"
+						value={ch.sort_order}
+						min="0"
+					/>
 				</div>
 			</div>
 		</div>
@@ -75,7 +86,14 @@
 
 			<div>
 				<label class="label" for="stream_url">Stream URL *</label>
-				<input id="stream_url" name="stream_url" type="url" class="input" value={ch.stream_url} required />
+				<input
+					id="stream_url"
+					name="stream_url"
+					type="url"
+					class="input"
+					value={ch.stream_url}
+					required
+				/>
 			</div>
 
 			<div>

@@ -30,9 +30,9 @@
 
 	let { data }: Props = $props();
 
-	let search = $state(data.search);
-	let plan = $state(data.plan);
-	let status = $state(data.status);
+	let search = $derived(data.search);
+	let plan = $derived(data.plan);
+	let status = $derived(data.status);
 
 	function applyFilters() {
 		const params = new URLSearchParams();
@@ -43,7 +43,11 @@
 	}
 
 	function formatDate(d: string): string {
-		return new Date(d).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+		return new Date(d).toLocaleDateString('en-US', {
+			month: 'short',
+			day: 'numeric',
+			year: 'numeric'
+		});
 	}
 
 	const totalPages = $derived(Math.ceil(data.total / data.per_page));
@@ -123,7 +127,9 @@
 							<td class="table-cell">
 								<span class="text-slate-300 capitalize">{sub.subscription?.plan ?? '—'}</span>
 								{#if sub.subscription?.billing_period}
-									<span class="text-xs text-slate-500 ml-1">({sub.subscription.billing_period})</span>
+									<span class="text-xs text-slate-500 ml-1"
+										>({sub.subscription.billing_period})</span
+									>
 								{/if}
 							</td>
 							<td class="table-cell">
@@ -168,12 +174,20 @@
 			</p>
 			<div class="flex gap-2">
 				{#if data.page > 1}
-					<a href="/subscribers?page={data.page - 1}&search={data.search}&plan={data.plan}&status={data.status}" class="btn-secondary btn-sm">
+					<a
+						href="/subscribers?page={data.page -
+							1}&search={data.search}&plan={data.plan}&status={data.status}"
+						class="btn-secondary btn-sm"
+					>
 						Previous
 					</a>
 				{/if}
 				{#if data.page < totalPages}
-					<a href="/subscribers?page={data.page + 1}&search={data.search}&plan={data.plan}&status={data.status}" class="btn-secondary btn-sm">
+					<a
+						href="/subscribers?page={data.page +
+							1}&search={data.search}&plan={data.plan}&status={data.status}"
+						class="btn-secondary btn-sm"
+					>
 						Next
 					</a>
 				{/if}
