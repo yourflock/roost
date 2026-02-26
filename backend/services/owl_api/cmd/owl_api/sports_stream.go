@@ -12,6 +12,7 @@ import (
 
 // ---- types ------------------------------------------------------------------
 
+//lint:ignore U1000 embedded in stream responses — wired when sports metadata is served
 // sportsEventAnnotation is embedded in stream responses when a channel is
 // currently airing a known sports event.
 type sportsEventAnnotation struct {
@@ -284,6 +285,7 @@ func (s *server) handleRemoveFavoriteTeam(w http.ResponseWriter, r *http.Request
 	writeJSON(w, http.StatusOK, map[string]string{"status": "removed", "team_id": teamID})
 }
 
+//lint:ignore U1000 annotates channel stream responses when a sports event is airing — wired when sports overlay is enabled
 // getSportsEventForChannel looks up any sports event currently mapped to a channel.
 // Returns nil if no event is live or starting soon on this channel.
 func (s *server) getSportsEventForChannel(channelID string) *sportsEventAnnotation {

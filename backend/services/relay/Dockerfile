@@ -24,7 +24,7 @@ COPY . .
 WORKDIR /app/services/relay
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o /bin/relay ./cmd/relay/
 
-FROM alpine:3.19 AS final
+FROM alpine:3.21 AS final
 RUN apk add --no-cache ca-certificates tzdata wget
 COPY --from=builder /bin/relay /bin/relay
 

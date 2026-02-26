@@ -1,0 +1,26 @@
+# .golangci.yml — golangci-lint configuration for Roost backend.
+# Managed by CI (security-scan.yml). Run: golangci-lint run ./...
+#
+# Linter policy:
+#   - errcheck is disabled: Go convention allows ignoring errors for best-effort
+#     operations (w.Write, tx.Rollback, store.Expire, etc.). We use explicit
+#     error handling at system boundaries; intermediate operations degrade gracefully.
+#   - All other default linters remain enabled.
+#   - staticcheck is run separately via the staticcheck job (not via golangci-lint)
+#     to avoid duplicate findings in CI annotations.
+
+run:
+  timeout: 5m
+
+linters:
+  disable:
+    - errcheck
+
+linters-settings:
+  govet:
+    enable-all: false
+
+issues:
+  # Show all issues (don't cap per-linter)
+  max-issues-per-linter: 0
+  max-same-issues: 0

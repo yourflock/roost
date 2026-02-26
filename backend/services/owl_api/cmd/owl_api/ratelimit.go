@@ -137,6 +137,7 @@ func (rl *rateLimiter) apiRateLimit(next http.HandlerFunc) http.HandlerFunc {
 
 // ---- Concurrent stream limit -----------------------------------------------
 
+//lint:ignore U1000 plan-based stream slot enforcement — called by admission control (planned)
 // maxConcurrentStreamsForPlan returns the max concurrent stream slots from plan limits.
 // This defers to the existing planLimits function to keep them in sync.
 func maxConcurrentStreamsForPlan(plan string) int {

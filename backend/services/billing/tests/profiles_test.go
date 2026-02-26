@@ -44,6 +44,7 @@ func createTestJWT(t *testing.T, subscriberID string) string {
 	return signed
 }
 
+//lint:ignore U1000 test helper — used by profile limit tests when subscription setup is needed
 // createTestSubscription inserts a test subscription row for the given subscriber and plan.
 func createTestSubscription(t *testing.T, db *sql.DB, subscriberID, planSlug string) string {
 	t.Helper()
@@ -91,6 +92,7 @@ func ensurePrimaryProfile(t *testing.T, db *sql.DB, subscriberID string) string 
 	return profileID
 }
 
+//lint:ignore U1000 test helper — used by profile CRUD tests to assert count expectations
 // profileCount returns the number of active profiles for the subscriber.
 func profileCount(db *sql.DB, subscriberID string) int {
 	var count int

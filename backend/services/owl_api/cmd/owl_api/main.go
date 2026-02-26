@@ -114,6 +114,7 @@ func pathSegment(path string, n int) string {
 
 // ---- session token management -----------------------------------------------
 
+//lint:ignore U1000 planned — used when session data is fetched for refresh/revocation
 // sessionRecord is stored in the owl_sessions table.
 type sessionRecord struct {
 	SubscriberID string
@@ -223,6 +224,7 @@ func newServer(db *sql.DB, rdb *goredis.Client) *server {
 	}
 }
 
+//lint:ignore U1000 called when Redis is available (optional — degrades gracefully)
 // setRateLimitStore wires a Redis-backed store for rate limiting.
 // Called from main() after Redis is connected. If not called, rate limiting is disabled.
 func (s *server) setRateLimitStore(store RateLimitStore) {

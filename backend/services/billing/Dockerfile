@@ -6,6 +6,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 
 COPY internal/ ./internal/
+COPY pkg/ ./pkg/
 COPY services/billing/ ./services/billing/
 COPY cmd/billing/ ./cmd/billing/
 
