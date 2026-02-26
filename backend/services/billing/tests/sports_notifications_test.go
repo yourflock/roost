@@ -15,7 +15,7 @@ import (
 // newSportsTestServer creates a billing server for sports notification tests.
 // Uses a nil DB — tests only exercise input validation (no DB queries needed).
 func newSportsTestServer() *billingsvc.Server {
-	return billingsvc.NewServer(nil, nil, nil)
+	return billingsvc.NewServer(nil, nil, nil, nil)
 }
 
 // makeSportsMux creates a registered mux for the sports test server.

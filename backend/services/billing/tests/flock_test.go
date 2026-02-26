@@ -30,7 +30,7 @@ func setupFlockTestServer(t *testing.T) (*billingsvc.Server, func()) {
 	t.Helper()
 	setupTestEnv() // sets AUTH_JWT_SECRET
 	db := testDB(t)
-	srv := billingsvc.NewServer(db, nil, nil)
+	srv := billingsvc.NewServer(db, nil, nil, nil)
 	return srv, func() { db.Close() }
 }
 

@@ -25,7 +25,7 @@ import (
 func setupPrivacyTestServer(t *testing.T) (*httptest.Server, *billingsvc.Server, func()) {
 	t.Helper()
 	db := testDB(t)
-	srv := billingsvc.NewServer(db, nil, nil)
+	srv := billingsvc.NewServer(db, nil, nil, nil)
 	mux := http.NewServeMux()
 	srv.RegisterRoutes(mux)
 	ts := httptest.NewServer(mux)

@@ -65,15 +65,9 @@ func InferRating(ctx context.Context, db *sql.DB, contentID string) (*RatingResu
 	}
 	defer rows.Close()
 
-	type row struct {
-		category   string
-		severity   int
-		sceneCount int
-	}
-
-	var sceneRows []row
+	var sceneRows []sceneRow
 	for rows.Next() {
-		var r row
+		var r sceneRow
 		if err := rows.Scan(&r.category, &r.severity, &r.sceneCount); err != nil {
 			return nil, err
 		}
@@ -142,12 +136,7 @@ type sceneRow struct {
 	sceneCount int
 }
 
-func buildSummary(rows []struct {
-	category   string
-	severity   int
-	sceneCount int
-},
-) SceneSummary {
+func buildSummary(rows []sceneRow) SceneSummary {
 	var s SceneSummary
 	for _, r := range rows {
 		switch r.category {
@@ -178,12 +167,7 @@ func buildSummary(rows []struct {
 //   G:     nothing above
 //
 // If no scenes at all → UNRATED (not enough data).
-func computeRating(summary SceneSummary, rows []struct {
-	category   string
-	severity   int
-	sceneCount int
-},
-) Rating {
+func computeRating(summary SceneSummary, rows []sceneRow) Rating {
 	if totalScenes(summary) == 0 {
 		return RatingUnrated
 	}

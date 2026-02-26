@@ -47,7 +47,7 @@ func testDB(t *testing.T) *sql.DB {
 func setupTestBillingServer(t *testing.T) (*billingsvc.Server, *sql.DB) {
 	t.Helper()
 	db := testDB(t)
-	srv := billingsvc.NewServer(db, nil, nil) // nil stripe = graceful degradation
+	srv := billingsvc.NewServer(db, nil, nil, nil) // nil stripe/r2 = graceful degradation
 	return srv, db
 }
 
