@@ -10,18 +10,6 @@ import (
 	"testing"
 )
 
-// captureOutput replaces the default slog handler with one writing to a buffer,
-// executes fn, then restores the original default and returns captured output.
-func captureOutput(t *testing.T, h slog.Handler, fn func()) string {
-	t.Helper()
-	var buf bytes.Buffer
-	old := slog.Default()
-	slog.SetDefault(slog.New(h))
-	fn()
-	slog.SetDefault(old)
-	return buf.String()
-}
-
 func TestNew_JSONFormat(t *testing.T) {
 	l := New("json", "info")
 	if l == nil {

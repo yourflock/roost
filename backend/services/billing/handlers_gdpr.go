@@ -24,6 +24,7 @@ import (
 // ── GET /gdpr/consent ─────────────────────────────────────────────────────────
 
 // handleGDPRConsentGet returns the current consent status for the authenticated subscriber.
+//lint:ignore U1000 pending route registration
 func (s *Server) handleGDPRConsentGet(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		writeError(w, http.StatusMethodNotAllowed, "method_not_allowed", "GET only")
@@ -71,6 +72,7 @@ func (s *Server) handleGDPRConsentGet(w http.ResponseWriter, r *http.Request) {
 
 // ── POST /gdpr/consent ────────────────────────────────────────────────────────
 
+//lint:ignore U1000 pending route registration
 type consentUpdateRequest struct {
 	ConsentType string `json:"consent_type"` // 'analytics', 'marketing', 'functional'
 	Granted     bool   `json:"granted"`
@@ -78,6 +80,7 @@ type consentUpdateRequest struct {
 }
 
 // handleGDPRConsentPost updates consent for one category.
+//lint:ignore U1000 pending route registration
 func (s *Server) handleGDPRConsentPost(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		writeError(w, http.StatusMethodNotAllowed, "method_not_allowed", "POST only")
@@ -137,6 +140,7 @@ func (s *Server) handleGDPRConsentPost(w http.ResponseWriter, r *http.Request) {
 
 // handleGDPRExport queues a data export job and returns a job_id.
 // The job runs in background: collects data → ZIP → R2 → signed URL → email.
+//lint:ignore U1000 pending route registration
 func (s *Server) handleGDPRExport(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet {
 		writeError(w, http.StatusMethodNotAllowed, "method_not_allowed", "GET only")
@@ -188,6 +192,7 @@ func (s *Server) handleGDPRExport(w http.ResponseWriter, r *http.Request) {
 //  3. Upload to R2 with 48-hr signed URL
 //  4. Send email with download link
 //  5. Log completion in audit_log
+//lint:ignore U1000 pending route registration
 func runGDPRExportJob(ctx context.Context, db *sql.DB, subscriberID string) error {
 	// Step 1: collect data categories.
 	categories := map[string]interface{}{}

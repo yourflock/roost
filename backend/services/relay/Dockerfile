@@ -1,14 +1,30 @@
-FROM golang:1.22-alpine AS builder
+FROM golang:1.24-alpine AS builder
 RUN apk add --no-cache git
 
+# Preserve backend workspace layout so `replace ../../` in services/relay/go.mod
+# resolves to /app (the root module). Docker context = backend/.
 WORKDIR /app
-COPY services/relay/go.mod services/relay/go.sum ./
+
+# Root module (replace target for relay's go.mod)
+COPY go.mod go.sum ./
+
+# Relay module in correct relative path
+COPY services/relay/go.mod ./services/relay/go.mod
+COPY services/relay/go.sum ./services/relay/go.sum
+
+# Download dependencies from relay's perspective
+WORKDIR /app/services/relay
 RUN go mod download
 
-COPY services/relay/ .
+# Copy all source (includes internal/ packages relay imports from root)
+WORKDIR /app
+COPY . .
+
+# Build
+WORKDIR /app/services/relay
 RUN CGO_ENABLED=0 GOOS=linux go build -ldflags="-w -s" -o /bin/relay ./cmd/relay/
 
-FROM alpine:3.19
+FROM alpine:3.19 AS final
 RUN apk add --no-cache ca-certificates tzdata wget
 COPY --from=builder /bin/relay /bin/relay
 

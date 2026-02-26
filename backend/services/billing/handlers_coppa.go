@@ -222,6 +222,7 @@ func hasPathSuffix(path, suffix string) bool {
 // P22.4.003: Parent-initiated hard deletion of a child subscriber account.
 // Requires parent JWT with a `parent_of` claim containing the child's subscriber_id.
 // Follows the same pipeline as GDPR erasure but via parental authority.
+//lint:ignore U1000 pending route registration
 func (s *Server) handleCOPPAChildDeletion(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodDelete {
 		writeError(w, http.StatusMethodNotAllowed, "method_not_allowed", "DELETE only")

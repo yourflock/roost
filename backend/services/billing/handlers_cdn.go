@@ -262,6 +262,7 @@ func (s *Server) requireSuperowner(w http.ResponseWriter, r *http.Request) bool 
 // ── JSON response helper ───────────────────────────────────────────────────────
 
 // writeJSONResponse writes a JSON-encoded response (local helper for CDN-specific types).
+//lint:ignore U1000 pending route registration
 func writeJSONResponse(w http.ResponseWriter, status int, v interface{}) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(status)

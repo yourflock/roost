@@ -91,6 +91,7 @@ The Roost Team`, name, daysLeft, periodEnd.Format("Jan 2, 2006"), baseURL, baseU
 //
 // Sets status='paused', resume_at=+30d. Stripe subscription is paused via API
 // if STRIPE_SECRET_KEY is configured; otherwise DB-only pause.
+//lint:ignore U1000 pending route registration
 func (s *Server) handlePauseSubscription(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodGet && r.Method != http.MethodPost {
 		auth.WriteError(w, http.StatusMethodNotAllowed, "method_not_allowed", "GET or POST required")

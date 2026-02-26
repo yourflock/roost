@@ -23,7 +23,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"time"
 
 	"github.com/yourflock/roost/internal/config"
@@ -73,7 +72,7 @@ func validatePublicMode(cfg *config.Config) error {
 
 	// 2. Stripe API key — ping /v1/balance with the secret key.
 	if err := pingStripe(cfg.StripeSecretKey); err != nil {
-		return fmt.Errorf("Stripe validation failed: %w", err)
+		return fmt.Errorf("stripe validation failed: %w", err)
 	}
 
 	// 3. CDN relay health — GET {CDN_RELAY_URL}/health.
@@ -152,10 +151,3 @@ func pingHealth(url string) error {
 	return nil
 }
 
-// getEnv returns an environment variable value with a fallback default.
-func getEnv(key, fallback string) string {
-	if v := os.Getenv(key); v != "" {
-		return v
-	}
-	return fallback
-}

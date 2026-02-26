@@ -19,7 +19,7 @@ func ValidateJWT(r *http.Request) (*Claims, error) {
 	}
 	parts := strings.SplitN(h, " ", 2)
 	if len(parts) != 2 || !strings.EqualFold(parts[0], "bearer") {
-		return nil, fmt.Errorf("Authorization header must be 'Bearer <token>'")
+		return nil, fmt.Errorf("authorization header must be 'Bearer <token>'")
 	}
 	tokenStr := strings.TrimSpace(parts[1])
 	return ValidateAccessToken(tokenStr)

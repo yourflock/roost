@@ -13,9 +13,10 @@ import (
 	"github.com/google/uuid"
 )
 
-// contextKey is the unexported type for context keys to prevent collisions.
+//lint:ignore U1000 reserved for future context key usage
 type contextKey int
 
+//lint:ignore U1000 reserved for future context key usage
 const loggerKey contextKey = 1
 
 // RequirePublicMode protects a route so it only responds when ROOST_MODE=public.

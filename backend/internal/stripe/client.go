@@ -23,7 +23,7 @@ func New() (*Client, error) {
 		key = os.Getenv("STRIPE_FLOCK_SECRET_KEY")
 	}
 	if key == "" {
-		return nil, fmt.Errorf("Stripe not configured: set STRIPE_SECRET_KEY or STRIPE_FLOCK_SECRET_KEY")
+		return nil, fmt.Errorf("stripe not configured: set STRIPE_SECRET_KEY or STRIPE_FLOCK_SECRET_KEY")
 	}
 	stripe.Key = key
 	sc := &client.API{}

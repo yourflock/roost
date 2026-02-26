@@ -20,6 +20,7 @@ import (
 // logBillingEvent records a billing event to the audit log.
 // actorType is typically "subscriber" or "system".
 // Non-blocking: any error is logged and discarded.
+//lint:ignore U1000 pending route registration
 func (s *Server) logBillingEvent(
 	ctx context.Context,
 	actorType, actorID, action, resourceType, resourceID string,
@@ -52,6 +53,7 @@ func (s *Server) logSubscriberAction(r *http.Request, subscriberID, action, reso
 }
 
 // logSystemAction is a convenience wrapper for automated/system actions (e.g. Stripe webhooks).
+//lint:ignore U1000 pending route registration
 func (s *Server) logSystemAction(ctx context.Context, action, resourceType, resourceID string, details map[string]interface{}) {
 	s.logBillingEvent(ctx, "system", "", action, resourceType, resourceID, details)
 }

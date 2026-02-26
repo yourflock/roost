@@ -30,12 +30,6 @@ import (
 	"time"
 )
 
-// checkStatus records the result of a single dependency check.
-type checkStatus struct {
-	name   string
-	status string // "ok" or "error: <reason>"
-}
-
 // healthResponse is the JSON body for both probes.
 type healthResponse struct {
 	Status string            `json:"status"`           // "ok" | "degraded"
