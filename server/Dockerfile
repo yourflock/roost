@@ -4,11 +4,11 @@
 # Stage 1: Build the Go binary.
 # Stage 2: Minimal runtime image (distroless/static, nonroot user).
 #
-# Build:
-#   docker build -t roost:latest .
+# Build (from repo root):
+#   docker build -f server/Dockerfile -t roost:latest .
 #
 # Run:
-#   docker run -p 8080:8080 --env-file .env roost:latest
+#   docker run -p 8080:8080 --env-file server/.env roost:latest
 
 # ── Stage 1: Builder ──────────────────────────────────────────────────────────
 FROM golang:1.24-alpine AS builder
@@ -19,18 +19,18 @@ RUN apk add --no-cache ca-certificates git tzdata
 WORKDIR /build
 
 # Copy module files first for layer caching.
-COPY backend/go.mod backend/go.sum ./backend/
+COPY server/go.mod server/go.sum ./server/
 
 # Download dependencies (cached layer).
-RUN cd backend && go mod download
+RUN cd server && go mod download
 
 # Copy all source.
-COPY backend/ ./backend/
+COPY server/ ./server/
 
 # Build the binary. CGO_ENABLED=0 for a fully static binary.
 # -s -w strips debug info (reduces size). Embed version from VERSION file if present.
 ARG VERSION=dev
-RUN cd backend && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
+RUN cd server && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
     -ldflags="-s -w -X main.version=${VERSION}" \
     -trimpath \
     -o /bin/roost \
@@ -42,7 +42,7 @@ FROM gcr.io/distroless/static-debian12:nonroot
 # Copy binary from builder.
 COPY --from=builder /bin/roost /roost
 
-# Copy CA certificates for HTTPS calls (Stripe, Flock, etc.).
+# Copy CA certificates for HTTPS calls (Stripe, external APIs, etc.).
 COPY --from=builder /etc/ssl/certs/ca-certificates.crt /etc/ssl/certs/
 
 # Copy timezone data for proper time handling.

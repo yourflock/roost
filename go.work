@@ -1,18 +1,15 @@
 go 1.24.0
 
 use (
-	./backend
-	./backend/services/catchup
-	./backend/services/content_acquirer
-	./backend/services/dvr
-	./backend/services/epg
-	./backend/services/flocktv
-	./backend/services/ftv_gateway
-	./backend/services/ftv_notifications
-	./backend/services/grid_compositor
-	./backend/services/ingest
-	./backend/services/recommendations
-	./backend/services/relay
-	./backend/services/sports
-	./backend/services/vod
+	./server
+	./server/services/catchup
+	./server/services/content_acquirer
+	./server/services/dvr
+	./server/services/epg
+	./server/services/grid_compositor
+	./server/services/ingest
+	./server/services/recommendations
+	./server/services/relay
+	./server/services/sports
+	./server/services/vod
 )

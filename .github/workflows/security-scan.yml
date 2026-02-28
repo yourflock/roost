@@ -25,13 +25,13 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: '1.24'
-          cache-dependency-path: backend/go.sum
+          cache-dependency-path: server/go.sum
 
       - name: Install govulncheck
         run: go install golang.org/x/vuln/cmd/govulncheck@latest
 
       - name: Run govulncheck — root module
-        working-directory: backend
+        working-directory: server
         run: govulncheck ./...
 
   # ─────────────────────────────────────────────
@@ -47,14 +47,14 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: '1.24'
-          cache-dependency-path: backend/go.sum
+          cache-dependency-path: server/go.sum
 
       - name: Install staticcheck
         run: go install honnef.co/go/tools/cmd/staticcheck@latest
 
       - name: Run staticcheck
         run: staticcheck ./...
-        working-directory: backend
+        working-directory: server
 
   # ─────────────────────────────────────────────
   # gosec — Go security static analysis (P22.6)
@@ -73,13 +73,13 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: '1.24'
-          cache-dependency-path: backend/go.sum
+          cache-dependency-path: server/go.sum
 
       - name: Install gosec
         run: go install github.com/securego/gosec/v2/cmd/gosec@latest
 
       - name: Run gosec
-        working-directory: backend
+        working-directory: server
         # G304 (file inclusion) and G306 (file permissions) are suppressed in test files.
         # -severity high: only fail on high-severity findings (not medium/low in test code).
         run: |
@@ -91,7 +91,7 @@ jobs:
         if: always()
         continue-on-error: true
         with:
-          sarif_file: backend/gosec-results.sarif
+          sarif_file: server/gosec-results.sarif
           category: gosec
 
   # ─────────────────────────────────────────────
@@ -107,13 +107,13 @@ jobs:
       - uses: actions/setup-go@v5
         with:
           go-version: '1.24'
-          cache-dependency-path: backend/go.sum
+          cache-dependency-path: server/go.sum
 
       - name: Run golangci-lint
         uses: golangci/golangci-lint-action@v6
         with:
           version: v1.64.8
-          working-directory: backend
+          working-directory: server
           args: --timeout=5m --out-format=github-actions
 
   # ─────────────────────────────────────────────
@@ -130,8 +130,7 @@ jobs:
       - uses: actions/checkout@v4
 
       - name: Build Docker image for scanning
-        # Build the relay service image (representative service with multi-stage build)
-        run: docker build -t roost:scan --target=final -f backend/services/relay/Dockerfile backend
+        run: docker build -t roost:scan -f server/Dockerfile .
 
       - name: Run Trivy vulnerability scanner
         uses: aquasecurity/trivy-action@master
@@ -150,81 +149,3 @@ jobs:
           sarif_file: trivy-results.sarif
           category: trivy
 
-  # ─────────────────────────────────────────────
-  # Node/SvelteKit audit (pnpm audit)
-  # ─────────────────────────────────────────────
-
-  pnpm-audit-subscribe:
-    name: pnpm audit / web/subscribe
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: web/subscribe
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-          cache-dependency-path: web/subscribe/pnpm-lock.yaml
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Audit for vulnerabilities
-        run: pnpm audit --audit-level=high
-
-  pnpm-audit-admin:
-    name: pnpm audit / web/admin
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: web/admin
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-          cache-dependency-path: web/admin/pnpm-lock.yaml
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Audit for vulnerabilities
-        run: pnpm audit --audit-level=high
-
-  pnpm-audit-reseller:
-    name: pnpm audit / web/reseller
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: web/reseller
-    steps:
-      - uses: actions/checkout@v4
-
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: pnpm
-          cache-dependency-path: web/reseller/pnpm-lock.yaml
-
-      - name: Install dependencies
-        run: pnpm install
-
-      - name: Audit for vulnerabilities
-        run: pnpm audit --audit-level=high

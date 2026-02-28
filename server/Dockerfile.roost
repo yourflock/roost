@@ -2,8 +2,8 @@
 # Stage 1: compile the Go binary with embedded assets.
 # Stage 2: minimal distroless runtime — no shell, no package manager.
 #
-# Build:
-#   docker build -f Dockerfile.roost -t roost:latest .
+# Build (from repo root):
+#   docker build -f server/Dockerfile.roost -t roost:latest .
 #
 # Notes:
 #   - CGO_ENABLED=0 — pure Go build, compatible with distroless/static
@@ -12,7 +12,7 @@
 #   - Target size: <50 MB
 
 # ─── Stage 1: Builder ────────────────────────────────────────────────────────
-FROM golang:1.22-alpine AS builder
+FROM golang:1.24-alpine AS builder
 
 WORKDIR /build
 
@@ -21,12 +21,12 @@ RUN apk add --no-cache ca-certificates git
 
 # Copy dependency manifests first — Docker caches this layer separately.
 # This means `go mod download` only re-runs when go.mod or go.sum changes.
-COPY backend/go.mod backend/go.sum ./
+COPY server/go.mod server/go.sum ./
 
 RUN go mod download
 
-# Copy the full backend source tree.
-COPY backend/ ./
+# Copy the full server source tree.
+COPY server/ ./
 
 # Read version from VERSION file if it exists, otherwise use "dev".
 ARG VERSION=dev

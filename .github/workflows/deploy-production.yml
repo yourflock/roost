@@ -90,7 +90,7 @@ jobs:
         uses: docker/build-push-action@v5
         with:
           context: backend
-          file: backend/services/${{ matrix.service }}/Dockerfile
+          file: server/services/${{ matrix.service }}/Dockerfile
           push: true
           tags: |
             ${{ env.REGISTRY }}/${{ env.ORG }}/roost-${{ matrix.service }}:${{ github.event.inputs.version }}
@@ -173,65 +173,7 @@ jobs:
             done
 
   # ─────────────────────────────────────────────
-  # 4. Build and deploy web apps to Vercel
-  # ─────────────────────────────────────────────
-
-  deploy-web:
-    name: Deploy web
-    runs-on: ubuntu-latest
-    needs: validate
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.inputs.version }}
-
-      - uses: pnpm/action-setup@v4
-        with:
-          version: 10
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-
-      - name: Install and build web/subscribe
-        working-directory: web/subscribe
-        env:
-          PUBLIC_API_URL: https://roost.yourflock.org
-          PUBLIC_STRIPE_PUBLISHABLE_KEY: ${{ secrets.STRIPE_PUBLISHABLE_KEY }}
-        run: |
-          pnpm install
-          pnpm build
-
-      - name: Install and build web/admin
-        working-directory: web/admin
-        env:
-          PUBLIC_API_URL: https://roost.yourflock.org
-        run: |
-          pnpm install
-          pnpm build
-
-      - name: Deploy web/subscribe to Vercel
-        working-directory: web/subscribe
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_TEAM_ID: ${{ secrets.VERCEL_TEAM_ID }}
-        run: |
-          pnpm exec vercel deploy --prebuilt --prod \
-            --token "$VERCEL_TOKEN" \
-            --scope "$VERCEL_TEAM_ID"
-
-      - name: Deploy web/admin to Vercel
-        working-directory: web/admin
-        env:
-          VERCEL_TOKEN: ${{ secrets.VERCEL_TOKEN }}
-          VERCEL_TEAM_ID: ${{ secrets.VERCEL_TEAM_ID }}
-        run: |
-          pnpm exec vercel deploy --prebuilt --prod \
-            --token "$VERCEL_TOKEN" \
-            --scope "$VERCEL_TEAM_ID"
-
-  # ─────────────────────────────────────────────
-  # 5. Post-deploy health check
+  # 4. Post-deploy health check
   # ─────────────────────────────────────────────
 
   verify:
@@ -239,15 +181,14 @@ jobs:
     runs-on: ubuntu-latest
     needs:
       - deploy-backend
-      - deploy-web
     steps:
-      - name: Health check — roost.yourflock.org
+      - name: Health check — ${{ vars.ROOST_DOMAIN }}
         shell: bash
         run: |
           set -euo pipefail
           MAX_ATTEMPTS=12
           SLEEP_SECONDS=10
-          URL="https://roost.yourflock.org/health"
+          URL="https://${{ vars.ROOST_DOMAIN }}/health"
 
           for attempt in $(seq 1 $MAX_ATTEMPTS); do
             echo "Attempt $attempt/$MAX_ATTEMPTS — GET $URL"
@@ -270,7 +211,7 @@ jobs:
         shell: bash
         run: |
           HTTP_STATUS=$(curl --silent --output /dev/null --write-out "%{http_code}" \
-            --max-time 15 "https://roost.yourflock.org/owl/manifest.json" || echo "000")
+            --max-time 15 "https://${{ vars.ROOST_DOMAIN }}/owl/manifest.json" || echo "000")
           if [ "$HTTP_STATUS" = "200" ]; then
             echo "Owl addon API manifest accessible (HTTP $HTTP_STATUS)."
           else
@@ -311,7 +252,7 @@ jobs:
             echo "Rolling back from ${CURRENT_TAG} to ${PREVIOUS_TAG}."
             git checkout "$PREVIOUS_TAG"
 
-            cd backend
+            cd server
             IMAGE_TAG="$PREVIOUS_TAG" \
               docker compose -f docker-compose.prod.yml pull
             IMAGE_TAG="$PREVIOUS_TAG" \
