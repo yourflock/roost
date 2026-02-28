@@ -4,10 +4,12 @@ Internal developer documentation for the Roost media backend.
 
 ## Index
 
+- [Home](Home.md) — project overview, quick links, install
+- [Architecture](architecture.md) — services, ports, database, deployment modes
+- [Owl Addon API](owl-addon-api.md) — full endpoint reference for Owl integration
 - [Deployment Guide](guides/deployment.md) — first deploy, rolling updates, rollback, monitoring
 - [Skip Format](skip-format.md) — `.skip` sidecar format and Scene Skip standard
 - [Commit Convention](commit-convention.md) — conventional commits, scopes, branch naming
-- [Roost Home](Home.md) — project overview and install guide
 
 ## Architecture
 
