@@ -132,7 +132,7 @@ jobs:
           context: .
           file: server/Dockerfile
           push: false
-          tags: ghcr.io/yourflock/roost:ci-${{ github.sha }}
+          tags: ghcr.io/unyeco/roost:ci-${{ github.sha }}
           build-args: VERSION=${{ github.sha }}
           cache-from: type=gha
           cache-to: type=gha,mode=max

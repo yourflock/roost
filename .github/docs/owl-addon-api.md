@@ -6,6 +6,25 @@ presents all available content in the unified library.
 
 Service: `server/services/owl_api` — runs on port 8091.
 
+## Endpoint Summary
+
+| Method | Path | Auth | Status |
+| --- | --- | --- | --- |
+| `GET` | `/owl/manifest.json` | None | ✅ |
+| `GET` | `/owl/version` | None | ✅ |
+| `GET` | `/health` | None | ✅ |
+| `POST` | `/owl/auth` | API token | ✅ |
+| `GET` | `/owl/live` | Session | ✅ |
+| `GET` | `/owl/epg` | Session | ✅ |
+| `GET` | `/owl/epg/upcoming` | Session | ✅ |
+| `POST` | `/owl/stream/:slug` | Session | ✅ |
+| `GET` | `/owl/vod` | Session | ✅ |
+| `GET` | `/owl/vod/:id` | Session | ✅ |
+| `GET` | `/owl/v1/library` | Session | ✅ |
+| `GET` | `/owl/catchup/:channel_slug` | Session | ✅ |
+| `GET` | `/owl/catchup/:slug/stream` | Session | ✅ |
+| `GET` | `/owl/recommendations` | Session | ✅ |
+
 ---
 
 ## Authentication
@@ -66,7 +85,7 @@ Exchange an API token for a 4-hour session token.
 
 **Request header:**
 
-```
+```http
 Authorization: Bearer <api_token>
 ```
 
@@ -193,6 +212,53 @@ Content details, stream URL, and watch progress.
   "subtitles": [...]
 }
 ```
+
+---
+
+## Library Endpoint
+
+### `GET /owl/v1/library`
+
+Unified paginated catalog across all non-live content types: movies, series, music,
+podcasts, and games. Owl uses this to populate the Library tab for the Roost addon.
+
+**Query params:**
+
+| Param | Type | Default | Description |
+| --- | --- | --- | --- |
+| `type` | string | all | Filter: `movie`, `series`, `music`, `podcast`, `game` |
+| `q` | string | — | Full-text search across title/name |
+| `limit` | integer | 50 | Page size (max 200) |
+| `offset` | integer | 0 | Pagination offset |
+
+**Response:**
+
+```json
+{
+  "items": [
+    {
+      "id": "tt1234567",
+      "type": "movie",
+      "title": "Inception",
+      "description": "...",
+      "cover_url": "https://...",
+      "year": 2010,
+      "genres": ["Action", "Sci-Fi"],
+      "stream_url": "https://relay.yourdomain.com/...",
+      "stream_expiry": "2026-02-28T19:00:00Z",
+      "metadata": { "duration_seconds": 8880, "tmdb_score": 8.8 }
+    }
+  ],
+  "total": 1,
+  "limit": 50,
+  "offset": 0,
+  "type_counts": { "movie": 200, "series": 80, "music": 40, "podcast": 12, "game": 35 },
+  "updated_at": "2026-02-28T18:00:00Z"
+}
+```
+
+Stream URLs are HMAC-signed with a 15-minute TTL. Series, podcasts, and multi-episode
+content return a browse URL instead of a direct stream URL.
 
 ---
 

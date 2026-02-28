@@ -42,8 +42,6 @@ type(scope): short description
 | `epg` | EPG (Electronic Programme Guide) service |
 | `owl-api` | Owl Community Addon API service |
 | `sports` | Sports intelligence service |
-| `portal` | Subscriber web portal (web/subscribe) |
-| `admin` | Admin web panel (web/admin) |
 | `infra` | Infrastructure — Docker, CI, server config |
 | `db` | Database migrations or schema changes |
 
@@ -86,9 +84,8 @@ BREAKING CHANGE: manifest.json schema updated. Owl clients < 2.0 are no longer s
 
 ## Pull Request Flow
 
-1. Branch from `develop` (or `main` for hotfixes)
+1. Branch from `main` (or create a `hotfix/` branch for urgent fixes)
 2. Write conventional commits throughout
-3. Open PR to `develop`
+3. Open PR to `main`
 4. CI must pass (tests + lint)
-5. Merge to `develop` — auto-deploys to staging
-6. PR `develop` → `main` requires manual approval — auto-deploys to production
+5. Merge requires at least one approval

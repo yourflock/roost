@@ -2,8 +2,8 @@
 
 **Roost v1.0.0** — Open-source, self-hosted media backend for Owl.
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/yourflock/roost/blob/main/LICENSE)
-[![GitHub release](https://img.shields.io/github/v/release/yourflock/roost)](https://github.com/yourflock/roost/releases/latest)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](https://github.com/unyeco/roost/blob/main/LICENSE)
+[![GitHub release](https://img.shields.io/github/v/release/unyeco/roost)](https://github.com/unyeco/roost/releases/latest)
 
 ## What is Roost?
 
@@ -12,7 +12,7 @@ Roost is a self-hosted media backend. Run it on your own server and Owl clients 
 ## Install in 60 seconds
 
 ```bash
-git clone https://github.com/yourflock/roost.git
+git clone https://github.com/unyeco/roost.git
 cd roost
 cp server/.env.example server/.env
 nano server/.env   # set ROOST_SECRET_KEY and POSTGRES_PASSWORD at minimum
@@ -30,7 +30,7 @@ Full install guide: [packages/README.md](../../packages/README.md)
 | [Owl Addon API](owl-addon-api.md) | How Owl discovers and streams from Roost |
 | [Architecture](architecture.md) | Services, ports, and tech stack |
 | [Skip Format](skip-format.md) | Scene skip sidecar format |
-| [Changelog](https://github.com/yourflock/roost/releases) | Release history |
+| [Changelog](https://github.com/unyeco/roost/releases) | Release history |
 
 ## Content Types Supported (v1.0.0)
 
@@ -62,11 +62,11 @@ Roost exposes the Owl Community Addon API at `/owl/*`. See [owl-addon-api.md](ow
 
 ## License
 
-MIT. See [LICENSE](https://github.com/yourflock/roost/blob/main/LICENSE).
+MIT. See [LICENSE](https://github.com/unyeco/roost/blob/main/LICENSE).
 Use it however you like: self-host for your family, fork it, contribute back.
 
 ## Community
 
-- Issues and feature requests: [github.com/yourflock/roost/issues](https://github.com/yourflock/roost/issues)
-- Discussions: [github.com/yourflock/roost/discussions](https://github.com/yourflock/roost/discussions)
-- Owl media app: [github.com/yourflock/owl](https://github.com/yourflock/owl)
+- Issues and feature requests: [github.com/unyeco/roost/issues](https://github.com/unyeco/roost/issues)
+- Discussions: [github.com/unyeco/roost/discussions](https://github.com/unyeco/roost/discussions)
+- Owl media app: [github.com/unyeco/owl](https://github.com/unyeco/owl)

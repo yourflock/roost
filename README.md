@@ -26,7 +26,7 @@ Full install guide: [packages/README.md](packages/README.md)
 ### Docker / VPS
 
 ```bash
-git clone https://github.com/yourflock/roost.git
+git clone https://github.com/unyeco/roost.git
 cd roost
 cp server/.env.example server/.env
 nano server/.env   # set ROOST_SECRET_KEY and POSTGRES_PASSWORD at minimum
@@ -36,13 +36,13 @@ docker compose -f packages/docker/docker-compose.yml up -d
 ### macOS
 
 ```bash
-brew install yourflock/tap/roost
+brew install unyeco/tap/roost
 brew services start roost
 ```
 
 ### Linux
 
-Download the `.deb` or `.rpm` from the [Releases page](https://github.com/yourflock/roost/releases).
+Download the `.deb` or `.rpm` from the [Releases page](https://github.com/unyeco/roost/releases).
 
 ## Structure
 

@@ -35,7 +35,7 @@ The simplest way to run Roost on any Linux machine with Docker installed.
 ### One-liner quick start
 
 ```bash
-git clone https://github.com/yourflock/roost.git
+git clone https://github.com/unyeco/roost.git
 cd roost
 cp server/.env.example server/.env
 nano server/.env   # set ROOST_SECRET_KEY and POSTGRES_PASSWORD at minimum
@@ -92,7 +92,7 @@ docker compose -f packages/docker/docker-compose.yml up -d
 Install via the Roost Homebrew tap:
 
 ```bash
-brew install yourflock/tap/roost
+brew install unyeco/tap/roost
 brew services start roost
 ```
 
@@ -124,7 +124,7 @@ Install Roost from the Synology Package Center using a custom SPK package.
 
 ### Steps
 
-1. Download the latest SPK from the [Releases page](https://github.com/yourflock/roost/releases).
+1. Download the latest SPK from the [Releases page](https://github.com/unyeco/roost/releases).
    Choose the correct architecture: `roost-{version}-amd64.spk` or `roost-{version}-aarch64.spk`.
 
 2. In DSM, open **Package Center** → **Manual Install**
@@ -166,7 +166,7 @@ Install Roost as a QPKG on QTS 5.x or QuTS Hero h5.x.
 
 ### Steps
 
-1. Download the latest QPKG from the [Releases page](https://github.com/yourflock/roost/releases).
+1. Download the latest QPKG from the [Releases page](https://github.com/unyeco/roost/releases).
    Choose: `Roost_{version}_x86_64.qpkg` or `Roost_{version}_aarch64.qpkg`.
 
 2. In App Center, click **Install Manually** (gear icon → Manual Installation)
@@ -229,10 +229,10 @@ Install Roost as a managed system service on Debian 12+ or Ubuntu 22.04+.
 
 ### Steps
 
-1. Download the `.deb` package from the [Releases page](https://github.com/yourflock/roost/releases):
+1. Download the `.deb` package from the [Releases page](https://github.com/unyeco/roost/releases):
 
    ```bash
-   wget https://github.com/yourflock/roost/releases/download/v1.0.0/roost_1.0.0_amd64.deb
+   wget https://github.com/unyeco/roost/releases/download/v1.0.0/roost_1.0.0_amd64.deb
    ```
 
 2. Install:
@@ -270,7 +270,7 @@ journalctl -u roost -f
 ### Updating
 
 ```bash
-wget https://github.com/yourflock/roost/releases/download/v{new-version}/roost_{new-version}_amd64.deb
+wget https://github.com/unyeco/roost/releases/download/v{new-version}/roost_{new-version}_amd64.deb
 sudo dpkg -i roost_{new-version}_amd64.deb
 ```
 
@@ -284,10 +284,10 @@ Install Roost as a managed system service on Rocky Linux 9+, RHEL 9+, or Fedora 
 
 ### Steps
 
-1. Download the `.rpm` package from the [Releases page](https://github.com/yourflock/roost/releases):
+1. Download the `.rpm` package from the [Releases page](https://github.com/unyeco/roost/releases):
 
    ```bash
-   wget https://github.com/yourflock/roost/releases/download/v1.0.0/roost-1.0.0-1.x86_64.rpm
+   wget https://github.com/unyeco/roost/releases/download/v1.0.0/roost-1.0.0-1.x86_64.rpm
    ```
 
 2. Install:
@@ -338,7 +338,7 @@ Build Roost from source on any system with Go installed.
 
 ```bash
 # Clone
-git clone https://github.com/yourflock/roost.git
+git clone https://github.com/unyeco/roost.git
 cd roost
 
 # Build

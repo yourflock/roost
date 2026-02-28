@@ -1,26 +1,26 @@
 # Homebrew formula for Roost — self-hosted media backend for Owl.
 #
 # Usage:
-#   brew install yourflock/tap/roost
+#   brew install unyeco/tap/roost
 #
 # This formula is maintained in the homebrew-roost tap:
-#   https://github.com/yourflock/homebrew-roost
+#   https://github.com/unyeco/homebrew-roost
 #
 # The source of truth for the formula lives here (packages/macos/roost.rb)
 # and is synced to the tap on release.
 
 class Roost < Formula
   desc "Self-hosted media backend for Owl — movies, TV, live TV, music, podcasts, games"
-  homepage "https://github.com/yourflock/roost"
+  homepage "https://github.com/unyeco/roost"
   version "1.0.0"
 
   on_macos do
     on_arm do
-      url "https://github.com/yourflock/roost/releases/download/v#{version}/roost-#{version}-darwin-arm64.tar.gz"
+      url "https://github.com/unyeco/roost/releases/download/v#{version}/roost-#{version}-darwin-arm64.tar.gz"
       sha256 "TODO_SHA256_DARWIN_ARM64"
     end
     on_intel do
-      url "https://github.com/yourflock/roost/releases/download/v#{version}/roost-#{version}-darwin-amd64.tar.gz"
+      url "https://github.com/unyeco/roost/releases/download/v#{version}/roost-#{version}-darwin-amd64.tar.gz"
       sha256 "TODO_SHA256_DARWIN_AMD64"
     end
   end

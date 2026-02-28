@@ -2,13 +2,13 @@
 
 Scene Skip is an open community standard for crowd-sourcing timestamped content scenes in movies and TV shows. It lets families automatically skip, blur, mute, or get a heads-up about scenes that don't fit their values — without blocking entire titles.
 
-The canonical database is hosted at `roost.yourflock.org`. Any self-hosted Roost instance can also serve `.skip` data from its own local database, and can optionally sync from the community database.
+Community scene data is maintained in the [unyeco/roost](https://github.com/unyeco/roost) repository. Any self-hosted Roost instance serves `.skip` data from its own local database, which ships pre-populated from community contributions included in each release.
 
 ---
 
 ## Sidecar File Format
 
-A `.skip` sidecar is a JSON document. The full JSON Schema is at [`roost/skip-schema.json`](https://github.com/yourflock/roost/blob/main/skip-schema.json).
+A `.skip` sidecar is a JSON document. The full JSON Schema is at [`skip-schema.json`](https://github.com/unyeco/roost/blob/main/.github/docs/skip-schema.json).
 
 ### Minimal example
 
@@ -128,7 +128,7 @@ Owl applies these defaults when a profile is created. Families can customize per
 ### Fetch sidecar (public, no auth)
 
 ```http
-GET https://roost.yourflock.org/skip/v1/{content_id}
+GET https://{your-roost-instance}/skip/v1/{content_id}
 ```
 
 Returns the `.skip` sidecar JSON for a content ID. Approved scenes only (`votes >= 5`). Cached 1 hour in Redis.
@@ -136,8 +136,8 @@ Returns the `.skip` sidecar JSON for a content ID. Approved scenes only (`votes 
 ### Submit a scene
 
 ```http
-POST https://roost.yourflock.org/skip/v1/scenes
-Authorization: Bearer {token}
+POST https://{your-roost-instance}/skip/v1/scenes
+Authorization: Bearer {api_token}
 Content-Type: application/json
 
 {
@@ -151,13 +151,13 @@ Content-Type: application/json
 }
 ```
 
-Requires Roost subscriber auth or Flock auth (when Owl is connected to Flock).
+Requires a Roost API token (from Settings > API Tokens).
 
 ### Vote on a scene
 
 ```http
-POST https://roost.yourflock.org/skip/v1/scenes/{id}/vote
-Authorization: Bearer {token}
+POST https://{your-roost-instance}/skip/v1/scenes/{id}/vote
+Authorization: Bearer {api_token}
 
 { "vote": 1 }   // 1 = upvote, -1 = downvote
 ```
@@ -170,10 +170,10 @@ One vote per user per scene. Scenes auto-approve at net vote count ≥ 5. Scenes
 
 Scene data is community-maintained. After you watch a movie or episode in Owl, you'll see a prompt: "Did you notice any scenes to flag?" Tap Yes to open the contribution UI.
 
-You can also contribute directly via the API. The spec is MIT-licensed and we welcome PRs to the [community scene database](https://github.com/yourflock/roost/tree/main/community-scenes).
+You can also contribute directly via the API. The spec is MIT-licensed and we welcome PRs to the [unyeco/roost](https://github.com/unyeco/roost) repository.
 
 ---
 
 ## Self-hosted Roost
 
-If you run your own Roost instance, `.skip` files ship with Roost updates from the community-maintained database. Your instance can optionally pull live data from `roost.yourflock.org` if you opt in (`SKIP_UPSTREAM_SYNC=true` in your `.env`).
+If you run your own Roost instance, `.skip` files ship with Roost updates from the community-maintained database. Community submissions are reviewed and merged via pull requests to [unyeco/roost](https://github.com/unyeco/roost) and distributed with each release.

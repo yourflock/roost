@@ -17,7 +17,7 @@ This guide covers deploying Roost with Docker Compose on a Linux VPS or NAS.
 
 ```bash
 # 1. Clone the repo
-git clone https://github.com/yourflock/roost.git
+git clone https://github.com/unyeco/roost.git
 cd roost
 
 # 2. Configure
