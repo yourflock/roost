@@ -94,6 +94,11 @@ PLAN.md
 # Go service compiled binaries
 server/services/*/bin/
 server/bin/
+# Top-level compiled binaries (built with go build ./... from server/)
+server/ingest
+server/seed
+server/roost
+server/api
 .vscode/*
 .aider/
 .aider.chat.history.md
