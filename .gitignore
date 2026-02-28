@@ -92,8 +92,8 @@ TRACKING.md
 PLAN.md
 
 # Go service compiled binaries
-backend/services/*/bin/
-backend/bin/
+server/services/*/bin/
+server/bin/
 .vscode/*
 .aider/
 .aider.chat.history.md

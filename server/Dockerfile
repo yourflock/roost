@@ -30,7 +30,7 @@ COPY server/ ./server/
 # Build the binary. CGO_ENABLED=0 for a fully static binary.
 # -s -w strips debug info (reduces size). Embed version from VERSION file if present.
 ARG VERSION=dev
-RUN cd server && CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build \
+RUN cd server && CGO_ENABLED=0 GOWORK=off GOOS=linux GOARCH=amd64 go build \
     -ldflags="-s -w -X main.version=${VERSION}" \
     -trimpath \
     -o /bin/roost \

@@ -1,0 +1,15 @@
+go 1.24.0
+
+use (
+	.
+	./services/catchup
+	./services/content_acquirer
+	./services/dvr
+	./services/epg
+	./services/grid_compositor
+	./services/ingest
+	./services/recommendations
+	./services/relay
+	./services/sports
+	./services/vod
+)
