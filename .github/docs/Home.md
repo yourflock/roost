@@ -10,26 +10,26 @@
 Roost is the backend that powers Owl. Run it on your own server and Owl clients connect to it
 as a source — getting your personal library of movies, shows, music, podcasts, games, and live TV.
 
-Two deployment models:
-
-- **Self-hosted BYOL**: Run Roost on your own server with your own licensed content (this repo, MIT license)
-- **Flock Managed**: Elite Flock families get a managed Roost instance — no server required
+Run Roost on your own server. Owl clients connect to it as a content source.
 
 ## Install in 60 seconds
 
 ```bash
-# Docker Compose — the recommended way
-curl -fsSL https://raw.githubusercontent.com/yourflock/roost/main/install.sh | bash
+git clone https://github.com/yourflock/roost.git
+cd roost
+cp server/.env.example server/.env
+nano server/.env   # set ROOST_SECRET_KEY and POSTGRES_PASSWORD at minimum
+docker compose -f packages/docker/docker-compose.yml up -d
 ```
 
-Or see the [Self-Hosting Guide](https://github.com/yourflock/roost/blob/main/docs/self-hosting.md).
+Full install guide: [packages/README.md](../../packages/README.md)
 
 ## Quick Links
 
 | Guide | Description |
 | ----- | ----------- |
 | [Self-Hosting Guide](https://github.com/yourflock/roost/blob/main/docs/self-hosting.md) | Full setup on VPS, NAS, or bare metal |
-| [Docker Compose Reference](https://github.com/yourflock/roost/blob/main/docker-compose.yml) | Configuration options |
+| [Docker Compose Reference](https://github.com/yourflock/roost/blob/main/packages/docker/docker-compose.yml) | Configuration options |
 | [Owl Addon API](https://github.com/yourflock/roost/blob/main/docs/owl-addon-api.md) | How Owl discovers and streams from Roost |
 | [Content Types](https://github.com/yourflock/roost/blob/main/docs/content-types.md) | IPTV, VOD, Music, Podcasts, Games |
 | [Contributing](https://github.com/yourflock/roost/blob/main/CONTRIBUTING.md) | How to contribute |

@@ -1,37 +1,30 @@
 # Roost — Developer Documentation
 
-Internal developer documentation for the Roost IPTV backend.
+Internal developer documentation for the Roost media backend.
 
 ## Index
 
 - [Deployment Guide](guides/deployment.md) — first deploy, rolling updates, rollback, monitoring
 - [Skip Format](skip-format.md) — `.skip` sidecar format and Scene Skip standard
 - [Commit Convention](commit-convention.md) — conventional commits, scopes, branch naming
-- [Roost Home](Home.md) — project overview, install, two-mode architecture
+- [Roost Home](Home.md) — project overview and install guide
 
 ## Architecture
 
-Roost is a managed IPTV backend for Owl. It runs on a single Hetzner CX23 VPS behind
-a Cloudflare Tunnel. All traffic enters via Cloudflare (zero-trust), exits to nginx,
-which routes to Go microservices.
+Roost is a self-hosted media backend. Users deploy it behind a reverse proxy (nginx included
+in `packages/docker/`). All traffic enters via nginx, which routes to Go microservices.
 
-```
-Cloudflare Edge
-    │ (HTTPS, CDN)
+```text
+Client (Owl app)
+    │ (HTTPS)
     ▼
-Cloudflare Tunnel (outbound from VPS — no inbound port exposure)
-    │
-    ▼
-nginx:80 (reverse proxy)
+nginx:80/443 (reverse proxy — packages/docker/nginx.conf)
     ├── /owl/*        → owl_api:8091
     ├── /billing/*    → billing:8085
     ├── /relay/*      → relay:8090
     ├── /catalog/*    → catalog:8095
     ├── /epg/*        → epg:8096
-    ├── /ingest/*     → ingest:8094 (internal only)
-    ├── /v1/graphql   → hasura:8080
-    ├── /v1/auth/     → auth:4000
-    └── /             → subscriber portal (SvelteKit)
+    └── /ingest/*     → ingest:8094 (internal only)
 ```
 
 ## Services
@@ -39,24 +32,20 @@ nginx:80 (reverse proxy)
 | Service | Port | Purpose |
 | --- | --- | --- |
 | `postgres` | 5433 (local) | Primary database |
-| `redis` | 6379 | Session cache + rate limiting |
-| `hasura` | 8081 (local) | GraphQL API |
-| `auth` | 4000 (local) | nHost auth |
-| `billing` | 8085 | Stripe subscriptions, invoices |
+| `redis` | 6379 | Rate limiting and caching |
+| `minio` | 9000 (local) | Object storage (DVR, HLS segments) |
+| `billing` | 8085 | Stripe subscriptions (public mode only) |
 | `ingest` | 8094 | FFmpeg stream pipeline manager |
 | `relay` | 8090 | HLS segment delivery |
 | `catalog` | 8095 | Channel catalog + logos |
 | `epg` | 8096 | XMLTV/EPG data service |
 | `owl_api` | 8091 | Owl Community Addon API |
-| `nginx` | 80 | Reverse proxy |
-| `cloudflared` | — | Cloudflare Tunnel (outbound) |
+| `nginx` | 80/443 | Reverse proxy + TLS termination |
 
 ## Stack
 
-- **Backend**: nSelf + Go microservices
-- **Web portals**: SvelteKit (web/subscribe, web/admin)
+- **Backend**: Go microservices
 - **Database**: PostgreSQL 16
-- **CDN / Tunnel**: Cloudflare (zero egress on R2)
-- **Media storage**: Cloudflare R2
-- **Billing**: Stripe
-- **Server**: Hetzner CX23 (fsn1) — upgrades via API when load demands
+- **Object storage**: Cloudflare R2 (or local MinIO)
+- **Billing**: Stripe (optional, public mode only)
+- **Go workspace**: `server/go.work` spans all service modules

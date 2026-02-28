@@ -1,8 +1,8 @@
 # Roost
 
-Universal media backend for Owl. Open source (MIT).
+Self-hosted media backend for Owl. Run it on your server, NAS, or cloud.
 
-Roost runs on your NAS, VPS, or any Linux server and serves all your media through Owl clients. It handles scanning, metadata, transcoding, live TV ingest, EPG, and streaming. Owl connects to it and presents a unified library across all platforms.
+Roost handles the backend: scanning, metadata, transcoding, live TV ingest, EPG, DVR, and streaming. Install it once, then connect Owl on any device. Your entire media library appears in a single unified interface.
 
 ## What Roost Serves
 
@@ -13,17 +13,9 @@ Roost runs on your NAS, VPS, or any Linux server and serves all your media throu
 - Games and emulation (ROMs, LibRetro cores, IGDB metadata, cloud saves)
 - Live sports (EPG matching, auto-DVR, commercial detection)
 
-## Two Modes
-
-### Private mode (default)
-
-Personal or family media server. Serves your own files. Connect via LAN IP or DynDNS. No billing, no account required. Optional family sharing via Flock SSO.
-
-### Public mode (`ROOST_MODE=public`)
-
-Turns Roost into a licensed content provider. Adds subscriber management, Stripe billing, CDN relay for source URL obfuscation, and content licensing integration. This is how `roost.yourflock.org` operates.
-
 ## Install
+
+Full install guide: [packages/README.md](packages/README.md)
 
 ### NAS (no terminal required)
 
@@ -33,23 +25,34 @@ Turns Roost into a licensed content provider. Adds subscriber management, Stripe
 
 ### Docker / VPS
 
-```sh
-docker run -v /your/media:/media roost/roost
+```bash
+git clone https://github.com/yourflock/roost.git
+cd roost
+cp server/.env.example server/.env
+nano server/.env   # set ROOST_SECRET_KEY and POSTGRES_PASSWORD at minimum
+docker compose -f packages/docker/docker-compose.yml up -d
 ```
 
-### Managed
+### macOS
 
-Subscribe at [roost.yourflock.org](https://roost.yourflock.org). Get an API token. Enter it in Owl under Settings > Community Addons.
+```bash
+brew install yourflock/tap/roost
+brew services start roost
+```
+
+### Linux
+
+Download the `.deb` or `.rpm` from the [Releases page](https://github.com/yourflock/roost/releases).
 
 ## Structure
 
-```
+```text
 roost/
-├── backend/    # Go microservices + nSelf (ingest, catalog, billing, Owl addon API)
-├── web/        # SvelteKit (subscriber portal + admin panel)
-└── infra/      # Hetzner + Cloudflare infrastructure config
+├── server/    # Go source (API, microservices, migrations)
+├── packages/  # Platform installers and Docker config
+└── .github/   # CI/CD and documentation
 ```
 
 ## License
 
-MIT — Copyright 2026 Flock / Aric Camarata.
+MIT — Copyright 2026 Aric Camarata.
