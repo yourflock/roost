@@ -2,14 +2,14 @@
 #
 # Brings up: Roost backend, PostgreSQL, Redis, MinIO, and Nginx.
 #
-# Quick start:
-#   cp .env.example .env  && nano .env  # fill in required values
-#   docker compose -f docker-compose.roost.yml up -d
-#   docker compose -f docker-compose.roost.yml ps   # verify all services healthy
+# Quick start (from repo root):
+#   cp server/.env.example server/.env && nano server/.env
+#   docker compose -f packages/docker/docker-compose.yml up -d
+#   docker compose -f packages/docker/docker-compose.yml ps
 #
 # Upgrade:
-#   docker compose -f docker-compose.roost.yml pull
-#   docker compose -f docker-compose.roost.yml up -d --remove-orphans
+#   docker compose -f packages/docker/docker-compose.yml pull
+#   docker compose -f packages/docker/docker-compose.yml up -d --remove-orphans
 
 name: roost
 
@@ -169,7 +169,7 @@ services:
       - "80:80"
       - "443:443"
     volumes:
-      - ./infra/nginx/roost.conf:/etc/nginx/conf.d/roost.conf:ro
+      - ./packages/docker/nginx.conf:/etc/nginx/conf.d/roost.conf:ro
       - roost_nginx_certs:/etc/letsencrypt:ro
       # Certbot webroot for ACME challenge
       - ./certbot/www:/var/www/certbot:ro

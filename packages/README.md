@@ -9,6 +9,8 @@ This guide covers every supported installation method. Pick the one that matches
 ## Table of Contents
 
 - [Docker Compose (recommended)](#docker-compose-recommended)
+- [macOS (Homebrew)](#macos-homebrew)
+- [Windows](#windows)
 - [Synology DSM 7+](#synology-dsm-7)
 - [QNAP QTS / QuTS](#qnap-qts--quts)
 - [Unraid Community Applications](#unraid-community-applications)
@@ -35,9 +37,9 @@ The simplest way to run Roost on any Linux machine with Docker installed.
 ```bash
 git clone https://github.com/yourflock/roost.git
 cd roost
-cp .env.example .env
-nano .env          # set ROOST_SECRET_KEY and POSTGRES_PASSWORD at minimum
-docker compose -f docker-compose.roost.yml up -d
+cp server/.env.example server/.env
+nano server/.env   # set ROOST_SECRET_KEY and POSTGRES_PASSWORD at minimum
+docker compose -f packages/docker/docker-compose.yml up -d
 ```
 
 Roost is now running. Open `http://localhost` (via Nginx) or `http://localhost:8080` (direct).
@@ -47,7 +49,7 @@ Verify: `curl http://localhost:8080/health` should return `{"status":"ok"}`.
 ### What gets started
 
 | Service | Purpose |
-|---------|---------|
+| --- | --- |
 | roost | Roost backend API |
 | postgres | Database (not exposed externally) |
 | redis | Rate limiting and caching (not exposed externally) |
@@ -66,22 +68,48 @@ Verify: `curl http://localhost:8080/health` should return `{"status":"ok"}`.
      --email you@yourdomain.com \
      --agree-tos --no-eff-email
    ```
-4. Uncomment the SSL lines in `infra/nginx/roost.conf`
-5. Uncomment the `certbot` service in `docker-compose.roost.yml`
-6. Restart: `docker compose -f docker-compose.roost.yml up -d`
+4. Uncomment the SSL server block in `packages/docker/nginx.conf`
+5. Uncomment the `certbot` service in `packages/docker/docker-compose.yml`
+6. Restart: `docker compose -f packages/docker/docker-compose.yml up -d`
 
 ### Updating
 
 ```bash
-./packaging/update.sh
+./packages/update.sh
 ```
 
 Or manually:
 
 ```bash
-docker compose -f docker-compose.roost.yml pull
-docker compose -f docker-compose.roost.yml up -d
+docker compose -f packages/docker/docker-compose.yml pull
+docker compose -f packages/docker/docker-compose.yml up -d
 ```
+
+---
+
+## macOS (Homebrew)
+
+Install via the Roost Homebrew tap:
+
+```bash
+brew install yourflock/tap/roost
+brew services start roost
+```
+
+Roost requires PostgreSQL 16:
+
+```bash
+brew install postgresql@16
+brew services start postgresql@16
+```
+
+See [packages/macos/roost.rb](macos/roost.rb) for formula details and configuration instructions.
+
+---
+
+## Windows
+
+Windows installer (`.msi`) is planned. In the meantime, use Docker Desktop — see [packages/windows/README.md](windows/README.md).
 
 ---
 
@@ -191,7 +219,7 @@ Install Roost through the Unraid Community Applications plugin.
 
 Access Roost at `http://UNRAID-IP:7979`.
 
-See [packaging/unraid/README.unraid.md](unraid/README.unraid.md) for detailed Unraid instructions.
+See [packages/unraid/README.unraid.md](unraid/README.unraid.md) for detailed Unraid instructions.
 
 ---
 
@@ -314,7 +342,7 @@ git clone https://github.com/yourflock/roost.git
 cd roost
 
 # Build
-cd backend
+cd server
 go build -o bin/roost ./cmd/api/
 
 # Configure
@@ -336,19 +364,19 @@ Roost listens on port 8080 by default. Set `PORT` in `.env` to change it.
 Use the included update script for a zero-downtime update:
 
 ```bash
-./packaging/update.sh
+./packages/update.sh
 ```
 
 Check for updates without installing:
 
 ```bash
-./packaging/update.sh --check
+./packages/update.sh --check
 ```
 
 Automated (cron) updates:
 
 ```bash
-./packaging/update.sh --yes
+./packages/update.sh --yes
 ```
 
 ### Synology / QNAP
@@ -372,20 +400,20 @@ sudo dnf upgrade roost
 
 ## Configuration Reference
 
-All configuration is via environment variables. See [`.env.example`](../.env.example) for
+All configuration is via environment variables. See [`server/.env.example`](../server/.env.example) for
 the full list with comments.
 
 ### Required for all installs
 
 | Variable | Description |
-|----------|-------------|
+| --- | --- |
 | `ROOST_SECRET_KEY` | JWT signing secret. Generate: `openssl rand -hex 32` |
 | `POSTGRES_PASSWORD` | PostgreSQL password |
 
 ### Optional but recommended
 
 | Variable | Default | Description |
-|----------|---------|-------------|
+| --- | --- | --- |
 | `ROOST_MODE` | `private` | `private` (self-hosted) or `public` (managed) |
 | `ROOST_DOMAIN` | `localhost` | Public hostname for CORS and cookies |
 | `PORT` | `8080` | HTTP listen port inside the container |
@@ -394,7 +422,7 @@ the full list with comments.
 ### Public mode only (ROOST_MODE=public)
 
 | Variable | Description |
-|----------|-------------|
+| --- | --- |
 | `STRIPE_SECRET_KEY` | Stripe secret key |
 | `STRIPE_WEBHOOK_SECRET` | Stripe webhook signing secret |
 | `CDN_RELAY_URL` | CDN relay endpoint for obfuscated stream delivery |
