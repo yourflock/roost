@@ -12,7 +12,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/yourflock/roost/internal/auth"
+	"github.com/unyeco/roost/internal/auth"
 )
 
 // promoValidateRequest is the body for POST /billing/promo/validate.

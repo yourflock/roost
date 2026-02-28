@@ -6,8 +6,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/yourflock/roost/services/owl_api/audit"
-	"github.com/yourflock/roost/services/owl_api/middleware"
+	"github.com/unyeco/roost/services/owl_api/audit"
+	"github.com/unyeco/roost/services/owl_api/middleware"
 )
 
 // ServiceHealth is the health status of one subsystem.
@@ -201,7 +201,7 @@ func (h *AdminHandlers) Metrics(w http.ResponseWriter, r *http.Request) {
 // StreamInfo is one entry in GET /admin/streams.
 type StreamInfo struct {
 	StreamID    string `json:"stream_id"`
-	FlockUserID string `json:"flock_user_id"`
+	UserID string `json:"user_id"``
 	ChannelName string `json:"channel_name"`
 	SourceType  string `json:"source_type"`
 	StartedAt   string `json:"started_at"`
@@ -224,6 +224,6 @@ func (h *AdminHandlers) KillStream(w http.ResponseWriter, r *http.Request, al *a
 	// Ingest service subscribes and terminates the stream (403 on next HLS segment)
 	// When Redis is wired: h.Redis.Publish(ctx, "roost:stream_kill:"+streamID, "kill")
 
-	al.Log(r, claims.RoostID, claims.FlockUserID, "stream.kill", streamID, nil)
+	al.Log(r, claims.RoostID, claims.UserID, "stream.kill", streamID, nil)
 	writeAdminJSON(w, http.StatusOK, map[string]string{"stream_id": streamID, "status": "kill_sent"})
 }

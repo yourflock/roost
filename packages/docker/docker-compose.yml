@@ -101,7 +101,7 @@ services:
 
   # ─── Roost backend ──────────────────────────────────────────────────────────
   roost:
-    image: ghcr.io/yourflock/roost:latest
+    image: ghcr.io/unyeco/roost:latest
     container_name: roost_app
     restart: unless-stopped
     networks:

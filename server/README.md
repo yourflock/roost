@@ -63,10 +63,9 @@ Services with their own `go.mod` (separate modules in the workspace):
 - `services/grid_compositor` — EPG grid compositor, multi-stream grids
 - `services/sports` — sports data, live scores, metadata display API
 - `services/relay`, `services/epg`, `services/dvr`, `services/catchup`
-- `services/flocktv`, `services/ftv_gateway`, `services/ftv_notifications`
 - `services/recommendations`, `services/vod`
 
-Services using the root module (`github.com/yourflock/roost`):
+Services using the root module (`github.com/unyeco/roost`):
 
 - `services/catalog` — channel catalog + TMDB metadata
 - `services/auth`, `services/billing`, `services/owl_api`

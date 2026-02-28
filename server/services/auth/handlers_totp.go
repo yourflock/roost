@@ -19,7 +19,7 @@ import (
 	"time"
 
 	"github.com/pquerna/otp/totp"
-	goauth "github.com/yourflock/roost/internal/auth"
+	goauth "github.com/unyeco/roost/internal/auth"
 	"golang.org/x/crypto/bcrypt"
 )
 

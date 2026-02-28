@@ -15,7 +15,7 @@
 set -e
 
 COMPOSE_FILE="${COMPOSE_FILE:-docker-compose.roost.yml}"
-ROOST_IMAGE="ghcr.io/yourflock/roost"
+ROOST_IMAGE="ghcr.io/unyeco/roost"
 CHECK_ONLY=0
 AUTO_YES=0
 
@@ -150,7 +150,7 @@ if [ "$i" -ge "${RETRIES}" ]; then
 fi
 
 # Remove old (dangling) images to free disk space.
-docker image prune -f --filter "label=org.opencontainers.image.source=https://github.com/yourflock/roost" \
+docker image prune -f --filter "label=org.opencontainers.image.source=https://github.com/unyeco/roost" \
     2>/dev/null || true
 
 NEW_VERSION=$(docker compose -f "${COMPOSE_FILE}" exec -T roost \

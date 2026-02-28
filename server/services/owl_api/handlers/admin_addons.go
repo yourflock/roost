@@ -11,8 +11,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/yourflock/roost/services/owl_api/audit"
-	"github.com/yourflock/roost/services/owl_api/middleware"
+	"github.com/unyeco/roost/services/owl_api/audit"
+	"github.com/unyeco/roost/services/owl_api/middleware"
 )
 
 // AddonManifest is the minimal schema required in a community addon manifest JSON.
@@ -111,7 +111,7 @@ func (h *AdminHandlers) InstallAddon(w http.ResponseWriter, r *http.Request, al 
 	// Enqueue initial catalog fetch (async)
 	slog.Info("addon installed, catalog fetch enqueued", "addon_id", rowID)
 
-	al.Log(r, claims.RoostID, claims.FlockUserID, "addon.install", req.ManifestURL,
+	al.Log(r, claims.RoostID, claims.UserID, "addon.install", req.ManifestURL,
 		map[string]any{"name": manifest.Name, "version": manifest.Version},
 	)
 
@@ -146,7 +146,7 @@ func (h *AdminHandlers) UninstallAddon(w http.ResponseWriter, r *http.Request, a
 	}
 
 	slog.Info("addon uninstalled, catalog cleanup enqueued", "addon_id", addonID)
-	al.Log(r, claims.RoostID, claims.FlockUserID, "addon.uninstall", addonID, nil)
+	al.Log(r, claims.RoostID, claims.UserID, "addon.uninstall", addonID, nil)
 	w.WriteHeader(http.StatusNoContent)
 }
 
@@ -180,7 +180,7 @@ func (h *AdminHandlers) RefreshAddon(w http.ResponseWriter, r *http.Request, al 
 		manifest.Version, addonID,
 	)
 
-	al.Log(r, claims.RoostID, claims.FlockUserID, "addon.refresh_triggered", addonID,
+	al.Log(r, claims.RoostID, claims.UserID, "addon.refresh_triggered", addonID,
 		map[string]any{"old_version": oldVersion, "new_version": manifest.Version},
 	)
 

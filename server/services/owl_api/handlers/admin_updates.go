@@ -14,8 +14,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/yourflock/roost/services/owl_api/audit"
-	"github.com/yourflock/roost/services/owl_api/middleware"
+	"github.com/unyeco/roost/services/owl_api/audit"
+	"github.com/unyeco/roost/services/owl_api/middleware"
 )
 
 // UpdateCheckResponse is returned by GET /admin/updates.
@@ -125,7 +125,7 @@ func (h *AdminHandlers) ApplyUpdate(w http.ResponseWriter, r *http.Request, al *
 		return
 	}
 
-	// Validate download URL is from github.com/yourflock/roost
+	// Validate download URL is from github.com/unyeco/roost
 	if !isValidReleaseURL(downloadURL) || !isValidReleaseURL(checksumURL) {
 		http.Error(w, `{"error":"invalid download URL"}`, http.StatusForbidden)
 		return
@@ -142,7 +142,7 @@ func (h *AdminHandlers) ApplyUpdate(w http.ResponseWriter, r *http.Request, al *
 		slog.Info("update: binary swap complete, restart pending")
 	}()
 
-	al.Log(r, claims.RoostID, claims.FlockUserID, "server.update_triggered",
+	al.Log(r, claims.RoostID, claims.UserID, "server.update_triggered",
 		"", map[string]any{"version": req.Version},
 	)
 
@@ -163,9 +163,9 @@ func (h *AdminHandlers) Restart(w http.ResponseWriter, r *http.Request, al *audi
 
 	// Signal graceful restart via Redis
 	// When Redis is wired: h.Redis.Set(ctx, "roost:restart_pending:"+claims.RoostID, "graceful", 0)
-	slog.Info("restart requested by owner", "user", claims.FlockUserID)
+	slog.Info("restart requested by owner", "user", claims.UserID)
 
-	al.Log(r, claims.RoostID, claims.FlockUserID, "server.restart_triggered", "", nil)
+	al.Log(r, claims.RoostID, claims.UserID, "server.restart_triggered", "", nil)
 
 	writeAdminJSON(w, http.StatusOK, map[string]interface{}{
 		"status":         "restart_scheduled",
@@ -180,7 +180,7 @@ func fetchLatestRelease() (*githubRelease, error) {
 	defer cancel()
 
 	req, err := http.NewRequestWithContext(ctx, "GET",
-		"https://api.github.com/repos/yourflock/roost/releases/latest", nil)
+		"https://api.github.com/repos/unyeco/roost/releases/latest", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -204,7 +204,7 @@ func fetchLatestRelease() (*githubRelease, error) {
 	return &release, nil
 }
 
-// isValidReleaseURL verifies the URL is a GitHub release asset for yourflock/roost.
+// isValidReleaseURL verifies the URL is a GitHub release asset for unyeco/roost.
 func isValidReleaseURL(rawURL string) bool {
 	if rawURL == "" {
 		return false
@@ -216,7 +216,7 @@ func isValidReleaseURL(rawURL string) bool {
 	return u.Scheme == "https" &&
 		(strings.HasPrefix(u.Host, "github.com") ||
 			strings.HasPrefix(u.Host, "objects.githubusercontent.com")) &&
-		strings.Contains(u.Path, "yourflock/roost")
+		strings.Contains(u.Path, "unyeco/roost")
 }
 
 // downloadAndSwapBinary downloads the binary, verifies its SHA-256 checksum,

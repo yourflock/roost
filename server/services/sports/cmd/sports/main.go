@@ -25,8 +25,8 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/yourflock/roost/services/sports"
-	"github.com/yourflock/roost/services/sports/data"
+	"github.com/unyeco/roost/services/sports"
+	"github.com/unyeco/roost/services/sports/data"
 )
 
 func main() {

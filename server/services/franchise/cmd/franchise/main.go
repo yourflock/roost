@@ -156,8 +156,8 @@ func createStripeConnectAccount(operatorName, email string) (string, string, err
 	// Generate onboarding link.
 	linkParams := url.Values{
 		"account":     {accountID},
-		"refresh_url": {getEnv("FRANCHISE_STRIPE_REFRESH_URL", "https://roost.yourflock.org/franchise/connect/refresh")},
-		"return_url":  {getEnv("FRANCHISE_STRIPE_RETURN_URL", "https://roost.yourflock.org/franchise/connect/complete")},
+		"refresh_url": {getEnv("FRANCHISE_STRIPE_REFRESH_URL", "https://roost.unity.dev/franchise/connect/refresh")},
+		"return_url":  {getEnv("FRANCHISE_STRIPE_RETURN_URL", "https://roost.unity.dev/franchise/connect/complete")},
 		"type":        {"account_onboarding"},
 	}
 	linkResult, err := stripePost("/account_links", linkParams)
@@ -386,8 +386,8 @@ func (s *server) handleConnect(w http.ResponseWriter, r *http.Request) {
 
 	linkParams := url.Values{
 		"account":     {stripeAccountID.String},
-		"refresh_url": {getEnv("FRANCHISE_STRIPE_REFRESH_URL", "https://roost.yourflock.org/franchise/connect/refresh")},
-		"return_url":  {getEnv("FRANCHISE_STRIPE_RETURN_URL", "https://roost.yourflock.org/franchise/connect/complete")},
+		"refresh_url": {getEnv("FRANCHISE_STRIPE_REFRESH_URL", "https://roost.unity.dev/franchise/connect/refresh")},
+		"return_url":  {getEnv("FRANCHISE_STRIPE_RETURN_URL", "https://roost.unity.dev/franchise/connect/complete")},
 		"type":        {"account_onboarding"},
 	}
 	result, err := stripePost("/account_links", linkParams)

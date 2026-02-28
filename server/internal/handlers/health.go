@@ -15,7 +15,7 @@
 //
 // Usage in a service main:
 //
-//	import "github.com/yourflock/roost/internal/handlers"
+//	import "github.com/unyeco/roost/internal/handlers"
 //
 //	db, _ := sql.Open(...)
 //	mux.HandleFunc("GET /healthz", handlers.Liveness)

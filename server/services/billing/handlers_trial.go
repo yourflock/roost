@@ -21,7 +21,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/yourflock/roost/internal/auth"
+	"github.com/unyeco/roost/internal/auth"
 )
 
 const trialDurationDays = 7

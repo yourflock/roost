@@ -6,8 +6,8 @@
 // the code. All participants get the same signed stream URL so playback is
 // synchronized.
 //
-// Flock chat integration: when a party is created, Roost attempts to post an
-// invite notification to the host's Flock chat (stubbed — graceful if Flock
+// Watch party notification: when a party is created, Roost attempts to post an
+// invite notification (stubbed — graceful if provider
 // chat API is not live yet).
 //
 // Endpoints:
@@ -32,7 +32,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/yourflock/roost/internal/auth"
+	"github.com/unyeco/roost/internal/auth"
 )
 
 // ── Invite code generation ────────────────────────────────────────────────────
@@ -174,7 +174,7 @@ func (s *Server) handleCreateWatchParty(w http.ResponseWriter, r *http.Request) 
 	}
 	defer tx.Rollback()
 
-	contentIDParam := nullableFlockStr(req.ContentID)
+	contentIDParam := nullableStr(req.ContentID)
 	err = tx.QueryRowContext(r.Context(), `
 		INSERT INTO watch_parties
 		  (host_subscriber_id, channel_id, content_type, content_id, invite_code, max_participants)
@@ -206,8 +206,8 @@ func (s *Server) handleCreateWatchParty(w http.ResponseWriter, r *http.Request) 
 	// Generate signed stream URL for the channel
 	streamURL, expiresAt := watchPartyStreamURL(channelSlug)
 
-	// Async: notify Flock chat (stub — graceful if Flock unavailable)
-	go notifyFlockWatchPartyCreated(r.Context(), subscriberID, partyID, inviteCode, channelSlug)
+	// Async: notify watch party (stub — graceful if provider unavailable)
+	go notifyWatchPartyCreated(r.Context(), subscriberID, partyID, inviteCode, channelSlug)
 
 	log.Printf("[watch_party] created: party=%s host=%s channel=%s invite=%s",
 		partyID, subscriberID, channelSlug, inviteCode)
@@ -495,7 +495,7 @@ func watchPartyStreamURL(channelSlug string) (string, time.Time) {
 		expires := time.Now().UTC().Add(15 * time.Minute)
 		return "", expires
 	}
-	baseURL := getEnv("RELAY_BASE_URL", "https://cdn.roost.yourflock.org")
+	baseURL := getEnv("RELAY_BASE_URL", "https://cdn.roost.unity.dev")
 	expiresAt := time.Now().UTC().Add(15 * time.Minute)
 	url := fmt.Sprintf("%s/hls/%s/playlist.m3u8?expires=%d", baseURL, channelSlug, expiresAt.Unix())
 	return url, expiresAt
@@ -532,18 +532,18 @@ func (s *Server) hasActiveSubscription(ctx context.Context, subscriberID string)
 	return status == "active"
 }
 
-// ── Flock chat notification (stub) ────────────────────────────────────────────
+// ── Watch party notification (stub) ────────────────────────────────────────────
 
-// notifyFlockWatchPartyCreated notifies Flock chat that a watch party was created.
-// Stub implementation — gracefully no-ops if Flock chat API is unavailable.
-func notifyFlockWatchPartyCreated(ctx context.Context, subscriberID, partyID, inviteCode, channelSlug string) {
-	// Fetch subscriber's flock_user_id
+// notifyWatchPartyCreated notifies that a watch party was created.
+// Stub implementation — gracefully no-ops if provider is unavailable.
+func notifyWatchPartyCreated(ctx context.Context, subscriberID, partyID, inviteCode, channelSlug string) {
+	// Fetch subscriber's sso_user_id
 	// (This would normally come from the DB but we'd need to pass it in — using
 	//  a background lookup here to keep the handler clean)
 	_ = subscriberID // used for subscriber lookup in production
 	_ = partyID
 
-	chatURL := fmt.Sprintf("%s/api/chat/watch-party-invite", flockOAuthBaseURL())
+	chatURL := fmt.Sprintf("%s/api/chat/watch-party-invite", ssoBaseURL())
 	payload, _ := json.Marshal(map[string]string{
 		"invite_code":  inviteCode,
 		"channel_slug": channelSlug,
@@ -558,12 +558,12 @@ func notifyFlockWatchPartyCreated(ctx context.Context, subscriberID, partyID, in
 		return
 	}
 	req.Header.Set("Content-Type", "application/json")
-	if tok := os.Getenv("FLOCK_SERVICE_TOKEN"); tok != "" {
+	if tok := os.Getenv("SSO_SERVICE_TOKEN"); tok != "" {
 		req.Header.Set("Authorization", "Bearer "+tok)
 	}
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		log.Printf("[watch_party] Flock chat notification failed (stub): %v", err)
+		log.Printf("[watch_party] Watch party notification failed (stub): %v", err)
 		return // graceful degradation
 	}
 	defer resp.Body.Close()

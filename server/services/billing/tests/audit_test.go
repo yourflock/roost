@@ -10,7 +10,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/yourflock/roost/pkg/audit"
+	"github.com/unyeco/roost/pkg/audit"
 )
 
 // TestAuditLogInsert verifies that LogAction inserts a row into audit_log.

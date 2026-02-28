@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/yourflock/roost/services/owl_api/middleware"
+	"github.com/unyeco/roost/services/owl_api/middleware"
 )
 
 // logCredentialDenyList is the case-insensitive list of field keys to redact.

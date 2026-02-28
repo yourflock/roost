@@ -16,14 +16,14 @@ type Client struct {
 }
 
 // New initializes a Stripe client from the environment.
-// Checks STRIPE_SECRET_KEY first, then STRIPE_FLOCK_SECRET_KEY (env var naming convention).
+// Reads STRIPE_SECRET_KEY from environment.
 func New() (*Client, error) {
 	key := os.Getenv("STRIPE_SECRET_KEY")
 	if key == "" {
-		key = os.Getenv("STRIPE_FLOCK_SECRET_KEY")
+		
 	}
 	if key == "" {
-		return nil, fmt.Errorf("stripe not configured: set STRIPE_SECRET_KEY or STRIPE_FLOCK_SECRET_KEY")
+		return nil, fmt.Errorf("stripe not configured: set STRIPE_SECRET_KEY")
 	}
 	stripe.Key = key
 	sc := &client.API{}

@@ -3,7 +3,7 @@ package validate_test
 import (
 	"testing"
 
-	"github.com/yourflock/roost/internal/validate"
+	"github.com/unyeco/roost/internal/validate"
 )
 
 func TestNonEmptyString(t *testing.T) {

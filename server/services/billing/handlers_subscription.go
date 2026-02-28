@@ -11,7 +11,7 @@ import (
 
 	"github.com/stripe/stripe-go/v76"
 	stripeSub "github.com/stripe/stripe-go/v76/subscription"
-	"github.com/yourflock/roost/internal/auth"
+	"github.com/unyeco/roost/internal/auth"
 )
 
 // subscriptionResponse is returned by GET /billing/subscription.

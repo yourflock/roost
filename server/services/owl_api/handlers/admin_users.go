@@ -9,14 +9,14 @@ import (
 	"strings"
 	"time"
 
-	"github.com/yourflock/roost/services/owl_api/audit"
-	"github.com/yourflock/roost/services/owl_api/middleware"
+	"github.com/unyeco/roost/services/owl_api/audit"
+	"github.com/unyeco/roost/services/owl_api/middleware"
 )
 
 // AdminUserRow is one row from roost_users returned by GET /admin/users.
 type AdminUserRow struct {
 	ID           string    `json:"id"`
-	FlockUserID  string    `json:"flock_user_id"`
+	UserID string `json:"user_id"``
 	Role         string    `json:"role"`
 	InvitedBy    *string   `json:"invited_by,omitempty"`
 	AddedAt      time.Time `json:"added_at"`
@@ -28,7 +28,7 @@ func (h *AdminHandlers) ListUsers(w http.ResponseWriter, r *http.Request) {
 	claims := middleware.AdminClaimsFromCtx(r.Context())
 
 	rows, err := h.DB.QueryContext(r.Context(),
-		`SELECT id, flock_user_id, role, invited_by, added_at
+		`SELECT id, user_id, role, invited_by, added_at
 		   FROM roost_users
 		  WHERE roost_id = $1
 		  ORDER BY added_at ASC`,
@@ -43,7 +43,7 @@ func (h *AdminHandlers) ListUsers(w http.ResponseWriter, r *http.Request) {
 	var users []AdminUserRow
 	for rows.Next() {
 		var u AdminUserRow
-		if err := rows.Scan(&u.ID, &u.FlockUserID, &u.Role, &u.InvitedBy, &u.AddedAt); err != nil {
+		if err := rows.Scan(&u.ID, &u.UserID, &u.Role, &u.InvitedBy, &u.AddedAt); err != nil {
 			continue
 		}
 		users = append(users, u)
@@ -56,7 +56,7 @@ func (h *AdminHandlers) ListUsers(w http.ResponseWriter, r *http.Request) {
 
 // InviteUserRequest is the POST /admin/users/invite request body.
 type InviteUserRequest struct {
-	FlockUserID string `json:"flock_user_id"`
+	UserID string `json:"user_id"``
 	Role        string `json:"role"` // "admin" | "member" | "guest"
 }
 
@@ -70,8 +70,8 @@ func (h *AdminHandlers) InviteUser(w http.ResponseWriter, r *http.Request, al *a
 		return
 	}
 
-	if req.FlockUserID == "" {
-		http.Error(w, `{"error":"flock_user_id required"}`, http.StatusBadRequest)
+	if req.UserID == "" {
+		http.Error(w, `{"error":"user_id required"}`, http.StatusBadRequest)
 		return
 	}
 
@@ -85,11 +85,11 @@ func (h *AdminHandlers) InviteUser(w http.ResponseWriter, r *http.Request, al *a
 	// Upsert: insert or update role if user already exists
 	var rowID string
 	err := h.DB.QueryRowContext(r.Context(),
-		`INSERT INTO roost_users (roost_id, flock_user_id, role, invited_by)
+		`INSERT INTO roost_users (roost_id, user_id, role, invited_by)
 		 VALUES ($1, $2, $3, $4)
-		 ON CONFLICT (roost_id, flock_user_id) DO UPDATE SET role = EXCLUDED.role
+		 ON CONFLICT (roost_id, user_id) DO UPDATE SET role = EXCLUDED.role
 		 RETURNING id`,
-		claims.RoostID, req.FlockUserID, req.Role, claims.FlockUserID,
+		claims.RoostID, req.UserID, req.Role, claims.UserID,
 	).Scan(&rowID)
 	if err != nil {
 		slog.Error("admin/users/invite: db error", "err", err)
@@ -97,10 +97,10 @@ func (h *AdminHandlers) InviteUser(w http.ResponseWriter, r *http.Request, al *a
 		return
 	}
 
-	// Fire-and-forget Flock notification (5s timeout, failure does not affect response)
-	go sendFlockNotification(claims.RoostID, req.FlockUserID, claims.FlockUserID, "roost_invite")
+	// Fire-and-forget invite notification (5s timeout, failure does not affect response)
+	go sendInviteNotification(claims.RoostID, req.UserID, claims.UserID, "roost_invite")
 
-	al.Log(r, claims.RoostID, claims.FlockUserID, "user.invite", req.FlockUserID,
+	al.Log(r, claims.RoostID, claims.UserID, "user.invite", req.UserID,
 		map[string]any{"role": req.Role, "row_id": rowID},
 	)
 
@@ -159,7 +159,7 @@ func (h *AdminHandlers) PatchUserRole(w http.ResponseWriter, r *http.Request, al
 		return
 	}
 
-	al.Log(r, claims.RoostID, claims.FlockUserID, "user.role_change", userID,
+	al.Log(r, claims.RoostID, claims.UserID, "user.role_change", userID,
 		map[string]any{"old_role": oldRole, "new_role": req.Role},
 	)
 
@@ -193,15 +193,15 @@ func (h *AdminHandlers) DeleteUser(w http.ResponseWriter, r *http.Request, al *a
 		return
 	}
 
-	al.Log(r, claims.RoostID, claims.FlockUserID, "user.revoke", userID, nil)
+	al.Log(r, claims.RoostID, claims.UserID, "user.revoke", userID, nil)
 
 	w.WriteHeader(http.StatusNoContent)
 }
 
 // ── Internal helpers ──────────────────────────────────────────────────────────
 
-// sendFlockNotification sends a fire-and-forget invite notification via the Flock API.
-func sendFlockNotification(roostID, toUserID, fromUserID, notifType string) {
+// sendInviteNotification sends a fire-and-forget invite notification.
+func sendInviteNotification(roostID, toUserID, fromUserID, notifType string) {
 	body, _ := json.Marshal(map[string]string{
 		"to":      toUserID,
 		"type":    notifType,
@@ -212,15 +212,15 @@ func sendFlockNotification(roostID, toUserID, fromUserID, notifType string) {
 	defer cancel()
 
 	req, err := http.NewRequestWithContext(ctx, "POST",
-		"https://api.yourflock.org/internal/notify", bytes.NewReader(body))
+		"https://api.roost.unity.dev/internal/notify", bytes.NewReader(body))
 	if err != nil {
-		slog.Warn("flock notify: failed to build request", "err", err)
+		slog.Warn("notify: failed to build request", "err", err)
 		return
 	}
 	req.Header.Set("Content-Type", "application/json")
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		slog.Warn("flock notify: request failed", "err", err)
+		slog.Warn("notify: request failed", "err", err)
 		return
 	}
 	defer resp.Body.Close()

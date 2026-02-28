@@ -14,7 +14,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/yourflock/roost/internal/auth"
+	"github.com/unyeco/roost/internal/auth"
 )
 
 // handleRotateChannelKey handles POST /admin/keys/rotate-channel/:channelID.

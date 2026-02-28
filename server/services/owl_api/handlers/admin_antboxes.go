@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/yourflock/roost/services/owl_api/audit"
-	"github.com/yourflock/roost/services/owl_api/middleware"
+	"github.com/unyeco/roost/services/owl_api/audit"
+	"github.com/unyeco/roost/services/owl_api/middleware"
 )
 
 // AntBoxStatus thresholds
@@ -109,7 +109,7 @@ func (h *AdminHandlers) PatchAntBox(w http.ResponseWriter, r *http.Request, al *
 		return
 	}
 
-	al.Log(r, claims.RoostID, claims.FlockUserID, "antbox.update", boxID, nil)
+	al.Log(r, claims.RoostID, claims.UserID, "antbox.update", boxID, nil)
 	writeAdminJSON(w, http.StatusOK, map[string]string{"id": boxID, "status": "updated"})
 }
 
@@ -136,7 +136,7 @@ func (h *AdminHandlers) DeleteAntBox(w http.ResponseWriter, r *http.Request, al 
 		return
 	}
 
-	al.Log(r, claims.RoostID, claims.FlockUserID, "antbox.remove", boxID, nil)
+	al.Log(r, claims.RoostID, claims.UserID, "antbox.remove", boxID, nil)
 	w.WriteHeader(http.StatusNoContent)
 }
 
@@ -159,7 +159,7 @@ func (h *AdminHandlers) TriggerAntBoxChannelScan(w http.ResponseWriter, r *http.
 	// When Redis is wired, publish: h.Redis.LPush(ctx, key, jobPayload)
 	_ = targetID // used when Redis is wired
 
-	al.Log(r, claims.RoostID, claims.FlockUserID, "antbox.scan_channels_triggered", targetID,
+	al.Log(r, claims.RoostID, claims.UserID, "antbox.scan_channels_triggered", targetID,
 		map[string]any{"job_id": jobID},
 	)
 

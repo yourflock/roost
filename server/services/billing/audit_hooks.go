@@ -14,7 +14,7 @@ import (
 	"log"
 	"net/http"
 
-	"github.com/yourflock/roost/pkg/audit"
+	"github.com/unyeco/roost/pkg/audit"
 )
 
 // logBillingEvent records a billing event to the audit log.

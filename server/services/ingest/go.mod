@@ -1,4 +1,4 @@
-module github.com/yourflock/roost/services/ingest
+module github.com/unyeco/roost/services/ingest
 
 go 1.24.0
 
@@ -6,7 +6,7 @@ require (
 	github.com/google/uuid v1.6.0
 	github.com/lib/pq v1.10.9
 	github.com/prometheus/client_golang v1.23.2
-	github.com/yourflock/roost/services/relay v0.0.0
+	github.com/unyeco/roost/services/relay v0.0.0
 )
 
 require (
@@ -23,6 +23,6 @@ require (
 )
 
 replace (
-	github.com/yourflock/roost => ../../
-	github.com/yourflock/roost/services/relay => ../relay
+	github.com/unyeco/roost => ../../
+	github.com/unyeco/roost/services/relay => ../relay
 )

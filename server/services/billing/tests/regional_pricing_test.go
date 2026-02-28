@@ -18,7 +18,7 @@ import (
 	"testing"
 	"time"
 
-	billingsvc "github.com/yourflock/roost/services/billing"
+	billingsvc "github.com/unyeco/roost/services/billing"
 )
 
 // ── Tests ─────────────────────────────────────────────────────────────────────

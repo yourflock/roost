@@ -208,14 +208,14 @@ ON CONFLICT (slug) DO NOTHING;
 
 -- ─────────────────────────────────────────────────────────────────────────────
 -- P3-T12: Founding Family seed
--- camarata@yourflock.org is billing_exempt = true forever.
+-- camarata@roost.unity.dev is billing_exempt = true forever.
 -- Their subscription record uses the 'founding' plan at $0.
 -- ─────────────────────────────────────────────────────────────────────────────
 DO $$
 DECLARE
     founder_id UUID;
 BEGIN
-    SELECT id INTO founder_id FROM subscribers WHERE email = 'camarata@yourflock.org';
+    SELECT id INTO founder_id FROM subscribers WHERE email = 'camarata@roost.unity.dev';
     IF founder_id IS NOT NULL THEN
         -- Mark as billing exempt
         UPDATE subscribers SET billing_exempt = true WHERE id = founder_id;
@@ -230,7 +230,7 @@ BEGIN
             status = 'founding',
             billing_period = 'annual',
             updated_at = NOW();
-        RAISE NOTICE 'Founding family camarata@yourflock.org seeded (billing_exempt=true)';
+        RAISE NOTICE 'Founding family camarata@roost.unity.dev seeded (billing_exempt=true)';
     ELSE
         RAISE NOTICE 'Founder email not found — skipping founding seed (will apply on registration)';
     END IF;

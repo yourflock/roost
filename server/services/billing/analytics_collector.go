@@ -17,7 +17,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/yourflock/roost/internal/auth"
+	"github.com/unyeco/roost/internal/auth"
 )
 
 const analyticsCollectorInterval = 1 * time.Hour // check every hour, compute once per day

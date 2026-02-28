@@ -32,7 +32,7 @@ import (
 
 	_ "github.com/lib/pq"
 
-	epgsync "github.com/yourflock/roost/services/epg/internal/sync"
+	epgsync "github.com/unyeco/roost/services/epg/internal/sync"
 )
 
 func getEnv(key, fallback string) string {

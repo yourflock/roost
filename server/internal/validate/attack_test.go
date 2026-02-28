@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/yourflock/roost/internal/validate"
+	"github.com/unyeco/roost/internal/validate"
 )
 
 // attackPayloads is a shared list of known-bad strings used across validators

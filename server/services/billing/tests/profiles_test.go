@@ -19,7 +19,7 @@ import (
 
 	"github.com/golang-jwt/jwt/v5"
 	"github.com/google/uuid"
-	billingsvc "github.com/yourflock/roost/services/billing"
+	billingsvc "github.com/unyeco/roost/services/billing"
 )
 
 // ── Test helpers ──────────────────────────────────────────────────────────────

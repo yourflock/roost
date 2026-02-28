@@ -35,7 +35,7 @@
 
 ### A05 — Security Misconfiguration ✅
 - `SecurityHeaders` middleware: X-Frame-Options, X-Content-Type-Options, CSP, Referrer-Policy
-- CORS: restricted to known origins (`yourflock.org`, `owl.yourflock.org`)
+- CORS: restricted to known origins (`roost.unity.dev`, `owl.unity.dev`)
 - Debug endpoints disabled in production (`LOG_LEVEL` ≠ debug)
 - Nginx config: `server_tokens off`, `ssl_protocols TLSv1.2 TLSv1.3`
 - Docker: non-root user in all service containers
@@ -56,7 +56,7 @@
 
 ### A08 — Software and Data Integrity Failures ✅
 - Stripe webhook signatures validated via `stripe.ConstructEventWithOptions` (HMAC-SHA256)
-- Flock webhook shared secret validated (P13)
+- SSO webhook shared secret validated (P13)
 - Go module checksums in `go.sum` (tamper-evident)
 - Docker images pinned by digest in production compose
 
@@ -71,7 +71,7 @@
 - No user-controlled HTTP requests from backend
 - Cloudflare origin URLs are operator-configured at deploy time (not subscriber input)
 - EPG source URLs: admin-only endpoint, validates URL format before accepting
-- Webhook URLs: fixed Stripe/Flock endpoints, not user-configurable
+- Webhook URLs: fixed Stripe/SSO endpoints, not user-configurable
 
 ## Threat Model
 
@@ -109,4 +109,4 @@ cd web/subscribe && pnpm audit
 
 ## Security Contacts
 
-Report vulnerabilities to: security@yourflock.org (TBD — set up before public launch)
+Report vulnerabilities to: `security@roost.unity.dev` (TBD — update before public launch)

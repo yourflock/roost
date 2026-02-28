@@ -15,7 +15,7 @@
 //
 // Env vars:
 //   ROOST_SUBMARINE_ALLOWLIST — comma-separated list of allowed hostnames/domains
-//     e.g.: "yourflock.org,roost.yourflock.org,cloudflare.com"
+//     e.g.: "roost.unity.dev,roost.unity.dev,cloudflare.com"
 //
 // Allowlist rules:
 //   - Exact hostname match: "api.example.com" allows api.example.com only

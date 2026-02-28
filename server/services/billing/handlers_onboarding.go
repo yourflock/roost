@@ -21,7 +21,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/yourflock/roost/internal/auth"
+	"github.com/unyeco/roost/internal/auth"
 )
 
 // handleOnboardingProgress handles GET /onboarding/progress.

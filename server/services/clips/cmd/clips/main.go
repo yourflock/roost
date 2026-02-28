@@ -3,7 +3,7 @@
 // Postgres, and uploads the clip file to R2. Clips can be shared across family
 // members or externally via a signed URL.
 //
-// Port: 8113 (env: CLIPS_PORT). Internal service — called by flock backend.
+// Port: 8113 (env: CLIPS_PORT). Internal service.
 //
 // Routes:
 //   POST /clips                       — create clip from segment (triggers FFmpeg)
@@ -81,7 +81,7 @@ func requireFamilyAuth(next http.Handler) http.Handler {
 // ─── R2 helpers ──────────────────────────────────────────────────────────────
 
 func uploadToR2(r2Key string, data []byte, contentType string) error {
-	endpoint := getEnv("R2_ENDPOINT", "https://r2.yourflock.org")
+	endpoint := getEnv("R2_ENDPOINT", "https://r2.roost.unity.dev")
 	bucket := getEnv("R2_CLIPS_BUCKET", "roost-vod")
 	accessKey := getEnv("R2_ACCESS_KEY_ID", "")
 	secretKey := getEnv("R2_SECRET_ACCESS_KEY", "")
@@ -114,7 +114,7 @@ func uploadToR2(r2Key string, data []byte, contentType string) error {
 // signedURL returns an HMAC-signed URL valid for 4 hours.
 func signedURL(r2Key string) string {
 	secretKey := getEnv("R2_SECRET_ACCESS_KEY", "change-me")
-	endpoint := getEnv("R2_ENDPOINT", "https://r2.yourflock.org")
+	endpoint := getEnv("R2_ENDPOINT", "https://r2.roost.unity.dev")
 	bucket := getEnv("R2_CLIPS_BUCKET", "roost-vod")
 	expiry := time.Now().Add(4 * time.Hour).Unix()
 	mac := hmac.New(sha256.New, []byte(secretKey))
@@ -401,7 +401,7 @@ func (s *server) handleThumbnail(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	endpoint := getEnv("R2_ENDPOINT", "https://r2.yourflock.org")
+	endpoint := getEnv("R2_ENDPOINT", "https://r2.roost.unity.dev")
 	bucket := getEnv("R2_CLIPS_BUCKET", "roost-vod")
 	http.Redirect(w, r, fmt.Sprintf("%s/%s/%s", endpoint, bucket, thumbKey.String), http.StatusTemporaryRedirect)
 }

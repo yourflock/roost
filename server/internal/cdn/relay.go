@@ -32,7 +32,7 @@ const (
 // SignURL generates a time-limited HMAC-SHA256 signed URL for the CDN relay.
 //
 // Parameters:
-//   - cdnBase: base URL of the CDN relay (e.g., "https://stream.yourflock.org")
+//   - cdnBase: base URL of the CDN relay (e.g., "https://stream.roost.unity.dev")
 //   - hmacSecret: shared secret with the Cloudflare Worker (CDN_HMAC_SECRET)
 //   - path: the path component to sign (e.g., "/stream/bbc-one/seg001.ts")
 //   - expiresAt: Unix timestamp (seconds) when the URL expires

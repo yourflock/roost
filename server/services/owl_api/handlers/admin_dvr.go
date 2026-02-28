@@ -6,8 +6,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/yourflock/roost/services/owl_api/audit"
-	"github.com/yourflock/roost/services/owl_api/middleware"
+	"github.com/unyeco/roost/services/owl_api/audit"
+	"github.com/unyeco/roost/services/owl_api/middleware"
 )
 
 // ScheduleItem is one entry in GET /admin/dvr/schedule.
@@ -132,7 +132,7 @@ func (h *AdminHandlers) CreateDVRSchedule(w http.ResponseWriter, r *http.Request
 		 VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING id`,
 		claims.RoostID, req.ChannelID, req.Title,
 		req.StartTime, endTime, req.PaddingBeforeSecs, req.PaddingAfterSecs,
-		req.StoragePathID, claims.FlockUserID,
+		req.StoragePathID, claims.UserID,
 	).Scan(&rowID)
 	if err != nil {
 		slog.Error("dvr/schedule: db error", "err", err)
@@ -140,7 +140,7 @@ func (h *AdminHandlers) CreateDVRSchedule(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	al.Log(r, claims.RoostID, claims.FlockUserID, "dvr.schedule_recording", rowID,
+	al.Log(r, claims.RoostID, claims.UserID, "dvr.schedule_recording", rowID,
 		map[string]any{"title": req.Title, "channel_id": req.ChannelID},
 	)
 
@@ -173,7 +173,7 @@ func (h *AdminHandlers) CancelDVRSchedule(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	al.Log(r, claims.RoostID, claims.FlockUserID, "dvr.cancel_recording", schedID, nil)
+	al.Log(r, claims.RoostID, claims.UserID, "dvr.cancel_recording", schedID, nil)
 	w.WriteHeader(http.StatusNoContent)
 }
 
@@ -210,14 +210,14 @@ func (h *AdminHandlers) CreateSeriesRule(w http.ResponseWriter, r *http.Request,
 	err := h.DB.QueryRowContext(r.Context(),
 		`INSERT INTO dvr_series (roost_id, channel_id, show_title, always_record, keep_last_n, storage_path_id, scheduled_by)
 		 VALUES ($1, $2, $3, $4, $5, $6, $7) RETURNING id`,
-		claims.RoostID, req.ChannelID, req.ShowTitle, req.AlwaysRecord, req.KeepLastN, req.StoragePathID, claims.FlockUserID,
+		claims.RoostID, req.ChannelID, req.ShowTitle, req.AlwaysRecord, req.KeepLastN, req.StoragePathID, claims.UserID,
 	).Scan(&rowID)
 	if err != nil {
 		http.Error(w, `{"error":"db_error"}`, http.StatusInternalServerError)
 		return
 	}
 
-	al.Log(r, claims.RoostID, claims.FlockUserID, "dvr.series_rule_created", rowID,
+	al.Log(r, claims.RoostID, claims.UserID, "dvr.series_rule_created", rowID,
 		map[string]any{"show_title": req.ShowTitle},
 	)
 
@@ -299,7 +299,7 @@ func (h *AdminHandlers) DeleteDVRRecording(w http.ResponseWriter, r *http.Reques
 		recID, claims.RoostID,
 	)
 
-	al.Log(r, claims.RoostID, claims.FlockUserID, "dvr.recording_deleted", recID,
+	al.Log(r, claims.RoostID, claims.UserID, "dvr.recording_deleted", recID,
 		map[string]any{"file_size_bytes": fileSize},
 	)
 

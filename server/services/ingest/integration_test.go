@@ -29,8 +29,8 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/google/uuid"
 
-	"github.com/yourflock/roost/services/ingest/internal/pipeline"
-	"github.com/yourflock/roost/services/relay/internal/sessions"
+	"github.com/unyeco/roost/services/ingest/internal/pipeline"
+	"github.com/unyeco/roost/services/relay/internal/sessions"
 )
 
 // TestIngestRelayPipeline starts a test FFmpeg source, runs the ingest pipeline,

@@ -9,7 +9,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	billingsvc "github.com/yourflock/roost/services/billing"
+	billingsvc "github.com/unyeco/roost/services/billing"
 )
 
 // newSportsTestServer creates a billing server for sports notification tests.

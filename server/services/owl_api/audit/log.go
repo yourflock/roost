@@ -28,7 +28,7 @@ func New(db *sql.DB) *Logger { return &Logger{db: db} }
 // Parameters:
 //   - r:            the HTTP request (for IP address extraction)
 //   - roostID:      the Roost server UUID this action applies to
-//   - flockUserID:  the Flock account ID of the admin performing the action
+//   - userID:  the user ID of the admin performing the action
 //   - action:       dot-separated verb.noun, e.g. "storage.scan", "user.role_change"
 //   - targetID:     optional: the ID of the affected resource (empty string = NULL)
 //   - details:      optional: before/after values or extra context (nil = NULL)
@@ -39,7 +39,7 @@ func New(db *sql.DB) *Logger { return &Logger{db: db} }
 // NOTE: IP is extracted from r.RemoteAddr, not X-Forwarded-For. If Roost is behind a
 // trusted reverse proxy (Nginx/Cloudflare), replace with the real client IP from
 // X-Forwarded-For after validating the proxy is trusted.
-func (l *Logger) Log(r *http.Request, roostID, flockUserID, action, targetID string, details map[string]any) {
+func (l *Logger) Log(r *http.Request, roostID, userID, action, targetID string, details map[string]any) {
 	var detailsJSON []byte
 	if details != nil {
 		detailsJSON, _ = json.Marshal(details)
@@ -59,15 +59,15 @@ func (l *Logger) Log(r *http.Request, roostID, flockUserID, action, targetID str
 		defer cancel()
 		_, err := l.db.ExecContext(ctx,
 			`INSERT INTO admin_audit_log
-			     (roost_id, flock_user_id, action, target_id, details, ip_address)
+			     (roost_id, user_id, action, target_id, details, ip_address)
 			 VALUES ($1, $2, $3, NULLIF($4,''), $5, $6::inet)`,
-			roostID, flockUserID, action, targetID, detailsJSON, ip,
+			roostID, userID, action, targetID, detailsJSON, ip,
 		)
 		if err != nil {
 			slog.Error("audit log insert failed",
 				"action", action,
 				"roost_id", roostID,
-				"flock_user_id", flockUserID,
+				"user_id", userID,
 				"err", err,
 			)
 		}

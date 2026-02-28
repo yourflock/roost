@@ -17,7 +17,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/yourflock/roost/internal/auth"
+	"github.com/unyeco/roost/internal/auth"
 )
 
 // referralCodeAlphabet is the character set for referral codes. No ambiguous chars.
@@ -50,7 +50,7 @@ func (s *Server) getReferralCode(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	baseURL := getEnv("ROOST_BASE_URL", "https://roost.yourflock.org")
+	baseURL := getEnv("ROOST_BASE_URL", "https://roost.unity.dev")
 	link := fmt.Sprintf("%s/ref/%s", baseURL, code)
 
 	// Aggregate stats.

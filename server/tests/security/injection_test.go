@@ -9,7 +9,7 @@ import (
 	"net/url"
 	"testing"
 
-	"github.com/yourflock/roost/internal/validate"
+	"github.com/unyeco/roost/internal/validate"
 )
 
 // injectionPayloads is the set of known attack strings for injection testing.

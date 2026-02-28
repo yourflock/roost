@@ -12,9 +12,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/yourflock/roost/internal/auth"
-	"github.com/yourflock/roost/internal/email"
-	"github.com/yourflock/roost/internal/ratelimit"
+	"github.com/unyeco/roost/internal/auth"
+	"github.com/unyeco/roost/internal/email"
+	"github.com/unyeco/roost/internal/ratelimit"
 	"golang.org/x/crypto/bcrypt"
 )
 

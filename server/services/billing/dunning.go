@@ -19,7 +19,7 @@ import (
 
 	stripeInvoice "github.com/stripe/stripe-go/v76/invoice"
 	stripeSub "github.com/stripe/stripe-go/v76/subscription"
-	"github.com/yourflock/roost/internal/auth"
+	"github.com/unyeco/roost/internal/auth"
 )
 
 // DunningResult summarizes the outcome of a dunning check run.

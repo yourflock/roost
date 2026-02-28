@@ -26,8 +26,8 @@ import (
 
 	"github.com/stripe/stripe-go/v76"
 	"github.com/stripe/stripe-go/v76/webhook"
-	"github.com/yourflock/roost/internal/auth"
-	"github.com/yourflock/roost/internal/email"
+	"github.com/unyeco/roost/internal/auth"
+	"github.com/unyeco/roost/internal/email"
 )
 
 // handleWebhook processes incoming Stripe webhook events.
@@ -48,11 +48,7 @@ func (s *Server) handleWebhook(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Verify Stripe signature.
-	// Checks STRIPE_WEBHOOK_SECRET first, then STRIPE_FLOCK_WEBHOOK_SECRET (env var naming convention).
 	webhookSecret := os.Getenv("STRIPE_WEBHOOK_SECRET")
-	if webhookSecret == "" {
-		webhookSecret = os.Getenv("STRIPE_FLOCK_WEBHOOK_SECRET")
-	}
 	if webhookSecret == "" {
 		log.Printf("WARNING: STRIPE_WEBHOOK_SECRET not set — skipping signature verification (dev only)")
 	}

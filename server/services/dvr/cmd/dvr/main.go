@@ -31,7 +31,7 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
-	"github.com/yourflock/roost/services/dvr/internal/scheduler"
+	"github.com/unyeco/roost/services/dvr/internal/scheduler"
 )
 
 // ---- config -----------------------------------------------------------------

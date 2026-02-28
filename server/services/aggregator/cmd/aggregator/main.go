@@ -4,7 +4,7 @@
 // normalized source URL. A sync endpoint fetches and merges content from each
 // source, removing stale entries and adding new ones.
 //
-// Port: 8116 (env: AGGREGATOR_PORT). Internal service — called by flock backend.
+// Port: 8116 (env: AGGREGATOR_PORT). Internal service.
 //
 // Routes:
 //   POST /aggregator/sources              — add source for family

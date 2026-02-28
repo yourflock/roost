@@ -25,8 +25,8 @@ import (
 	"time"
 
 	_ "github.com/lib/pq"
-	"github.com/yourflock/roost/services/owl_api/audit"
-	"github.com/yourflock/roost/services/owl_api/middleware"
+	"github.com/unyeco/roost/services/owl_api/audit"
+	"github.com/unyeco/roost/services/owl_api/middleware"
 )
 
 // ── JWT helpers for tests ─────────────────────────────────────────────────────

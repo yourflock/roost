@@ -14,8 +14,8 @@ import (
 	"os"
 	"strings"
 
-	"github.com/yourflock/roost/services/owl_api/audit"
-	"github.com/yourflock/roost/services/owl_api/middleware"
+	"github.com/unyeco/roost/services/owl_api/audit"
+	"github.com/unyeco/roost/services/owl_api/middleware"
 )
 
 // IPTVSourceRow is returned by GET /admin/iptv-sources.
@@ -172,7 +172,7 @@ func (h *AdminHandlers) AddIPTVSource(w http.ResponseWriter, r *http.Request, al
 		return
 	}
 
-	al.Log(r, claims.RoostID, claims.FlockUserID, "iptv_source.add", rowID,
+	al.Log(r, claims.RoostID, claims.UserID, "iptv_source.add", rowID,
 		map[string]any{"source_type": req.SourceType, "display_name": req.DisplayName},
 		// NOTE: no credentials in audit log
 	)
@@ -193,7 +193,7 @@ func (h *AdminHandlers) RefreshIPTVSource(w http.ResponseWriter, r *http.Request
 	jobID := newUUID()
 	slog.Info("iptv source refresh enqueued", "source_id", sourceID, "job_id", jobID)
 
-	al.Log(r, claims.RoostID, claims.FlockUserID, "iptv_source.refresh_triggered", sourceID, nil)
+	al.Log(r, claims.RoostID, claims.UserID, "iptv_source.refresh_triggered", sourceID, nil)
 	writeAdminJSON(w, http.StatusAccepted, map[string]string{"job_id": jobID})
 }
 
@@ -220,7 +220,7 @@ func (h *AdminHandlers) DeleteIPTVSource(w http.ResponseWriter, r *http.Request,
 		return
 	}
 
-	al.Log(r, claims.RoostID, claims.FlockUserID, "iptv_source.remove", sourceID, nil)
+	al.Log(r, claims.RoostID, claims.UserID, "iptv_source.remove", sourceID, nil)
 	w.WriteHeader(http.StatusNoContent)
 }
 

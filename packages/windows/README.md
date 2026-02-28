@@ -10,7 +10,7 @@ A WiX-built `.msi` installer that:
 - Creates a start menu shortcut to the configuration folder
 - Bundles a PostgreSQL installer (or connects to an existing instance)
 
-Download the `.msi` from the [Releases page](https://github.com/yourflock/roost/releases) when available.
+Download the `.msi` from the [Releases page](https://github.com/unyeco/roost/releases) when available.
 
 ## Option 2 — Docker Desktop (available now)
 
@@ -19,11 +19,11 @@ Run Roost on Windows today using Docker Desktop:
 1. Install [Docker Desktop for Windows](https://www.docker.com/products/docker-desktop/)
 2. Clone the repo or download the compose file:
    ```
-   curl -O https://raw.githubusercontent.com/yourflock/roost/main/packages/docker/docker-compose.yml
+   curl -O https://raw.githubusercontent.com/unyeco/roost/main/packages/docker/docker-compose.yml
    ```
 3. Copy and edit the example config:
    ```
-   curl -O https://raw.githubusercontent.com/yourflock/roost/main/server/.env.example
+   curl -O https://raw.githubusercontent.com/unyeco/roost/main/server/.env.example
    copy .env.example .env
    notepad .env
    ```

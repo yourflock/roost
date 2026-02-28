@@ -3,7 +3,7 @@
 // contribute source URLs; the service health-checks each source and reports
 // aggregate pool health. Invite codes allow new families to join pools.
 //
-// Port: 8115 (env: POOL_PORT). Internal service — called by flock backend.
+// Port: 8115 (env: POOL_PORT). Internal service.
 //
 // Routes:
 //   POST /pool/groups                     — create pool group

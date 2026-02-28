@@ -1,12 +1,12 @@
 // handlers_coppa.go — COPPA compliance for kids profiles (P22.4).
 //
 // COPPA (Children's Online Privacy Protection Act) requires special handling
-// for users under 13. Roost receives kids profile status from Flock via JWT claims.
+// for users under 13. Roost receives kids profile status via JWT claims.
 //
 // Rules applied to kids profiles:
 //   1. No behavioral tracking or analytics.
 //   2. No marketing emails.
-//   3. No data sharing with third parties (no Flock feed posts, no now-watching).
+//   3. No data sharing with third parties (no feed posts, no now-watching).
 //   4. Parent can delete all child data at any time.
 //   5. Stream session records are purged after 30 days (not 90).
 //   6. No referral links (kids cannot refer adults).
@@ -21,7 +21,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/yourflock/roost/internal/auth"
+	"github.com/unyeco/roost/internal/auth"
 )
 
 // handleKidsDataDeletion handles POST /kids/profiles/:id/delete-data.

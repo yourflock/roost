@@ -4,7 +4,7 @@
 // RTMP ingest and HLS segment writing are handled by an FFmpeg sidecar process
 // that watches the stream key; this service manages metadata only.
 //
-// Port: 8111 (env: BROADCAST_PORT). Internal service — called by flock backend.
+// Port: 8111 (env: BROADCAST_PORT). Internal service.
 //
 // Routes:
 //   POST /broadcast/sessions              — create session, get stream key
@@ -122,7 +122,7 @@ func (s *server) handleCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	r2Endpoint := getEnv("R2_ENDPOINT", "https://r2.yourflock.org")
+	r2Endpoint := getEnv("R2_ENDPOINT", "https://r2.roost.unity.dev")
 	r2Bucket := getEnv("R2_STREAM_BUCKET", "roost-streams")
 
 	writeJSON(w, http.StatusCreated, map[string]string{
@@ -263,7 +263,7 @@ func (s *server) handleHLS(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	r2Endpoint := getEnv("R2_ENDPOINT", "https://r2.yourflock.org")
+	r2Endpoint := getEnv("R2_ENDPOINT", "https://r2.roost.unity.dev")
 	r2Bucket := getEnv("R2_STREAM_BUCKET", "roost-streams")
 	http.Redirect(w, r,
 		fmt.Sprintf("%s/%s/%s", r2Endpoint, r2Bucket, manifestKey.String),

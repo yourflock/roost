@@ -16,7 +16,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/yourflock/roost/internal/auth"
+	"github.com/unyeco/roost/internal/auth"
 )
 
 // ── Time restriction checker ──────────────────────────────────────────────────

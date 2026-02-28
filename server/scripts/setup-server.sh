@@ -4,7 +4,7 @@
 # Sets up: deploy user, Docker, fail2ban, cloudflared, UFW firewall.
 #
 # Usage (as root on the server):
-#   curl -fsSL https://raw.githubusercontent.com/yourflock/roost/main/backend/scripts/setup-server.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/unyeco/roost/main/backend/scripts/setup-server.sh | bash
 #
 # Or copy manually:
 #   scp backend/scripts/setup-server.sh root@167.235.195.186:/tmp/
@@ -150,7 +150,7 @@ log ""
 log "Next steps:"
 log "  1. Update DEPLOY_SSH_PUBKEY in this script with the actual public key"
 log "  2. Log in as deploy user: ssh -i ~/.ssh/flock_deploy deploy@167.235.195.186"
-log "  3. Clone the repo: git clone https://github.com/yourflock/roost.git $ROOST_DIR"
+log "  3. Clone the repo: git clone https://github.com/unyeco/roost.git $ROOST_DIR"
 log "  4. Create .env: cp $ROOST_DIR/backend/.env.production.example $ROOST_DIR/backend/.env"
 log "  5. Initialize DB: $ROOST_DIR/backend/scripts/init-db.sh"
 log "  6. Start stack: cd $ROOST_DIR/backend && docker compose -f docker-compose.prod.yml up -d"

@@ -50,10 +50,10 @@ import (
 	_ "github.com/lib/pq"
 	goredis "github.com/redis/go-redis/v9"
 
-	rootauth "github.com/yourflock/roost/internal/auth"
-	"github.com/yourflock/roost/services/owl_api/audit"
-	"github.com/yourflock/roost/services/owl_api/handlers"
-	"github.com/yourflock/roost/services/owl_api/middleware"
+	rootauth "github.com/unyeco/roost/internal/auth"
+	"github.com/unyeco/roost/services/owl_api/audit"
+	"github.com/unyeco/roost/services/owl_api/handlers"
+	"github.com/unyeco/roost/services/owl_api/middleware"
 )
 
 // ---- configuration ----------------------------------------------------------
@@ -174,7 +174,7 @@ func planLimits(plan string) (int, []string) {
 // signedStreamURL generates a Cloudflare-compatible signed HLS URL.
 // For local dev (no CF_SIGNING_KEY), returns a relay URL stub.
 func signedStreamURL(channelSlug string) (string, time.Time) {
-	baseURL := getEnv("RELAY_BASE_URL", "https://cdn.roost.yourflock.org")
+	baseURL := getEnv("RELAY_BASE_URL", "https://cdn.roost.unity.dev")
 	expiresAt := time.Now().UTC().Add(15 * time.Minute)
 
 	signingKey := os.Getenv("CF_STREAM_SIGNING_KEY")
@@ -302,12 +302,9 @@ func (s *server) routes() *http.ServeMux {
 	mux.HandleFunc("/internal/sessions/cleanup", s.handleSessionCleanup)
 
 
-	// ── Flock integration: P13-T03, P13-T05, P13-T06 ──────────────────────────
-	// GET  /owl/tokens             — screen time token balance for current session
+	// ── Activity endpoints ─────────────────────────────────────────────────────
 	// GET  /owl/watch-party/{id}   — watch party status for Owl clients
-	// POST /owl/share              — share content to Flock activity feed
-	mux.HandleFunc("/owl/tokens", s.requireSession(s.handleFlockTokens))
-	mux.HandleFunc("/owl/v1/tokens", s.requireSession(s.handleFlockTokens))
+	// POST /owl/share              — share content
 	mux.HandleFunc("/owl/watch-party/", s.requireSession(s.handleOwlWatchParty))
 	mux.HandleFunc("/owl/v1/watch-party/", s.requireSession(s.handleOwlWatchParty))
 	mux.HandleFunc("/owl/share", s.requireSession(s.handleOwlShare))
@@ -373,7 +370,7 @@ func (s *server) registerAdminRoutes(mux *http.ServeMux, jwtSecret []byte) {
 
 	// ── User management ───────────────────────────────────────────────────────
 	// GET    /admin/users              — list all users for this roost
-	// POST   /admin/users/invite       — invite a Flock user
+	// POST   /admin/users/invite       — invite a user
 	// PATCH  /admin/users/:id/role     — change role (can't change owner)
 	// DELETE /admin/users/:id          — remove user (can't remove owner)
 	mux.HandleFunc("/admin/users", admin(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -639,7 +636,7 @@ func (s *server) handleManifest(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	baseURL := getEnv("ROOST_BASE_URL", "https://roost.yourflock.org")
+	baseURL := getEnv("ROOST_BASE_URL", "https://roost.unity.dev")
 
 	manifest := map[string]interface{}{
 		"name":        "Roost",
@@ -715,7 +712,7 @@ func (s *server) handleAuth(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusUnauthorized, map[string]interface{}{
 			"valid":   false,
 			"error":   "invalid_token",
-			"message": "Token not found or expired. Visit roost.yourflock.org to manage your subscription.",
+			"message": "Token not found or expired. Visit roost.unity.dev to manage your subscription.",
 		})
 		return
 	}
@@ -729,8 +726,8 @@ func (s *server) handleAuth(w http.ResponseWriter, r *http.Request) {
 		writeJSON(w, http.StatusPaymentRequired, map[string]interface{}{
 			"valid":       false,
 			"error":       "subscription_inactive",
-			"message":     "Your Roost subscription is inactive. Visit roost.yourflock.org/billing to renew.",
-			"billing_url": getEnv("ROOST_BASE_URL", "https://roost.yourflock.org") + "/billing",
+			"message":     "Your Roost subscription is inactive. Visit roost.unity.dev/billing to renew.",
+			"billing_url": getEnv("ROOST_BASE_URL", "https://roost.unity.dev") + "/billing",
 		})
 		return
 	}
@@ -861,7 +858,7 @@ func (s *server) handleLive(w http.ResponseWriter, r *http.Request) {
 		CurrentProgram *currentProgram `json:"current_program,omitempty"`
 	}
 
-	baseURL := getEnv("ROOST_BASE_URL", "https://roost.yourflock.org")
+	baseURL := getEnv("ROOST_BASE_URL", "https://roost.unity.dev")
 	var channels []channel
 	total := 0
 
@@ -1146,21 +1143,6 @@ func (s *server) handleStream(w http.ResponseWriter, r *http.Request) {
 
 	// Log stream access (non-PII: channel slug only, no subscriber ID in logs per privacy policy)
 	log.Printf("[owl_api] stream request: channel=%s", slug)
-	// Flock screen time token check for kids profiles (P13-T03)
-	if globalFlockClient != nil && subscriberID != "" {
-		flockInfo := s.getFlockSessionInfo(r.Context(), subscriberID)
-		if flockInfo.IsKids && flockInfo.FlockUserID != "" {
-			if err := globalFlockClient.consumeToken(r.Context(), flockInfo.FlockUserID, "roost_stream_"+slug); err != nil {
-				writeError(w, http.StatusPaymentRequired, "no_tokens",
-					"No screen time tokens available. Complete tasks in Flock to earn more.")
-				return
-			}
-		}
-		// P13-T06: Report now-watching activity to Flock
-		if flockInfo.FlockUserID != "" {
-			globalFlockClient.reportNowWatching(flockInfo.FlockUserID, slug, "live")
-		}
-	}
 
 	// Generate signed HLS URL
 	streamURL, expiresAt := signedStreamURL(slug)
@@ -1471,7 +1453,7 @@ func (s *server) handleCatchup(w http.ResponseWriter, r *http.Request) {
 		Category    string `json:"category,omitempty"`
 		StreamURL   string `json:"stream_url"`
 	}
-	catchupBase := getEnv("ROOST_BASE_URL", "https://roost.yourflock.org")
+	catchupBase := getEnv("ROOST_BASE_URL", "https://roost.unity.dev")
 	var entries []catchupEntry
 	for rows.Next() {
 		var e catchupEntry
@@ -1681,8 +1663,6 @@ func main() {
 
 	// Wire the global DB for token validation caching (package-level in auth package)
 	rootauth.SetDB(db)
-	// Initialize Flock client for screen time, activity, and watch party features
-	initFlockClient()
 
 	// Connect Redis if REDIS_URL is set. Degrades gracefully when absent (dev mode).
 	var rdb *goredis.Client

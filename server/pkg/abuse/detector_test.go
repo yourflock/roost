@@ -5,7 +5,7 @@ package abuse_test
 import (
 	"testing"
 
-	"github.com/yourflock/roost/pkg/abuse"
+	"github.com/unyeco/roost/pkg/abuse"
 )
 
 func TestDetectSharedToken_NormalUsage(t *testing.T) {

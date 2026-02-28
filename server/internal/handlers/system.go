@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/yourflock/roost/internal/config"
+	"github.com/unyeco/roost/internal/config"
 )
 
 // SystemInfo is the response body for GET /system/info.

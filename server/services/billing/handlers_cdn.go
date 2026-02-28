@@ -12,7 +12,7 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/yourflock/roost/internal/auth"
+	"github.com/unyeco/roost/internal/auth"
 )
 
 // ── Types ─────────────────────────────────────────────────────────────────────
@@ -58,8 +58,8 @@ type cdnTrafficSplit struct {
 // ── CDN endpoint configuration ────────────────────────────────────────────────
 
 const (
-	cdnCloudflareEndpoint = "https://cdn.yourflock.org"
-	cdnHetznerEndpoint    = "https://cdn-eu.yourflock.org"
+	cdnCloudflareEndpoint = "https://cdn.roost.unity.dev"
+	cdnHetznerEndpoint    = "https://cdn-eu.roost.unity.dev"
 	cdnHealthPath         = "/health" // lightweight health probe path on both CDNs
 	cdnProbeTimeout       = 5 * time.Second
 )

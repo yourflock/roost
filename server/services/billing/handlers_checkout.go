@@ -20,7 +20,7 @@ import (
 
 	"github.com/stripe/stripe-go/v76"
 	"github.com/stripe/stripe-go/v76/checkout/session"
-	"github.com/yourflock/roost/internal/auth"
+	"github.com/unyeco/roost/internal/auth"
 )
 
 // checkoutRequest is the JSON body for POST /billing/checkout.
@@ -92,7 +92,7 @@ func (s *Server) handleCheckout(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Build Checkout session params
-	baseURL := getEnv("ROOST_BASE_URL", "https://roost.yourflock.org")
+	baseURL := getEnv("ROOST_BASE_URL", "https://roost.unity.dev")
 	params := &stripe.CheckoutSessionParams{
 		Customer: stripe.String(customerID),
 		LineItems: []*stripe.CheckoutSessionLineItemParams{

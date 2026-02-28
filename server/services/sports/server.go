@@ -59,7 +59,7 @@ func (s *Server) Routes() http.Handler {
 	r.Post("/admin/sports/events/{id}/channel-mapping", s.handleChannelMapping)
 	r.Post("/admin/sports/sync", s.handleAdminSync)
 
-	// Flock TV sports endpoints (FTV.4)
+	// Sports endpoints
 	r.Get("/ftv/sports/ticker", s.handleScoreTickerSSE)
 	r.Get("/ftv/sports/scores", s.handleMultiGameTicker)
 	r.Get("/ftv/sports/picks", s.handleFamilyPicks)

@@ -4,7 +4,7 @@
 // Generates M3U8-compatible playlists for Owl and produces a schedule endpoint
 // for the EPG grid compositor.
 //
-// Port: 8112 (env: CHANNEL_PORT). Internal service — called by flock backend and owl_api.
+// Port: 8112 (env: CHANNEL_PORT). Internal service and owl_api.
 //
 // Routes:
 //   POST /channel/playlists              — create playlist
@@ -363,7 +363,7 @@ func (s *server) handleM3U8(w http.ResponseWriter, r *http.Request) {
 		url := item.StreamURL
 		if url == "" {
 			url = fmt.Sprintf("%s/stream/%s/%s",
-				getEnv("ROOST_API_BASE", "https://roost.yourflock.org"),
+				getEnv("ROOST_API_BASE", "https://roost.unity.dev"),
 				item.ContentType, item.ContentID,
 			)
 		}

@@ -24,8 +24,8 @@ import (
 
 	_ "github.com/lib/pq"
 
-	relayauth "github.com/yourflock/roost/services/relay/internal/auth"
-	"github.com/yourflock/roost/services/relay/internal/sessions"
+	relayauth "github.com/unyeco/roost/services/relay/internal/auth"
+	"github.com/unyeco/roost/services/relay/internal/sessions"
 )
 
 func getEnv(key, fallback string) string {
@@ -205,7 +205,7 @@ func deviceIDFrom(r *http.Request) string {
 // isAllowedOrigin checks if the origin is permitted for CORS.
 func isAllowedOrigin(origin string) bool {
 	allowed := []string{
-		"https://owl.yourflock.org",
+		"https://owl.unity.dev",
 		"http://localhost",
 		"http://localhost:3000",
 		"http://localhost:5173",

@@ -16,7 +16,7 @@ import (
 	"time"
 
 	goredis "github.com/redis/go-redis/v9"
-	"github.com/yourflock/roost/services/owl_api/middleware"
+	"github.com/unyeco/roost/services/owl_api/middleware"
 )
 
 // AdminHandlers holds shared dependencies for all admin HTTP handlers.

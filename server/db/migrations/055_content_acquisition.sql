@@ -1,7 +1,7 @@
 -- 055_content_acquisition.sql — Content acquisition queue for shared R2 pool.
 -- Phase FLOCKTV: when a family requests a canonical_id not yet in the shared pool,
 -- it enters the acquisition queue. The acquisition worker downloads, transcodes,
--- and stores to r2://flock-content/ keyed by canonical_id.
+-- and stores to r2://roost-content/ keyed by canonical_id.
 -- Only one in-flight job per canonical_id (enforced by partial unique index).
 
 CREATE TABLE IF NOT EXISTS acquisition_queue (

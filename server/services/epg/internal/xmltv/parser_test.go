@@ -9,7 +9,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/yourflock/roost/services/epg/internal/xmltv"
+	"github.com/unyeco/roost/services/epg/internal/xmltv"
 )
 
 func loadSampleFixture(t *testing.T) *xmltv.Result {

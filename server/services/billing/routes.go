@@ -47,13 +47,13 @@ func (s *Server) RegisterRoutes(mux *http.ServeMux) {
 	mux.HandleFunc("/profiles/limits", s.handleProfiles)
 	mux.HandleFunc("/profiles/", s.handleProfile)
 
-	// ── Flock SSO OAuth: P13-T01, P13-T02 ─────────────────────────────────────
-	mux.HandleFunc("/auth/flock/login", s.handleFlockLogin)
-	mux.HandleFunc("/auth/flock/callback", s.handleFlockCallback)
-	mux.HandleFunc("/auth/flock/link", s.handleFlockAuthLink)
+	// ── SSO OAuth: P13-T01, P13-T02 ───────────────────────────────────────────
+	mux.HandleFunc("/auth/sso/login", s.handleSSOLogin)
+	mux.HandleFunc("/auth/sso/callback", s.handleSSOCallback)
+	mux.HandleFunc("/auth/sso/link", s.handleSSOAuthLink)
 
-	// ── Flock webhooks: P13-T04 ───────────────────────────────────────────────
-	mux.HandleFunc("/webhooks/flock/parental-settings", s.handleFlockParentalWebhook)
+	// ── Parental settings webhook: P13-T04 ────────────────────────────────────
+	mux.HandleFunc("/webhooks/parental-settings", s.handleParentalWebhook)
 
 	// ── Watch parties: P13-T05 ────────────────────────────────────────────────
 	mux.HandleFunc("/watch-party", s.handleWatchParty)

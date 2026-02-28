@@ -8,7 +8,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/yourflock/roost/internal/middleware"
+	"github.com/unyeco/roost/internal/middleware"
 )
 
 // handlerOK is a trivial next handler that writes 200 OK.

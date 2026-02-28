@@ -14,8 +14,8 @@ import (
 	_ "github.com/lib/pq"
 	goredis "github.com/redis/go-redis/v9"
 
-	"github.com/yourflock/roost/internal/ratelimit"
-	authsvc "github.com/yourflock/roost/services/auth"
+	"github.com/unyeco/roost/internal/ratelimit"
+	authsvc "github.com/unyeco/roost/services/auth"
 )
 
 const version = "0.4.0"

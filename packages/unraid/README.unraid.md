@@ -14,7 +14,7 @@ If Roost is not yet in the Community Applications catalog, install via template 
 
 1. In the CA plugin, click **Add Container**
 2. Paste the template URL:
-   `https://raw.githubusercontent.com/yourflock/roost/main/packaging/unraid/roost.xml`
+   `https://raw.githubusercontent.com/unyeco/roost/main/packages/unraid/roost.xml`
 
 ## Required Settings
 

@@ -16,7 +16,7 @@ import (
 	_ "github.com/lib/pq"
 
 	"github.com/google/uuid"
-	"github.com/yourflock/roost/services/relay/internal/sessions"
+	"github.com/unyeco/roost/services/relay/internal/sessions"
 )
 
 // --- Session manager tests ---
@@ -110,11 +110,11 @@ func TestCORSAllowedOrigins(t *testing.T) {
 		origin  string
 		allowed bool
 	}{
-		{"https://owl.yourflock.org", true},
+		{"https://owl.unity.dev", true},
 		{"http://localhost:3000", true},
 		{"http://localhost:5173", true},
 		{"https://evil.com", false},
-		{"https://notyourflock.org", false},
+		{"https://notroost.unity.dev", false},
 	}
 
 	for _, tc := range cases {
@@ -173,7 +173,7 @@ func tokenCheckMiddleware(next http.Handler) http.Handler {
 
 func isAllowedOrigin(origin string) bool {
 	allowed := []string{
-		"https://owl.yourflock.org",
+		"https://owl.unity.dev",
 		"http://localhost",
 		"http://localhost:3000",
 		"http://localhost:5173",

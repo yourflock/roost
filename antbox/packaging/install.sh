@@ -1,6 +1,6 @@
 #!/bin/bash
 # AntBox Install Script (T-7H.2.005)
-# Usage: curl -sSL https://yourflock.org/install-antbox.sh | bash
+# Usage: curl -sSL https://roost.unity.dev/install-antbox.sh | bash
 
 set -euo pipefail
 
@@ -35,7 +35,7 @@ fi
 
 log "Installing AntBox v${ANTBOX_VERSION} (${ARCH}, ${PKG_TYPE})..."
 
-BASE_URL="https://github.com/yourflock/owl/releases/download/antbox-v${ANTBOX_VERSION}"
+BASE_URL="https://github.com/unyeco/owl/releases/download/antbox-v${ANTBOX_VERSION}"
 
 if [ "${PKG_TYPE}" = "deb" ]; then
   PKG="antbox_${ANTBOX_VERSION}_${ARCH}.deb"

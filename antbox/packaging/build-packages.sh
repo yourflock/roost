@@ -29,9 +29,9 @@ platform: "linux"
 version: "${VERSION}"
 section: "default"
 priority: "extra"
-maintainer: "Owl Contributors <hello@yourflock.org>"
+maintainer: "Owl Contributors <hello@roost.unity.dev>"
 description: "AntBox - Owl USB TV Tuner Daemon. Turns any Linux machine with a USB DVB tuner into a live TV source for Owl."
-homepage: "https://github.com/yourflock/owl"
+homepage: "https://github.com/unyeco/owl"
 license: "MIT"
 
 contents:

@@ -1,6 +1,6 @@
 // main.go — Roost Billing Service.
 // Port: 8085 (internal; proxied via Nginx).
-// Stripe: reads STRIPE_SECRET_KEY or STRIPE_FLOCK_SECRET_KEY from environment.
+// Stripe: reads STRIPE_SECRET_KEY or STRIPE_SECRET_KEY from environment.
 package billing
 
 import (
@@ -13,9 +13,9 @@ import (
 
 	_ "github.com/lib/pq"
 
-	"github.com/yourflock/roost/internal/r2"
-	"github.com/yourflock/roost/internal/ratelimit"
-	stripeclient "github.com/yourflock/roost/internal/stripe"
+	"github.com/unyeco/roost/internal/r2"
+	"github.com/unyeco/roost/internal/ratelimit"
+	stripeclient "github.com/unyeco/roost/internal/stripe"
 )
 
 // Server holds all shared dependencies for the billing service.
@@ -77,7 +77,7 @@ func StartBillingService() {
 	log.Printf("Billing: database connected")
 
 	// Stripe — optional at startup; degrades gracefully if key not set.
-	// Key read from STRIPE_SECRET_KEY or STRIPE_FLOCK_SECRET_KEY (env var naming convention).
+	// Key read from STRIPE_SECRET_KEY or STRIPE_SECRET_KEY (env var naming convention).
 	sc, err := stripeclient.New()
 	if err != nil {
 		log.Printf("WARNING: Stripe not configured: %v", err)

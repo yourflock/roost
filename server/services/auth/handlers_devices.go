@@ -10,7 +10,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/yourflock/roost/internal/auth"
+	"github.com/unyeco/roost/internal/auth"
 )
 
 // ipPrefixRegex captures the first three octets of an IPv4 address for /24 truncation.

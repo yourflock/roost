@@ -14,7 +14,7 @@
 //   - query_string: may contain token param or other PII
 //   - referer, referrer: page context that could identify subscriber
 //   - stream_id, channel_id: content being watched (privacy-sensitive)
-//   - family_id, flock_id: Flock family identity
+//   - family_id: family identity
 package zerolog
 
 // PermittedFields is the definitive allowlist.

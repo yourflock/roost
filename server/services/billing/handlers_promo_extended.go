@@ -17,7 +17,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/yourflock/roost/internal/auth"
+	"github.com/unyeco/roost/internal/auth"
 )
 
 // handleAdminPromoList lists all promotional codes (admin only).

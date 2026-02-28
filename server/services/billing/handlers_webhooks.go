@@ -1,18 +1,18 @@
-// handlers_webhooks.go — Flock webhook receiver for parental settings sync.
+// handlers_webhooks.go — Parental settings webhook receiver.
 // P13-T04: Parental Controls Bridge
 //
-// Flock calls POST /webhooks/flock/parental-settings when a parent updates
-// child screen time or content restrictions in the Flock family app.
+// External service calls POST /webhooks/parental-settings when a parent updates
+// child screen time or content restrictions.
 // Roost verifies the HMAC-SHA256 signature and applies the settings to the
 // matching subscriber profile.
 //
-// Also provides PushSettingsToFlock() — called when Roost parental settings
+// Also provides PushParentalSettings() — called when Roost parental settings
 // change — to keep both systems in sync.
 //
 // Env vars:
-//   FLOCK_WEBHOOK_SECRET  — shared HMAC secret (required for signature verification)
-//   FLOCK_OAUTH_BASE_URL  — Flock API base (shared with auth handlers)
-//   FLOCK_SERVICE_TOKEN   — bearer token for Roost→Flock API calls
+//   PARENTAL_WEBHOOK_SECRET  — shared HMAC secret (required for signature verification)
+//   SSO_BASE_URL  — SSO API base (shared with auth handlers)
+//   SSO_SERVICE_TOKEN   — bearer token for Roost→SSO API calls
 package billing
 
 import (
@@ -32,16 +32,16 @@ import (
 	"time"
 )
 
-// ── Flock parental webhook ─────────────────────────────────────────────────────
+// ── Parental settings webhook ─────────────────────────────────────────────────────
 
-// flockParentalSettings is the payload received from Flock on parental setting changes.
-type flockParentalSettings struct {
-	FlockUserID      string             `json:"flock_user_id"`
-	ChildFlockUserID string             `json:"child_flock_user_id"`
-	Settings         flockChildSettings `json:"settings"`
+// parentalSettings is the payload received on parental setting changes.
+type parentalSettings struct {
+	SSOUserID      string             `json:"sso_user_id"`
+	ChildSSOUserID string             `json:"child_sso_user_id"`
+	Settings         childSettings `json:"settings"`
 }
 
-type flockChildSettings struct {
+type childSettings struct {
 	AgeRatingLimit    string   `json:"age_rating_limit"`
 	BlockedCategories []string `json:"blocked_categories"`
 	ViewingSchedule   *struct {
@@ -53,9 +53,9 @@ type flockChildSettings struct {
 	} `json:"viewing_schedule,omitempty"`
 }
 
-// handleFlockParentalWebhook receives parental setting change events from Flock.
-// POST /webhooks/flock/parental-settings
-func (s *Server) handleFlockParentalWebhook(w http.ResponseWriter, r *http.Request) {
+// handleParentalWebhook receives parental setting change events.
+// POST /webhooks/parental-settings
+func (s *Server) handleParentalWebhook(w http.ResponseWriter, r *http.Request) {
 	if r.Method != http.MethodPost {
 		writeError(w, http.StatusMethodNotAllowed, "method_not_allowed", "POST required")
 		return
@@ -70,47 +70,47 @@ func (s *Server) handleFlockParentalWebhook(w http.ResponseWriter, r *http.Reque
 	}
 
 	// Verify HMAC-SHA256 signature
-	webhookSecret := os.Getenv("FLOCK_WEBHOOK_SECRET")
+	webhookSecret := os.Getenv("PARENTAL_WEBHOOK_SECRET")
 	if webhookSecret == "" {
-		log.Printf("WARNING: FLOCK_WEBHOOK_SECRET not set — skipping signature verification (dev only)")
+		log.Printf("WARNING: PARENTAL_WEBHOOK_SECRET not set — skipping signature verification (dev only)")
 	} else {
-		sig := r.Header.Get("X-Flock-Signature")
+		sig := r.Header.Get("X-Signature")
 		if sig == "" {
 			writeError(w, http.StatusUnauthorized, "missing_signature",
-				"X-Flock-Signature header required")
+				"X-Signature header required")
 			return
 		}
-		if !verifyFlockHMAC(body, sig, webhookSecret) {
+		if !verifyHMAC(body, sig, webhookSecret) {
 			writeError(w, http.StatusUnauthorized, "invalid_signature",
 				"webhook signature verification failed")
 			return
 		}
 	}
 
-	var payload flockParentalSettings
+	var payload parentalSettings
 	if err := json.Unmarshal(body, &payload); err != nil {
 		writeError(w, http.StatusBadRequest, "invalid_json", "request body must be valid JSON")
 		return
 	}
-	if payload.ChildFlockUserID == "" {
+	if payload.ChildSSOUserID == "" {
 		writeError(w, http.StatusBadRequest, "missing_child_user_id",
-			"child_flock_user_id is required")
+			"child_sso_user_id is required")
 		return
 	}
 
-	// Find the kids profile linked to the child's Flock account
+	// Find the kids profile linked to the child
 	var profileID string
 	err = s.db.QueryRowContext(r.Context(), `
 		SELECT sp.id
 		FROM subscriber_profiles sp
 		JOIN subscribers sub ON sub.id = sp.subscriber_id
-		WHERE sub.flock_user_id = $1
+		WHERE sub.sso_user_id = $1
 		  AND sp.is_kids_profile = true
 		ORDER BY sp.created_at ASC
 		LIMIT 1
-	`, payload.ChildFlockUserID).Scan(&profileID)
+	`, payload.ChildSSOUserID).Scan(&profileID)
 	if err == sql.ErrNoRows {
-		log.Printf("[flock_webhook] no kids profile for child_flock_user_id=%s", payload.ChildFlockUserID)
+		log.Printf("[parental_webhook] no kids profile for child_sso_user_id=%s", payload.ChildSSOUserID)
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 		fmt.Fprint(w, `{"status":"no_profile_found"}`)
@@ -146,21 +146,21 @@ func (s *Server) handleFlockParentalWebhook(w http.ResponseWriter, r *http.Reque
 			string(blockedCatsJSON), profileID)
 	}
 	if err != nil {
-		log.Printf("[flock_webhook] settings update failed for profile=%s: %v", profileID, err)
+		log.Printf("[parental_webhook] settings update failed for profile=%s: %v", profileID, err)
 		writeError(w, http.StatusInternalServerError, "db_error", "failed to apply parental settings")
 		return
 	}
 
-	log.Printf("[flock_webhook] parental-settings applied: profile=%s age_limit=%s",
+	log.Printf("[parental_webhook] parental-settings applied: profile=%s age_limit=%s",
 		profileID, payload.Settings.AgeRatingLimit)
 
 	w.Header().Set("Content-Type", "application/json")
 	fmt.Fprintf(w, `{"status":"ok","profile_id":%q}`, profileID)
 }
 
-// verifyFlockHMAC verifies HMAC-SHA256 of body against the provided signature.
-// Flock sends signatures as "sha256=<hex>" or just "<hex>".
-func verifyFlockHMAC(body []byte, sig, secret string) bool {
+// verifyHMAC verifies HMAC-SHA256 of body against the provided signature.
+// Provider sends signatures as "sha256=<hex>" or just "<hex>".
+func verifyHMAC(body []byte, sig, secret string) bool {
 	sig = strings.TrimPrefix(sig, "sha256=")
 	mac := hmac.New(sha256.New, []byte(secret))
 	mac.Write(body)
@@ -168,7 +168,7 @@ func verifyFlockHMAC(body []byte, sig, secret string) bool {
 	return hmac.Equal([]byte(sig), []byte(expected))
 }
 
-// normaliseAgeRating maps Flock/MPAA/TV rating strings to Roost-standard values.
+// normaliseAgeRating maps MPAA/TV rating strings to Roost-standard values.
 func normaliseAgeRating(rating string) string {
 	switch strings.ToUpper(strings.TrimSpace(rating)) {
 	case "G", "TV-G", "TV-Y", "TV-Y7":
@@ -189,19 +189,19 @@ func normaliseAgeRating(rating string) string {
 	}
 }
 
-// ── Push settings to Flock ────────────────────────────────────────────────────
+// ── Push parental settings ────────────────────────────────────────────────────
 
-// PushSettingsToFlock pushes a Roost subscriber's profile parental settings to
-// the Flock API so Flock stays in sync when settings are changed in Roost.
+// PushParentalSettings pushes a Roost subscriber's profile parental settings to
+// the SSO provider API when settings are changed in Roost.
 // Runs in a goroutine — does not block the calling request.
-// No-ops if the subscriber is not linked to Flock.
-func (s *Server) PushSettingsToFlock(ctx context.Context, subscriberID, profileID string) {
-	// Fetch subscriber's flock_user_id
-	var flockUserID sql.NullString
+// No-ops if the subscriber is not linked to SSO.
+func (s *Server) PushParentalSettings(ctx context.Context, subscriberID, profileID string) {
+	// Fetch subscriber's sso_user_id
+	var ssoUserID sql.NullString
 	err := s.db.QueryRowContext(ctx,
-		`SELECT flock_user_id FROM subscribers WHERE id = $1`, subscriberID).Scan(&flockUserID)
-	if err != nil || !flockUserID.Valid {
-		return // not linked to Flock
+		`SELECT sso_user_id FROM subscribers WHERE id = $1`, subscriberID).Scan(&ssoUserID)
+	if err != nil || !ssoUserID.Valid {
+		return // not linked to SSO
 	}
 
 	// Fetch profile settings
@@ -211,7 +211,7 @@ func (s *Server) PushSettingsToFlock(ctx context.Context, subscriberID, profileI
 		SELECT age_rating_limit, blocked_categories::text
 		FROM subscriber_profiles WHERE id = $1`, profileID).Scan(&ageRating, &blockedCatsJSON)
 	if err != nil {
-		log.Printf("[flock_push] read profile %s: %v", profileID, err)
+		log.Printf("[parental_push] read profile %s: %v", profileID, err)
 		return
 	}
 
@@ -221,7 +221,7 @@ func (s *Server) PushSettingsToFlock(ctx context.Context, subscriberID, profileI
 	}
 
 	payload, _ := json.Marshal(map[string]interface{}{
-		"flock_user_id": flockUserID.String,
+		"sso_user_id": ssoUserID.String,
 		"settings": map[string]interface{}{
 			"age_rating_limit":   ageRating.String,
 			"blocked_categories": blocked,
@@ -229,29 +229,29 @@ func (s *Server) PushSettingsToFlock(ctx context.Context, subscriberID, profileI
 		},
 	})
 
-	pushURL := fmt.Sprintf("%s/api/parental/external-settings", flockOAuthBaseURL())
+	pushURL := fmt.Sprintf("%s/api/parental/external-settings", ssoBaseURL())
 	go func() {
 		reqCtx, cancel := context.WithTimeout(context.Background(), 5*time.Second)
 		defer cancel()
 		req, err := http.NewRequestWithContext(reqCtx, http.MethodPost, pushURL,
 			bytes.NewReader(payload))
 		if err != nil {
-			log.Printf("[flock_push] build request error: %v", err)
+			log.Printf("[parental_push] build request error: %v", err)
 			return
 		}
 		req.Header.Set("Content-Type", "application/json")
-		if tok := os.Getenv("FLOCK_SERVICE_TOKEN"); tok != "" {
+		if tok := os.Getenv("SSO_SERVICE_TOKEN"); tok != "" {
 			req.Header.Set("Authorization", "Bearer "+tok)
 		}
 		resp, err := http.DefaultClient.Do(req)
 		if err != nil {
-			log.Printf("[flock_push] Flock API unreachable: %v", err)
+			log.Printf("[parental_push] SSO API unreachable: %v", err)
 			return
 		}
 		defer resp.Body.Close()
 		io.Copy(io.Discard, resp.Body)
 		if resp.StatusCode >= 400 {
-			log.Printf("[flock_push] non-OK status %d pushing settings to Flock", resp.StatusCode)
+			log.Printf("[parental_push] non-OK status %d pushing parental settings", resp.StatusCode)
 		}
 	}()
 }

@@ -8,7 +8,7 @@ package billing
 import (
 	"net/http"
 
-	"github.com/yourflock/roost/internal/auth"
+	"github.com/unyeco/roost/internal/auth"
 )
 
 // handleLogout handles POST /auth/logout.

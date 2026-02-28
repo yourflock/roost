@@ -19,7 +19,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"github.com/yourflock/roost/pkg/audit"
+	"github.com/unyeco/roost/pkg/audit"
 )
 
 // handleAuditLog serves GET /admin/audit.

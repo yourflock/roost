@@ -26,7 +26,7 @@ import (
 
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
-	"github.com/yourflock/roost/services/grid_compositor/internal/compositor"
+	"github.com/unyeco/roost/services/grid_compositor/internal/compositor"
 )
 
 type config struct {

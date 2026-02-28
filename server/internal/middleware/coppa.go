@@ -2,7 +2,7 @@
 //
 // COPPA (Children's Online Privacy Protection Act) applies when a request comes
 // from a subscriber with kid_profile:true in their JWT claims. Roost receives
-// this via Flock SSO JWT claims.
+// this via SSO JWT claims.
 //
 // Enforcements for kid profiles:
 //  1. Block all /billing/ endpoints (no purchases from kid accounts)

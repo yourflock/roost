@@ -26,7 +26,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/yourflock/roost/internal/auth"
+	"github.com/unyeco/roost/internal/auth"
 )
 
 // emailCategories defines all valid preference categories and whether they are opt-out-able.
@@ -170,7 +170,7 @@ func (s *Server) handleEmailUnsubscribe(w http.ResponseWriter, r *http.Request) 
 	`, subscriberID, category)
 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
-	baseURL := getEnv("ROOST_BASE_URL", "https://roost.yourflock.org")
+	baseURL := getEnv("ROOST_BASE_URL", "https://roost.unity.dev")
 	fmt.Fprintf(w, `<!doctype html>
 <html lang="en">
 <head><meta charset="utf-8"><title>Unsubscribed</title>

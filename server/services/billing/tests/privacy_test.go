@@ -17,8 +17,8 @@ import (
 
 	"github.com/google/uuid"
 	_ "github.com/lib/pq"
-	billingsvc "github.com/yourflock/roost/services/billing"
-	internalauth "github.com/yourflock/roost/internal/auth"
+	billingsvc "github.com/unyeco/roost/services/billing"
+	internalauth "github.com/unyeco/roost/internal/auth"
 )
 
 // setupPrivacyTestServer creates a test billing server and HTTP test server for privacy tests.

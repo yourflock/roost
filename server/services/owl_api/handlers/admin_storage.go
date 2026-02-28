@@ -9,8 +9,8 @@ import (
 	"time"
 
 	"github.com/google/uuid"
-	"github.com/yourflock/roost/services/owl_api/audit"
-	"github.com/yourflock/roost/services/owl_api/middleware"
+	"github.com/unyeco/roost/services/owl_api/audit"
+	"github.com/unyeco/roost/services/owl_api/middleware"
 )
 
 // StoragePathRow is one row from roost_storage_paths.
@@ -112,7 +112,7 @@ func (h *AdminHandlers) AddStoragePath(w http.ResponseWriter, r *http.Request, a
 		return
 	}
 
-	al.Log(r, claims.RoostID, claims.FlockUserID, "storage.add", rowID,
+	al.Log(r, claims.RoostID, claims.UserID, "storage.add", rowID,
 		map[string]any{"path_type": req.PathType, "display_name": req.DisplayName},
 	)
 
@@ -162,7 +162,7 @@ func (h *AdminHandlers) RemoveStoragePath(w http.ResponseWriter, r *http.Request
 		return
 	}
 
-	al.Log(r, claims.RoostID, claims.FlockUserID, "storage.remove", pathID, nil)
+	al.Log(r, claims.RoostID, claims.UserID, "storage.remove", pathID, nil)
 	w.WriteHeader(http.StatusNoContent)
 }
 
@@ -200,7 +200,7 @@ func (h *AdminHandlers) TriggerScan(w http.ResponseWriter, r *http.Request, al *
 		"target", targetID,
 	)
 
-	al.Log(r, claims.RoostID, claims.FlockUserID, "storage.scan_triggered", targetID,
+	al.Log(r, claims.RoostID, claims.UserID, "storage.scan_triggered", targetID,
 		map[string]any{"job_id": jobID},
 	)
 
@@ -363,7 +363,7 @@ func (h *AdminHandlers) PurgeDuplicates(w http.ResponseWriter, r *http.Request, 
 		slog.Info("duplicate purged", "id", d.id, "path", d.filePath)
 	}
 
-	al.Log(r, claims.RoostID, claims.FlockUserID, "storage.duplicates_purged", "",
+	al.Log(r, claims.RoostID, claims.UserID, "storage.duplicates_purged", "",
 		map[string]any{"deleted_count": len(toDelete), "bytes_freed": bytesFreed},
 	)
 

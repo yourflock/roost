@@ -1,5 +1,5 @@
 // main.go — Content acquisition worker entrypoint.
-// Phase FLOCKTV FTV.1.T01: polls Redis queue and acquires content into r2://flock-content/.
+// Acquires content from the queue into R2 object storage.
 // Requires DATABASE_URL, REDIS_URL, and optionally R2_UPLOAD_URL.
 package main
 
@@ -11,7 +11,7 @@ import (
 	"os/signal"
 	"syscall"
 
-	content_acquirer "github.com/yourflock/roost/services/content_acquirer"
+	content_acquirer "github.com/unyeco/roost/services/content_acquirer"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/redis/go-redis/v9"
 )

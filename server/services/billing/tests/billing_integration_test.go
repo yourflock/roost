@@ -19,7 +19,7 @@ import (
 	"time"
 
 	_ "github.com/lib/pq"
-	billingsvc "github.com/yourflock/roost/services/billing"
+	billingsvc "github.com/unyeco/roost/services/billing"
 )
 
 // testDB opens a test database connection.

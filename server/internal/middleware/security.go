@@ -42,7 +42,7 @@ func SecurityHeaders(next http.Handler) http.Handler {
 
 		// CSP for API endpoints: media served from CDN relay, no inline content.
 		h.Set("Content-Security-Policy",
-			"default-src 'self'; media-src 'self' https://stream.yourflock.org; connect-src 'self'; frame-ancestors 'none'")
+			"default-src 'self'; media-src 'self' https://stream.roost.unity.dev; connect-src 'self'; frame-ancestors 'none'")
 
 		next.ServeHTTP(w, r)
 	})
@@ -51,11 +51,11 @@ func SecurityHeaders(next http.Handler) http.Handler {
 // CORS applies Cross-Origin Resource Sharing headers (P22.5.002).
 //
 // Allowlist:
-//   - https://owl.yourflock.org
-//   - https://*.yourflock.org
-//   - https://roost.yourflock.org (portal)
-//   - https://admin.roost.yourflock.org
-//   - https://reseller.roost.yourflock.org
+//   - https://owl.unity.dev
+//   - https://*.roost.unity.dev
+//   - https://roost.unity.dev (portal)
+//   - https://admin.roost.unity.dev
+//   - https://reseller.roost.unity.dev
 //   - http://localhost:* (dev only, gated by ROOST_ENV=development)
 //   - ROOST_ALLOWED_ORIGINS env var (comma-separated additional origins)
 //
@@ -107,10 +107,10 @@ func isCORSAllowed(origin string) bool {
 
 	// Static allowlist.
 	static := []string{
-		"https://owl.yourflock.org",
-		"https://roost.yourflock.org",
-		"https://admin.roost.yourflock.org",
-		"https://reseller.roost.yourflock.org",
+		"https://owl.unity.dev",
+		"https://roost.unity.dev",
+		"https://admin.roost.unity.dev",
+		"https://reseller.roost.unity.dev",
 	}
 	for _, allowed := range static {
 		if origin == allowed {
@@ -118,9 +118,9 @@ func isCORSAllowed(origin string) bool {
 		}
 	}
 
-	// Wildcard: any *.yourflock.org subdomain over HTTPS.
+	// Wildcard: any *.roost.unity.dev subdomain over HTTPS.
 	if strings.HasPrefix(origin, "https://") &&
-		strings.HasSuffix(origin, ".yourflock.org") {
+		strings.HasSuffix(origin, ".roost.unity.dev") {
 		return true
 	}
 

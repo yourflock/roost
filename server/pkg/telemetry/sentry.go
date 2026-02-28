@@ -3,7 +3,7 @@
 //
 // Usage in main.go:
 //
-//	import "github.com/yourflock/roost/pkg/telemetry"
+//	import "github.com/unyeco/roost/pkg/telemetry"
 //
 //	func main() {
 //	    telemetry.InitSentry(os.Getenv("SENTRY_DSN"), "billing", version)

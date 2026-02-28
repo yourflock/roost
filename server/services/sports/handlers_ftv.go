@@ -1,5 +1,5 @@
-// handlers_ftv.go — Flock TV-specific sports handlers.
-// Phase FLOCKTV FTV.4: sports ticker SSE endpoint, family sports picks + leaderboard,
+// handlers_ftv.go — Sports handlers.
+// Sports ticker SSE endpoint, family sports picks + leaderboard,
 // multi-game score ticker, and live score push notification hooks.
 package sports
 

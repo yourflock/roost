@@ -25,8 +25,8 @@ import (
 	"net/http"
 	"time"
 
-	"github.com/yourflock/roost/internal/config"
-	"github.com/yourflock/roost/internal/handlers"
+	"github.com/unyeco/roost/internal/config"
+	"github.com/unyeco/roost/internal/handlers"
 )
 
 func main() {

@@ -134,7 +134,7 @@ func TestManifestRequiredFields(t *testing.T) {
 	manifest := map[string]interface{}{
 		"name":        "Roost",
 		"description": "Licensed live TV, sports, and VOD for Owl",
-		"icon":        "https://roost.yourflock.org/static/roost-icon.png",
+		"icon":        "https://roost.unity.dev/static/roost-icon.png",
 		"version":     "1.0",
 		"api_version": "v1",
 		"features":    []string{"live", "epg"},

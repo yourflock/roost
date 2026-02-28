@@ -47,12 +47,12 @@ type Config struct {
 	ElasticEmailAPIKey string
 	EmailSender        string
 
-	// Flock integration
-	FlockOAuthBaseURL   string
-	FlockClientID       string
-	FlockClientSecret   string
-	FlockRedirectURI    string
-	FlockServiceToken   string
+	// SSO integration (optional; for OAuth-based subscriber login)
+	SSOBaseURL      string
+	SSOClientID     string
+	SSOClientSecret string
+	SSORedirectURI  string
+	SSOServiceToken string
 
 	// CDN / HLS signing
 	CDNHMACSecret  string
@@ -75,7 +75,7 @@ func Load() (*Config, error) {
 	c := &Config{
 		Mode:        parseMode(getenv("ROOST_MODE", "private")),
 		Port:        getenv("PORT", "8080"),
-		BaseURL:     getenv("ROOST_BASE_URL", "https://roost.yourflock.org"),
+		BaseURL:     getenv("ROOST_BASE_URL", "https://roost.unity.dev"),
 		PostgresURL: getenv("POSTGRES_URL", "postgres://roost:roost@localhost:5432/roost"),
 		RedisURL:    getenv("REDIS_URL", ""),
 
@@ -86,17 +86,17 @@ func Load() (*Config, error) {
 		JWTSecret: getenv("AUTH_JWT_SECRET", ""),
 
 		ElasticEmailAPIKey: os.Getenv("ELASTIC_EMAIL_API_KEY"),
-		EmailSender:        getenv("EMAIL_SENDER", "noreply@yourflock.org"),
+		EmailSender:        getenv("EMAIL_SENDER", "noreply@roost.unity.dev"),
 
-		FlockOAuthBaseURL:  getenv("FLOCK_OAUTH_BASE_URL", "https://yourflock.org"),
-		FlockClientID:      getenv("FLOCK_CLIENT_ID", "roost"),
-		FlockClientSecret:  os.Getenv("FLOCK_CLIENT_SECRET"),
-		FlockRedirectURI:   getenv("FLOCK_REDIRECT_URI", "https://roost.yourflock.org/auth/flock/callback"),
-		FlockServiceToken:  os.Getenv("FLOCK_SERVICE_TOKEN"),
+		SSOBaseURL:      getenv("SSO_BASE_URL", ""),
+		SSOClientID:     getenv("SSO_CLIENT_ID", "roost"),
+		SSOClientSecret: os.Getenv("SSO_CLIENT_SECRET"),
+		SSORedirectURI:  getenv("SSO_REDIRECT_URI", "https://roost.unity.dev/auth/sso/callback"),
+		SSOServiceToken: os.Getenv("SSO_SERVICE_TOKEN"),
 
 		CDNHMACSecret: getenv("CDN_HMAC_SECRET", ""),
 		CDNRelayURL:   os.Getenv("CDN_RELAY_URL"),
-		StreamBaseURL: getenv("STREAM_BASE_URL", "https://stream.yourflock.org"),
+		StreamBaseURL: getenv("STREAM_BASE_URL", "https://stream.roost.unity.dev"),
 
 		CloudflareAPIKey: os.Getenv("CLOUDFLARE_API_KEY"),
 		CloudflareZoneID: os.Getenv("CLOUDFLARE_ZONE_ID"),

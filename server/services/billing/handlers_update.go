@@ -11,7 +11,7 @@
 //	    "current_version": "1.0.0",
 //	    "latest_version":  "1.1.0",
 //	    "update_available": true,
-//	    "release_url":  "https://github.com/yourflock/roost/releases/tag/v1.1.0",
+//	    "release_url":  "https://github.com/unyeco/roost/releases/tag/v1.1.0",
 //	    "published_at": "2026-03-01T00:00:00Z",
 //	    "checked_at":   "2026-03-15T12:00:00Z"
 //	  }
@@ -25,7 +25,7 @@ import (
 	"net/http"
 	"os"
 
-	"github.com/yourflock/roost/pkg/updater"
+	"github.com/unyeco/roost/pkg/updater"
 )
 
 // currentVersion is set at build time via -ldflags="-X billing.currentVersion=...".

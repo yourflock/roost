@@ -5,7 +5,7 @@
 // recommendations for all active families. Families can submit feedback
 // (like / dislike / not_interested / already_seen) to improve future picks.
 //
-// Port: 8117 (env: AI_GUIDE_PORT). Internal service — called by flock backend.
+// Port: 8117 (env: AI_GUIDE_PORT). Internal service.
 //
 // Routes:
 //   GET  /ai-guide/recommendations            — get cached recommendations for family

@@ -16,8 +16,8 @@ import (
 	"time"
 
 	_ "github.com/lib/pq"
-	"github.com/yourflock/roost/internal/ratelimit"
-	authsvc "github.com/yourflock/roost/services/auth"
+	"github.com/unyeco/roost/internal/ratelimit"
+	authsvc "github.com/unyeco/roost/services/auth"
 )
 
 // testDB opens a test database connection using env vars.

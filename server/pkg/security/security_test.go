@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/yourflock/roost/pkg/security"
+	"github.com/unyeco/roost/pkg/security"
 )
 
 // ── ValidateUUID ─────────────────────────────────────────────────────────────

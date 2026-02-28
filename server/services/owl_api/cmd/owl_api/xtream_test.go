@@ -74,7 +74,7 @@ func TestXtreamUserInfoShape(t *testing.T) {
 // TestXtreamServerInfoShape verifies the xtreamServerInfo struct serialises correctly.
 func TestXtreamServerInfoShape(t *testing.T) {
 	info := xtreamServerInfo{
-		URL:          "https://roost.yourflock.org",
+		URL:          "https://roost.unity.dev",
 		Port:         "80",
 		HTTPSPort:    "443",
 		Protocol:     "http",
@@ -139,7 +139,7 @@ func TestXtreamStreamNeverExposesSourceURL(t *testing.T) {
 		Name:         "ESPN",
 		StreamType:   "live",
 		StreamID:     100,
-		StreamIcon:   "https://cdn.roost.yourflock.org/logos/espn.png",
+		StreamIcon:   "https://cdn.roost.unity.dev/logos/espn.png",
 		EPGChannelID: "espn.us",
 		DirectSource: "", // MUST be empty — source URLs are private
 	}
@@ -572,9 +572,9 @@ func TestM3UEscapeHandlesSpecialChars(t *testing.T) {
 // TestPlaylistM3U8HeaderFormat verifies the M3U8 playlist starts with #EXTM3U.
 func TestPlaylistM3U8HeaderFormat(t *testing.T) {
 	// Simulate playlist content without a real DB
-	playlistContent := "#EXTM3U x-tvg-url=\"https://roost.yourflock.org/owl/xmltv.xml?token=test\"\n"
+	playlistContent := "#EXTM3U x-tvg-url=\"https://roost.unity.dev/owl/xmltv.xml?token=test\"\n"
 	playlistContent += "#EXTINF:-1 tvg-id=\"espn.us\" tvg-name=\"ESPN\" tvg-logo=\"\" group-title=\"Sports\",ESPN\n"
-	playlistContent += "https://roost.yourflock.org/owl/v1/stream/espn?token=test-session\n"
+	playlistContent += "https://roost.unity.dev/owl/v1/stream/espn?token=test-session\n"
 
 	lines := strings.Split(playlistContent, "\n")
 
@@ -617,7 +617,7 @@ func TestPlaylistM3U8EXTINFFormat(t *testing.T) {
 
 // TestPlaylistStreamURLFormat verifies stream URLs in M3U8 embed the session token.
 func TestPlaylistStreamURLFormat(t *testing.T) {
-	baseURL := "https://roost.yourflock.org"
+	baseURL := "https://roost.unity.dev"
 	sessionToken := "test-session-abc"
 	slug := "espn"
 
@@ -646,7 +646,7 @@ func TestPlaylistStreamURLFormat(t *testing.T) {
 // through our relay, not directly to IPTV sources.
 func TestPlaylistM3U8NeverExposesSourceURL(t *testing.T) {
 	// Simulate what playlist.go generates for each channel
-	baseURL := "https://roost.yourflock.org"
+	baseURL := "https://roost.unity.dev"
 	channels := []struct{ slug, name string }{
 		{"espn", "ESPN"},
 		{"nfl", "NFL Network"},
@@ -666,7 +666,7 @@ func TestPlaylistM3U8NeverExposesSourceURL(t *testing.T) {
 	// All stream URLs must go through our relay
 	for _, line := range strings.Split(content, "\n") {
 		if strings.HasPrefix(line, "http") && !strings.HasPrefix(line, "#") {
-			if !strings.Contains(line, "roost.yourflock.org") {
+			if !strings.Contains(line, "roost.unity.dev") {
 				t.Errorf("stream URL must go through Roost relay, got: %s", line)
 			}
 		}

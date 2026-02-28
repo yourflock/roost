@@ -15,8 +15,8 @@ import (
 	"net/http"
 	"time"
 
-	emailpkg "github.com/yourflock/roost/internal/email"
-	"github.com/yourflock/roost/internal/auth"
+	emailpkg "github.com/unyeco/roost/internal/email"
+	"github.com/unyeco/roost/internal/auth"
 )
 
 const churnNotifierInterval = 1 * time.Hour
@@ -53,7 +53,7 @@ func (s *Server) runChurnNotifierCycle() {
 	}
 	defer rows.Close()
 
-	baseURL := getEnv("ROOST_BASE_URL", "https://roost.yourflock.org")
+	baseURL := getEnv("ROOST_BASE_URL", "https://roost.unity.dev")
 
 	for rows.Next() {
 		var subID, emailAddr, name string

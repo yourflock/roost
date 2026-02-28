@@ -12,7 +12,7 @@ import (
 	"testing"
 	"time"
 
-	"github.com/yourflock/roost/internal/cdn"
+	"github.com/unyeco/roost/internal/cdn"
 )
 
 const testSecret = "test-hmac-secret-for-security-tests"
@@ -161,9 +161,9 @@ func TestCORSAllowedOriginAccepted(t *testing.T) {
 	})
 
 	for _, origin := range []string{
-		"https://owl.yourflock.org",
-		"https://roost.yourflock.org",
-		"https://admin.roost.yourflock.org",
+		"https://owl.unity.dev",
+		"https://roost.unity.dev",
+		"https://admin.roost.unity.dev",
 	} {
 		req := httptest.NewRequest(http.MethodGet, "/api/data", nil)
 		req.Header.Set("Origin", origin)
@@ -180,20 +180,20 @@ func TestCORSAllowedOriginAccepted(t *testing.T) {
 // isAllowedTestOrigin mirrors the production CORS allowlist for test purposes.
 func isAllowedTestOrigin(origin string) bool {
 	allowed := []string{
-		"https://owl.yourflock.org",
-		"https://roost.yourflock.org",
-		"https://admin.roost.yourflock.org",
-		"https://reseller.roost.yourflock.org",
+		"https://owl.unity.dev",
+		"https://roost.unity.dev",
+		"https://admin.roost.unity.dev",
+		"https://reseller.roost.unity.dev",
 	}
 	for _, a := range allowed {
 		if origin == a {
 			return true
 		}
 	}
-	// *.yourflock.org over HTTPS.
+	// *.roost.unity.dev over HTTPS.
 	if len(origin) > 8 && origin[:8] == "https://" {
 		host := origin[8:]
-		if len(host) > 14 && host[len(host)-14:] == ".yourflock.org" {
+		if len(host) > 14 && host[len(host)-14:] == ".roost.unity.dev" {
 			return true
 		}
 	}

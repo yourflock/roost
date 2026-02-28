@@ -33,7 +33,7 @@ import (
 	"strings"
 	"time"
 
-	rootauth "github.com/yourflock/roost/internal/auth"
+	rootauth "github.com/unyeco/roost/internal/auth"
 )
 
 // ---- Xtream auth / types ---------------------------------------------------
@@ -190,7 +190,7 @@ func (s *server) handlePlayerAPI(w http.ResponseWriter, r *http.Request) {
 
 // xtreamLoginResponse returns the standard Xtream login response shape.
 func (s *server) xtreamLoginResponse(w http.ResponseWriter, r *http.Request, username, password, subscriberID, plan string) {
-	baseURL := getEnv("ROOST_BASE_URL", "https://roost.yourflock.org")
+	baseURL := getEnv("ROOST_BASE_URL", "https://roost.unity.dev")
 	maxStreams, _ := planLimits(plan)
 	_ = subscriberID // used for future active connections count
 

@@ -3,7 +3,7 @@
 // photo organisation. Face detection is async — upload returns immediately;
 // a background goroutine marks processed photos once grouping is complete.
 //
-// Port: 8110 (env: BOOST_PORT). Internal service — called by flock backend.
+// Port: 8110 (env: BOOST_PORT). Internal service.
 //
 // Routes:
 //   POST /boost/upload            — multipart photo upload → R2 + DB record
@@ -79,8 +79,8 @@ func requireFamilyAuth(next http.Handler) http.Handler {
 
 // uploadToR2 PUTs an object to Cloudflare R2 using HMAC-signed auth.
 func uploadToR2(r2Key string, data []byte, contentType string) error {
-	endpoint := getEnv("R2_ENDPOINT", "https://r2.yourflock.org")
-	bucket := getEnv("R2_BUCKET", "flock-media")
+	endpoint := getEnv("R2_ENDPOINT", "https://r2.roost.unity.dev")
+	bucket := getEnv("R2_BUCKET", "roost-media")
 	accessKey := getEnv("R2_ACCESS_KEY_ID", "")
 	secretKey := getEnv("R2_SECRET_ACCESS_KEY", "")
 

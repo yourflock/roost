@@ -18,7 +18,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/yourflock/roost/internal/auth"
+	"github.com/unyeco/roost/internal/auth"
 )
 
 // handleAccountDelete handles POST /account/delete.
@@ -387,7 +387,7 @@ func (s *Server) handleProcessDeletions(w http.ResponseWriter, r *http.Request) 
 // Billing records are anonymized (not deleted) for legal/accounting compliance.
 func (s *Server) deleteSubscriberData(subscriberID string) error {
 	// The subscriber row deletion cascades to: subscriptions, api_tokens,
-	// stream_sessions, profiles, owl_sessions, watch_parties, flock_links,
+	// stream_sessions, profiles, owl_sessions, watch_parties, sso_links,
 	// reseller_subscribers, sports_preferences, data_deletion_requests.
 
 	// Anonymize invoices instead of deleting (accounting requirement).

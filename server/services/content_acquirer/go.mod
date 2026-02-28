@@ -1,4 +1,4 @@
-module github.com/yourflock/roost/services/content_acquirer
+module github.com/unyeco/roost/services/content_acquirer
 
 go 1.24.0
 
@@ -20,4 +20,4 @@ require (
 	golang.org/x/text v0.34.0 // indirect
 )
 
-replace github.com/yourflock/roost => ../../
+replace github.com/unyeco/roost => ../../

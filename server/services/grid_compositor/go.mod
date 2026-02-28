@@ -1,4 +1,4 @@
-module github.com/yourflock/roost/services/grid_compositor
+module github.com/unyeco/roost/services/grid_compositor
 
 go 1.24.0
 
@@ -20,4 +20,4 @@ require (
 	google.golang.org/protobuf v1.36.8 // indirect
 )
 
-replace github.com/yourflock/roost => ../../
+replace github.com/unyeco/roost => ../../

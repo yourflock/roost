@@ -44,7 +44,7 @@ func jwtSecret() []byte {
 func baseURL() string {
 	u := os.Getenv("ROOST_BASE_URL")
 	if u == "" {
-		u = "https://roost.yourflock.org"
+		u = "https://roost.unity.dev"
 	}
 	return u
 }

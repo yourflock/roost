@@ -18,7 +18,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/yourflock/roost/internal/auth"
+	"github.com/unyeco/roost/internal/auth"
 )
 
 // ── GET /gdpr/consent ─────────────────────────────────────────────────────────
@@ -326,7 +326,7 @@ func (s *Server) handleGDPRErasure(w http.ResponseWriter, r *http.Request) {
 	`, subscriberID)
 	if err != nil {
 		writeError(w, http.StatusInternalServerError, "deletion_failed",
-			"Failed to delete account. Please contact support@yourflock.org")
+			"Failed to delete account. Please contact support@roost.unity.dev")
 		return
 	}
 

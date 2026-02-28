@@ -8,7 +8,7 @@ import "fmt"
 // SendDunningEmail sends a payment failure notification.
 // attempt is 1, 2, or 3. invoiceURL is the Stripe-hosted invoice link (may be empty).
 func SendDunningEmail(toEmail, displayName string, attempt int, invoiceURL string) error {
-	baseURL := "https://roost.yourflock.org"
+	baseURL := "https://roost.unity.dev"
 
 	subject := "Your Roost payment failed"
 	statusMsg := "We'll retry automatically. Your service continues during the grace period."

@@ -35,8 +35,8 @@ import (
 	_ "github.com/lib/pq"
 	goredis "github.com/redis/go-redis/v9"
 
-	rootauth "github.com/yourflock/roost/internal/auth"
-	"github.com/yourflock/roost/internal/ratelimit"
+	rootauth "github.com/unyeco/roost/internal/auth"
+	"github.com/unyeco/roost/internal/ratelimit"
 )
 
 // ── helpers ───────────────────────────────────────────────────────────────────

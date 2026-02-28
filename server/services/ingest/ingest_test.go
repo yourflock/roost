@@ -11,9 +11,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/yourflock/roost/services/ingest/internal/config"
-	"github.com/yourflock/roost/services/ingest/internal/encryption"
-	"github.com/yourflock/roost/services/ingest/internal/pipeline"
+	"github.com/unyeco/roost/services/ingest/internal/config"
+	"github.com/unyeco/roost/services/ingest/internal/encryption"
+	"github.com/unyeco/roost/services/ingest/internal/pipeline"
 )
 
 // --- Config tests ---

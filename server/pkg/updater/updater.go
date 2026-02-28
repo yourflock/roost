@@ -26,7 +26,7 @@ import (
 
 const (
 	// githubReleasesURL is the GitHub API endpoint for the latest Roost release.
-	githubReleasesURL = "https://api.github.com/repos/yourflock/roost/releases/latest"
+	githubReleasesURL = "https://api.github.com/repos/unyeco/roost/releases/latest"
 
 	// cacheTTL is how long the version check result is cached.
 	// One check per hour per process — avoids hammering the GitHub API.

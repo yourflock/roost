@@ -1,7 +1,7 @@
 // acquirer.go — Shared content acquisition pipeline.
-// Phase FLOCKTV FTV.1.T01: downloads content not yet in the shared R2 pool,
+// Downloads content not yet in the R2 pool,
 // verifies integrity, transcodes to target quality, and uploads to
-// r2://flock-content/{type}/{canonical_id}/{quality}/{filename}.
+// r2://roost-content/{type}/{canonical_id}/{quality}/{filename}.
 //
 // Advisory lock pattern: only one worker acquires each canonical_id at a time.
 // Multiple family requests for the same content collapse to a single acquisition job.
@@ -49,7 +49,7 @@ const (
 	StrategyC
 )
 
-// Acquirer orchestrates content acquisition for the shared Flock TV pool.
+// Acquirer orchestrates content acquisition for the shared media pool.
 type Acquirer struct {
 	db     *pgxpool.Pool
 	rdb    *redis.Client

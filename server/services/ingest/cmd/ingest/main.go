@@ -25,8 +25,8 @@ import (
 	_ "github.com/lib/pq"
 	"github.com/prometheus/client_golang/prometheus/promhttp"
 
-	"github.com/yourflock/roost/services/ingest/internal/config"
-	"github.com/yourflock/roost/services/ingest/internal/pipeline"
+	"github.com/unyeco/roost/services/ingest/internal/config"
+	"github.com/unyeco/roost/services/ingest/internal/pipeline"
 )
 
 // channelHealth is the health snapshot stored per channel.

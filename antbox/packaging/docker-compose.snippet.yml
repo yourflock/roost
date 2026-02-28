@@ -3,7 +3,7 @@
 
 services:
   antbox:
-    image: ghcr.io/yourflock/owl-antbox:1.0.0
+    image: ghcr.io/unyeco/owl-antbox:1.0.0
     container_name: owl_antbox
     restart: unless-stopped
     privileged: true  # Required for USB DVB device access

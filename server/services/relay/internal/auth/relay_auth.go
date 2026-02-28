@@ -13,7 +13,7 @@ import (
 	"net/http"
 	"time"
 
-	rootauth "github.com/yourflock/roost/internal/auth"
+	rootauth "github.com/unyeco/roost/internal/auth"
 )
 
 // Subscriber is re-exported for handlers in the relay service.

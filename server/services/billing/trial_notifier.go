@@ -13,7 +13,7 @@ import (
 	"log"
 	"time"
 
-	"github.com/yourflock/roost/internal/email"
+	"github.com/unyeco/roost/internal/email"
 )
 
 // trialNotifierInterval controls how often the cron fires.
@@ -133,7 +133,7 @@ func (s *Server) expireTrials() {
 
 // sendTrialDay5Email sends the "2 days left" email via Elastic Email.
 func (s *Server) sendTrialDay5Email(to, name string) error {
-	baseURL := getEnv("ROOST_BASE_URL", "https://roost.yourflock.org")
+	baseURL := getEnv("ROOST_BASE_URL", "https://roost.unity.dev")
 	subject := "Your Roost trial ends in 2 days"
 	body := fmt.Sprintf(`Hi %s,
 
@@ -150,7 +150,7 @@ The Roost Team`, name, baseURL)
 
 // sendTrialExpiredEmail sends the "trial ended" email via Elastic Email.
 func (s *Server) sendTrialExpiredEmail(to, name string) error {
-	baseURL := getEnv("ROOST_BASE_URL", "https://roost.yourflock.org")
+	baseURL := getEnv("ROOST_BASE_URL", "https://roost.unity.dev")
 	subject := "Your Roost trial has ended"
 	body := fmt.Sprintf(`Hi %s,
 

@@ -19,10 +19,10 @@ import (
 	"testing"
 	"time"
 
-	"github.com/yourflock/roost/internal/cdn"
-	"github.com/yourflock/roost/internal/config"
-	"github.com/yourflock/roost/internal/handlers"
-	"github.com/yourflock/roost/internal/middleware"
+	"github.com/unyeco/roost/internal/cdn"
+	"github.com/unyeco/roost/internal/config"
+	"github.com/unyeco/roost/internal/handlers"
+	"github.com/unyeco/roost/internal/middleware"
 )
 
 // buildTestMux wires up a minimal mux matching the gateway structure:
@@ -212,7 +212,7 @@ func TestCDNSigningRoundTrip(t *testing.T) {
 	path := "/stream/channel-uk-bbc1/seg042.ts"
 	expiresAt := time.Now().Add(15 * time.Minute).Unix()
 
-	signed, err := cdn.SignURL("https://stream.yourflock.org", integTestSecret, path, expiresAt)
+	signed, err := cdn.SignURL("https://stream.roost.unity.dev", integTestSecret, path, expiresAt)
 	if err != nil {
 		t.Fatalf("SignURL: %v", err)
 	}
@@ -254,7 +254,7 @@ func TestCDNSigningExpiredURL(t *testing.T) {
 	path := "/stream/channel-us-cnn/seg001.ts"
 	pastExpiry := time.Now().Add(-5 * time.Minute).Unix()
 
-	signed, err := cdn.SignURL("https://stream.yourflock.org", integTestSecret, path, pastExpiry)
+	signed, err := cdn.SignURL("https://stream.roost.unity.dev", integTestSecret, path, pastExpiry)
 	if err != nil {
 		t.Fatalf("SignURL: %v", err)
 	}

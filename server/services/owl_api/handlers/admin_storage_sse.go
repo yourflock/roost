@@ -8,7 +8,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/yourflock/roost/services/owl_api/middleware"
+	"github.com/unyeco/roost/services/owl_api/middleware"
 )
 
 // ScanProgressEvent is the SSE event payload for real-time scan progress.

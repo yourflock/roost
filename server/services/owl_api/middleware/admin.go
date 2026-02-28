@@ -16,7 +16,7 @@ type adminCtxKey struct{}
 // AdminClaims holds the verified identity of an admin caller, injected into the
 // request context by RequireAdmin. Downstream handlers retrieve it via AdminClaimsFromCtx.
 type AdminClaims struct {
-	FlockUserID string
+	UserID string
 	Role        string // "owner" or "admin"
 	RoostID     string // roost_id JWT claim — ties this token to a specific Roost server
 }
@@ -58,11 +58,11 @@ func RequireAdmin(jwtSecret []byte, next http.Handler) http.Handler {
 			return
 		}
 
-		userID, _ := claims["flock_user_id"].(string)
+		userID, _ := claims["user_id"].(string)
 		roostID, _ := claims["roost_id"].(string)
 
 		ctx := context.WithValue(r.Context(), adminCtxKey{}, AdminClaims{
-			FlockUserID: userID,
+			UserID: userID,
 			Role:        role,
 			RoostID:     roostID,
 		})

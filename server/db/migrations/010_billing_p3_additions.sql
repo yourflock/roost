@@ -197,14 +197,14 @@ SELECT 'Roost Family', 'family', 1499, 14999, 10, '{"hd": true, "family": true}'
 WHERE NOT EXISTS (SELECT 1 FROM subscription_plans WHERE slug = 'family');
 
 -- ─────────────────────────────────────────────────────────────────────────────
--- P3-T12: Founding Family seed — camarata@yourflock.org billing_exempt forever
+-- P3-T12: Founding Family seed — camarata@roost.unity.dev billing_exempt forever
 -- ─────────────────────────────────────────────────────────────────────────────
 DO $$
 DECLARE
     founder_id UUID;
     founder_plan_id UUID;
 BEGIN
-    SELECT id INTO founder_id FROM subscribers WHERE email = 'camarata@yourflock.org';
+    SELECT id INTO founder_id FROM subscribers WHERE email = 'camarata@roost.unity.dev';
     SELECT id INTO founder_plan_id FROM subscription_plans WHERE slug = 'founding' LIMIT 1;
 
     IF founder_id IS NOT NULL THEN
@@ -218,7 +218,7 @@ BEGIN
                 status = 'founding',
                 billing_period = 'annual',
                 updated_at = NOW();
-            RAISE NOTICE 'Founding family camarata@yourflock.org seeded (billing_exempt=true, plan=founding)';
+            RAISE NOTICE 'Founding family camarata@roost.unity.dev seeded (billing_exempt=true, plan=founding)';
         END IF;
     ELSE
         RAISE NOTICE 'Founder email not found — skip (will apply on registration)';

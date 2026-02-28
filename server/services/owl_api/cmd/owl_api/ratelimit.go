@@ -232,7 +232,7 @@ func (rl *rateLimiter) streamRateLimit(maxStreams int, next http.HandlerFunc) ht
 		if !allowed {
 			writeError(w, http.StatusTooManyRequests, "stream_limit_exceeded",
 				fmt.Sprintf("Concurrent stream limit reached (%d/%d active). "+
-					"Close an active stream or upgrade your plan at roost.yourflock.org/billing.",
+					"Close an active stream or upgrade your plan at roost.unity.dev/billing.",
 					activeCount, maxStreams))
 			return
 		}

@@ -23,7 +23,7 @@ import (
 )
 
 const (
-	releasesURL    = "https://api.github.com/repos/yourflock/owl/releases/latest"
+	releasesURL    = "https://api.github.com/repos/unyeco/owl/releases/latest"
 	updateInterval = 6 * time.Hour
 	userAgent      = "antbox-updater/1.0"
 )

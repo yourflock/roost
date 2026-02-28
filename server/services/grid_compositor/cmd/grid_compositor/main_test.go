@@ -7,7 +7,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/yourflock/roost/services/grid_compositor/internal/compositor"
+	"github.com/unyeco/roost/services/grid_compositor/internal/compositor"
 )
 
 func TestHealthEndpoint(t *testing.T) {

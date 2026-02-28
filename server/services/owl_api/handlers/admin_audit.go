@@ -11,13 +11,13 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/yourflock/roost/services/owl_api/middleware"
+	"github.com/unyeco/roost/services/owl_api/middleware"
 )
 
 // AuditLogRow is one row returned by GET /admin/audit.
 type AuditLogRow struct {
 	ID          string                 `json:"id"`
-	FlockUserID string                 `json:"flock_user_id"`
+	UserID string `json:"user_id"``
 	Action      string                 `json:"action"`
 	TargetID    *string                `json:"target_id,omitempty"`
 	Details     map[string]interface{} `json:"details,omitempty"`
@@ -57,7 +57,7 @@ func (h *AdminHandlers) ListAuditLog(w http.ResponseWriter, r *http.Request) {
 	}
 
 	query := `
-		SELECT id, flock_user_id, action, target_id, details, occurred_at
+		SELECT id, user_id, action, target_id, details, occurred_at
 		  FROM admin_audit_log
 		 WHERE roost_id = $1`
 	args := []interface{}{claims.RoostID}
@@ -88,7 +88,7 @@ func (h *AdminHandlers) ListAuditLog(w http.ResponseWriter, r *http.Request) {
 	for rows.Next() {
 		var e AuditLogRow
 		var detailsJSON []byte
-		if err := rows.Scan(&e.ID, &e.FlockUserID, &e.Action, &e.TargetID, &detailsJSON, &e.OccurredAt); err != nil {
+		if err := rows.Scan(&e.ID, &e.UserID, &e.Action, &e.TargetID, &detailsJSON, &e.OccurredAt); err != nil {
 			continue
 		}
 		if len(detailsJSON) > 0 {

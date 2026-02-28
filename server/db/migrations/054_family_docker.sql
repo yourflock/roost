@@ -15,7 +15,7 @@ CREATE TABLE IF NOT EXISTS family_containers (
   last_heartbeat TIMESTAMPTZ,
   db_size_mb     INT         NOT NULL DEFAULT 0,
   -- R2 prefix for family-private data isolation (structural, not policy-only)
-  r2_prefix      TEXT        NOT NULL, -- 'flock-family-private/{family_id}/'
+  r2_prefix      TEXT        NOT NULL, -- 'roost-family-private/{family_id}/'
   created_at     TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at     TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );

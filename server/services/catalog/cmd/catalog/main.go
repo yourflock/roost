@@ -50,7 +50,7 @@ import (
 	"github.com/google/uuid"
 	_ "github.com/lib/pq"
 
-	rootauth "github.com/yourflock/roost/internal/auth"
+	rootauth "github.com/unyeco/roost/internal/auth"
 )
 
 // ---- helpers ----------------------------------------------------------------

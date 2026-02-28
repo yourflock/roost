@@ -12,7 +12,7 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/yourflock/roost/internal/cdn"
+	"github.com/unyeco/roost/internal/cdn"
 )
 
 // Mode mirrors config.Mode to avoid a circular import between the relay service
@@ -28,8 +28,8 @@ const (
 // Construct once at startup; safe for concurrent use.
 type Builder struct {
 	mode       Mode
-	originBase string // e.g., "http://localhost:8090" (private) or "https://stream.yourflock.org" (public CDN bypass)
-	cdnBase    string // e.g., "https://stream.yourflock.org" (public CDN relay)
+	originBase string // e.g., "http://localhost:8090" (private) or "https://stream.roost.unity.dev" (public CDN bypass)
+	cdnBase    string // e.g., "https://stream.roost.unity.dev" (public CDN relay)
 	hmacSecret string
 }
 
@@ -58,7 +58,7 @@ func NewBuilder(mode Mode, originBase, cdnBase, hmacSecret string) *Builder {
 //
 // Public mode: returns a CDN relay URL with a 15-minute HMAC signature.
 //
-//	Example: https://stream.yourflock.org/stream/bbc-one/seg001.ts?expires=...&sig=...
+//	Example: https://stream.roost.unity.dev/stream/bbc-one/seg001.ts?expires=...&sig=...
 func (b *Builder) SegmentURL(channelSlug, segment string) (string, error) {
 	path := fmt.Sprintf("/stream/%s/%s", channelSlug, segment)
 

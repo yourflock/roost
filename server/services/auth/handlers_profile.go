@@ -11,8 +11,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/yourflock/roost/internal/auth"
-	"github.com/yourflock/roost/internal/email"
+	"github.com/unyeco/roost/internal/auth"
+	"github.com/unyeco/roost/internal/email"
 )
 
 // htmlTagRegex detects HTML tags for XSS prevention in display name.

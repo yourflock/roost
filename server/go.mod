@@ -1,4 +1,4 @@
-module github.com/yourflock/roost
+module github.com/unyeco/roost
 
 go 1.24.0
 

@@ -16,7 +16,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/yourflock/roost/services/epg/internal/xmltv"
+	"github.com/unyeco/roost/services/epg/internal/xmltv"
 )
 
 // Source represents a single EPG source to sync from.
