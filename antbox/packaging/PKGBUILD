@@ -1,0 +1,37 @@
+# AUR Package for AntBox (T-7H.2.007 — Arch Linux)
+# Maintainer: Owl Contributors <hello@yourflock.org>
+
+pkgname=antbox
+pkgver=1.0.0
+pkgrel=1
+pkgdesc="Owl USB TV Tuner Daemon — turns any Linux machine with a USB DVB tuner into an Owl live TV source"
+arch=('x86_64' 'aarch64' 'armv7h')
+url="https://github.com/yourflock/owl"
+license=('MIT')
+depends=('ffmpeg' 'v4l-utils')
+makedepends=('go>=1.21')
+source=("${pkgname}-${pkgver}.tar.gz::https://github.com/yourflock/owl/archive/antbox-v${pkgver}.tar.gz")
+sha256sums=('SKIP')
+
+build() {
+  cd "owl-antbox-v${pkgver}/antbox"
+  CGO_ENABLED=0 go build \
+    -ldflags="-s -w -X main.Version=${pkgver}" \
+    -o antbox \
+    .
+}
+
+package() {
+  cd "owl-antbox-v${pkgver}/antbox"
+
+  install -Dm755 antbox "${pkgdir}/usr/local/bin/antbox"
+  install -Dm644 packaging/antbox.service "${pkgdir}/usr/lib/systemd/system/antbox.service"
+  install -Dm644 packaging/99-dvb-usb.rules "${pkgdir}/etc/udev/rules.d/99-dvb-usb.rules"
+
+  # Default config
+  install -d "${pkgdir}/etc/antbox"
+  cat > "${pkgdir}/etc/antbox/antbox.env.example" << ENV
+ANTBOX_SERVER_URL=http://localhost:7860
+ANTBOX_LOG_LEVEL=info
+ENV
+}

@@ -1,0 +1,16 @@
+# Local private planning context
+.claude/
+
+# Local env files
+.env
+.env.*
+
+# Build outputs
+build/
+dist/
+out/
+coverage/
+
+# Logs
+*.log
+logs/

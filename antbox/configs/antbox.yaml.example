@@ -1,0 +1,31 @@
+# AntBox configuration example
+# Copy to /etc/antbox/antbox.yaml and edit.
+
+server:
+  grpc_addr: ":50051"    # gRPC listen address for Owl backend connection
+  http_addr: ":8087"     # HTTP health endpoint
+
+owl:
+  backend_url: "http://your-owl-server:8080"  # Owl backend URL
+  api_key: "CHANGE_ME"                         # Generate in Owl settings
+  timeout: "30s"
+  retry_count: 3
+
+tuners:
+  auto_discover: true     # Scan all /dev/dvb/adapter*/
+  # device_path: "/dev/dvb/adapter0/frontend0"  # Manual path (if auto_discover: false)
+  max_concurrent: 2       # Max simultaneous streams per tuner
+  buffer_size_mb: 16      # Ring buffer size for MPEG-TS capture
+
+logging:
+  level: "info"           # debug | info | warn | error
+  format: "json"          # json | text
+  file_path: "/var/log/antbox/daemon.log"
+  max_size_mb: 100
+  max_age_days: 7
+  max_backups: 3
+
+health:
+  addr: ":8087"
+  path: "/health"
+  interval: "30s"

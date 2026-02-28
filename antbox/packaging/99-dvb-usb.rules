@@ -1,0 +1,19 @@
+# udev rules for DVB USB TV tuners (T-7H.2.006)
+# Install to: /etc/udev/rules.d/99-dvb-usb.rules
+# After install: udevadm control --reload-rules && udevadm trigger
+
+# Generic DVB USB rule — add antbox group to all DVB devices
+SUBSYSTEM=="dvb", GROUP="video", MODE="0664"
+SUBSYSTEM=="dvb", ACTION=="add", TAG+="systemd", ENV{SYSTEMD_WANTS}="antbox.service"
+
+# Specific USB tuner models (add your device VID:PID here)
+# Hauppauge WinTV-dualHD
+SUBSYSTEM=="usb", ATTRS{idVendor}=="2040", ATTRS{idProduct}=="026d", MODE="0664", GROUP="video"
+# RTL-SDR (RTL2832U)
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0bda", ATTRS{idProduct}=="2832", MODE="0664", GROUP="video"
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0bda", ATTRS{idProduct}=="2838", MODE="0664", GROUP="video"
+# HDHomeRun (for reference — it's network, not USB)
+# SUBSYSTEM=="usb", ATTRS{idVendor}=="2042", MODE="0664", GROUP="video"
+
+# V4L2 devices
+SUBSYSTEM=="video4linux", GROUP="video", MODE="0664"

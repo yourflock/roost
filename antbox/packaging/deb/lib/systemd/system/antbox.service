@@ -1,0 +1,23 @@
+[Unit]
+Description=AntBox USB Tuner Daemon for Owl
+After=network.target
+Documentation=https://github.com/yourflock/owl
+
+[Service]
+Type=simple
+User=antbox
+Group=antbox
+ExecStart=/usr/bin/antboxd --config /etc/antbox/antbox.yaml
+Restart=on-failure
+RestartSec=5s
+TimeoutStopSec=30s
+EnvironmentFile=-/etc/antbox/antbox.env
+# Security hardening
+NoNewPrivileges=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/log/antbox /run/antbox
+SupplementaryGroups=video
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,12 @@
+Package: antbox
+Version: 1.0.0
+Section: media
+Priority: optional
+Architecture: amd64
+Depends: systemd
+Recommends: linux-headers
+Maintainer: Flock <support@yourflock.org>
+Description: AntBox - USB tuner live TV daemon for Owl
+ AntBox turns any Linux machine with a USB DVB TV tuner into a live TV
+ source for Owl. It discovers tuner hardware, captures MPEG-TS streams,
+ and streams them to an Owl backend via gRPC.

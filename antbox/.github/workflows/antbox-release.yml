@@ -1,0 +1,47 @@
+name: AntBox Release
+on:
+  push:
+    tags:
+      - 'antbox/v*'
+
+jobs:
+  build:
+    name: Build and release AntBox
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        include:
+          - goos: linux
+            goarch: amd64
+            suffix: linux-amd64
+          - goos: linux
+            goarch: arm64
+            suffix: linux-arm64
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+      - name: Build AntBox
+        working-directory: antbox
+        run: |
+          GOOS=${{ matrix.goos }} GOARCH=${{ matrix.goarch }} \
+          CGO_ENABLED=0 go build \
+            -ldflags "-X antbox/daemon.Version=${GITHUB_REF_NAME#antbox/v} -s -w" \
+            -o antboxd-${{ matrix.suffix }} .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: antboxd-${{ matrix.suffix }}
+          path: antbox/antboxd-${{ matrix.suffix }}
+
+  test:
+    name: Test AntBox
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-go@v5
+        with:
+          go-version: '1.22'
+      - name: Run tests
+        working-directory: antbox
+        run: go test ./...

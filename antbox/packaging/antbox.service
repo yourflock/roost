@@ -1,0 +1,33 @@
+# AntBox systemd service unit (T-7H.2.003 — part of DEB/RPM)
+# Install to: /etc/systemd/system/antbox.service
+
+[Unit]
+Description=AntBox — Owl USB TV Tuner Daemon
+Documentation=https://github.com/yourflock/owl
+After=network.target
+
+[Service]
+Type=simple
+User=antbox
+Group=antbox
+EnvironmentFile=-/etc/antbox/antbox.env
+ExecStart=/usr/local/bin/antbox
+Restart=on-failure
+RestartSec=5s
+# Exponential backoff is handled inside the daemon — systemd only retries on crash
+StartLimitInterval=120s
+StartLimitBurst=5
+
+# Security hardening
+NoNewPrivileges=yes
+PrivateTmp=yes
+ProtectSystem=strict
+ReadWritePaths=/var/lib/antbox /var/log/antbox
+SupplementaryGroups=video plugdev
+
+# DVB device access
+DeviceAllow=/dev/dvb rw
+DeviceAllow=char-dvb rw
+
+[Install]
+WantedBy=multi-user.target

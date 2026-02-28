@@ -1,0 +1,21 @@
+# AntBox Docker Compose snippet (T-7H.2.002)
+# Add this to your Owl server's docker-compose.yml (or use standalone).
+
+services:
+  antbox:
+    image: ghcr.io/yourflock/owl-antbox:1.0.0
+    container_name: owl_antbox
+    restart: unless-stopped
+    privileged: true  # Required for USB DVB device access
+    devices:
+      - /dev/dvb:/dev/dvb   # DVB tuner devices
+      # - /dev/bus/usb:/dev/bus/usb  # USB bus (alternative)
+    environment:
+      ANTBOX_SERVER_URL: ${OWL_BACKEND_URL:-http://owl-backend:8080}
+      ANTBOX_ID: ${ANTBOX_ID:-antbox-home}
+      ANTBOX_LOG_LEVEL: ${ANTBOX_LOG_LEVEL:-info}
+    volumes:
+      - antbox_config:/config
+
+volumes:
+  antbox_config:
