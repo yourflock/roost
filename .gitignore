@@ -94,3 +94,10 @@ PLAN.md
 # Go service compiled binaries
 backend/services/*/bin/
 backend/bin/
+.vscode/*
+.aider/
+.aider.chat.history.md
+.continue/
+.windsurf/
+.gemini/
+.codeium/

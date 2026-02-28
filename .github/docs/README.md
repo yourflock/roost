@@ -2,9 +2,12 @@
 
 Internal developer documentation for the Roost IPTV backend.
 
-## Guides
+## Index
 
-- [Deployment](guides/deployment.md) — First deploy, rolling updates, rollback, monitoring
+- [Deployment Guide](guides/deployment.md) — first deploy, rolling updates, rollback, monitoring
+- [Skip Format](skip-format.md) — `.skip` sidecar format and Scene Skip standard
+- [Commit Convention](commit-convention.md) — conventional commits, scopes, branch naming
+- [Roost Home](Home.md) — project overview, install, two-mode architecture
 
 ## Architecture
 
@@ -34,7 +37,7 @@ nginx:80 (reverse proxy)
 ## Services
 
 | Service | Port | Purpose |
-|---------|------|---------|
+| --- | --- | --- |
 | `postgres` | 5433 (local) | Primary database |
 | `redis` | 6379 | Session cache + rate limiting |
 | `hasura` | 8081 (local) | GraphQL API |
